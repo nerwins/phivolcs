@@ -19,26 +19,20 @@ require_once($page_javascript);  ?>
 <body class="login-img3-body">
 
 <div class="container">
-
-    <form class="login-form" action="login">
-        <div class="login-wrap">
-            <p class="login-img"> PHI<span></span><span class="lite">VOLCS</span></p>
-            <label class="alert alert-danger" id='erroralert' style="width:100%;text-align:center;display:none"><i class='icon_error-circle_alt'></i>&nbsp;Invalid Username or Password</label>
-            <div class="input-group">
-
-                <span class="input-group-addon"><i class="icon_profile"></i></span>
-                <input type="text" class="form-control" placeholder="Username" id='username' autofocus>
-            </div>
-            <div class="input-group">
-                <span class="input-group-addon"><i class="icon_key_alt"></i></span>
-                <input type="password" class="form-control" id='password' placeholder="Password">
-            </div>
-
-            <button class="btn btn-primary btn-lg btn-block" id='login'>Login</button>
-
+    <div class="login-wrap login-form">
+        <p class="login-img"> PHI<span></span><span class="lite">VOLCS</span></p>
+        <label class="alert alert-danger" id='erroralert' style="width:100%;text-align:center;display:none">Invalid Username or Password</label>
+        <label class="alert alert-info" id='connectingalert' style="width:100%;text-align:center;display:none">Connecting...</label>
+        <div class="input-group">
+            <span class="input-group-addon"><i class="icon_profile"></i></span>
+            <input type="text" class="form-control" placeholder="Username" id='username' autofocus>
         </div>
-    </form>
-
+        <div class="input-group">
+            <span class="input-group-addon"><i class="icon_key_alt"></i></span>
+            <input type="password" class="form-control" id='pass' placeholder="Password">
+        </div>
+        <button class="btn btn-primary btn-lg btn-block" id='login'>Login</button>
+    </div>
 </div>
 </body>
 </html>

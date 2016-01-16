@@ -11,4 +11,33 @@ class Login_model extends CI_Model {
         parent::__construct();
     }
 
+    function check_username() {
+        $username = $this->input->get('username');
+        $password = $this->input->get('password');
+
+        $sSQL = "SELECT
+                    A.`id`, `password`, CONCAT_WS(' ',E.`firstname`,E.`lastname`) AS 'fullname'
+                FROM
+                    `accounts` AS A
+                        LEFT JOIN
+                    `employee` AS E ON A.`id` = E.`id`
+                WHERE
+                    username = ?";
+        $result = $this->db->query($sSQL, array($username));
+        if ($result->num_rows() > 0) {
+            $row = $result->row();
+            $dbpassword = $row->password;
+            if ($dbpassword == $password) {
+                $eid = $row->id;
+                $dbfullname = $row->fullname;
+                $_SESSION['id'] = $eid;
+                $_SESSION['fullname'] = $dbfullname;
+                return json_encode(array("eid"=>$eid));
+            }
+            else
+                return json_encode("error");
+        }
+        else
+            return json_encode("error");
+    }
 }
