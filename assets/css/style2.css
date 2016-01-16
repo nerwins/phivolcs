@@ -74,21 +74,21 @@ table tr th { color: #007AFF;}
     background-color: #f1f2f7;
 }
 .login-img-body{
-  background: url('assets/images/backgrounds/bg-1.jpg') no-repeat center center fixed;
+  background: url('backgrounds/bg-1.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
 .login-img2-body{
-  background: url('assets/images/backgrounds/bg-6.jpg') no-repeat center center fixed;
+  background: url('backgrounds/bg-6.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
 .login-img3-body{
-  background: url('assets/images/backgrounds/bg-11.jpg') no-repeat center center fixed;
+  background: url('backgrounds/bg-11.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -913,7 +913,7 @@ div[data-role="editor-toolbar"] {
     transition: all .3s ease;
     border: 1px solid #fff;
     box-shadow: none;
-    background: url("assets/images/search-icon.jpg") no-repeat 10px 8px;
+    background: url("<?=base_url()?>/assets/images/search-icon.jpg") no-repeat 10px 8px;
     padding:0 5px 0 35px;
     color: #fff;
 }
@@ -1024,7 +1024,7 @@ div[data-role="editor-toolbar"] {
     padding: 0px;
 }
 .panel-body.chart-texture {
-    background: url("assets/images/chart-texture.jpg");
+    background: url("<?=base_url()?>/assets/images/chart-texture.jpg");
     -webkit-border-radius: 4px 4px 0px 0px;
     border-radius: 4px 4px 0px 0px;
     padding: 0px;
@@ -1580,7 +1580,7 @@ ul.ft-link li a i {
 
 /*profile-widget image bg*/
 .profile-widget-img{
-    background: url('assets/images/backgrounds/bg-11-small.jpg') no-repeat !important;
+    background: url('<?=base_url()?>/assets/images/backgrounds/bg-11-small.jpg') no-repeat !important;
 }
 .profile-nav .profile-widget-img .bg-layer {
     background: rgba(0,0,0,0.5) !important;
@@ -1842,7 +1842,7 @@ ul.ft-link li a i {
 }
 /*weather widget 2*/
 .weather-bg-img {
-    background: url(assets/images/backgrounds/bg-14-small.jpg) no-repeat center center;
+    background: url(<?=base_url()?>/assets/images/backgrounds/bg-14-small.jpg) no-repeat center center;
     color: #fff;
     text-shadow: 0px 1px 5px #8E8E93;
     text-align: center;

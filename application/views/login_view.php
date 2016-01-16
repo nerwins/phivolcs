@@ -11,10 +11,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-</head>
 <title>Log In</title>
-<?php require_once("assets/includes.php");
-require_once($page_javascript);  ?>
+    <?php require_once("assets/includes.php");
+    require_once($page_javascript);  ?>
 </head>
 <body class="login-img3-body">
 
