@@ -10,7 +10,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Log In</title>
+    <title>PHIVOLCS Project Management System</title>
     <?php require_once("assets/includes.php");
     require_once("assets/sidebar.php");
     require_once($page_javascript);  ?>

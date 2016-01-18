@@ -22,7 +22,7 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <link href="<?=base_url()?>assets/css/bootstrap-theme.css" rel="stylesheet">
 <link href="<?=base_url()?>assets/css/elegant-icons-style.css" rel="stylesheet" />
 <link href="<?=base_url()?>assets/css/style.css" rel="stylesheet">
-<link href="<?=base_url()?>assets/css/style2.css" rel="stylesheet">
+<link href="<?=base_url()?>assets/css/style2.css" rel="stylesheet">'
 <link href="<?=base_url()?>assets/css/lightbox.css" rel="stylesheet">
 <link href="<?=base_url()?>assets/css/style-responsive.css" rel="stylesheet" />
 <link href="<?=base_url()?>assets/js/libraries/chosen/chosen.css" rel="stylesheet">

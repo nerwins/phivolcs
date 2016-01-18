@@ -239,7 +239,7 @@
                                 <span class="profile-ava">
                                     <img alt="" src="<?=base_url()?>/assets/images/avatar1_small.jpg">
                                 </span>
-                        <span class="username"></span>
+                        <span class="username"><?php echo $_SESSION['username'];?></span>
                         <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu extended logout">
@@ -250,12 +250,13 @@
                         <li>
                             <a href="aa_projectarchieve.jsp"><i class="icon_archive_alt"></i>View Projects</a>
                         </li>
-
+                        <?php if($_SESSION['position'] == 3 && $_SESSION['division'] == 3){?>
                         <li>
                             <a href="aa_task.jsp"><i class="icon_book_alt"></i>Manage Tasks</a>
                         </li>
+                        <?php }?>
                         <li>
-                            <a href="javascript:void(0)" onclick=""><i class="icon_key_alt"></i> Log Out</a>
+                            <a href="javascript:void(0)" onclick="logout()"><i class="icon_key_alt"></i> Log Out</a>
                         </li>
                     </ul>
                 </li>
@@ -285,25 +286,29 @@
                     </a>
                     <ul class="sub">
                         <li id='vproject'><a class="" href="aa_projectarchieve.jsp">View Projects</a></li>
+                        <?php if($_SESSION['position'] == 2){?>
                         <li id='propose'><a class=""  href="aa_proposeproject.jsp">Propose New Project</a></li>
+                        <?php }if($_SESSION['position'] == 3){?>
                         <li id='progress'><a class=""  href="aa_progress.jsp">Make Progress Report</a></li>
+                        <?php }if($_SESSION['position'] == 3 && $_SESSION['division'] == 3){?>
                         <li id='manage'><a class=""  href="aa_task.jsp">Manage Task</a></li>
+                        <?php }?>
                     </ul>
                 </li>
+                <?php if($_SESSION['position'] == 3){?>
                 <li id='records'>
                     <a class="" href="aa_records.jsp">
                         <i class="icon_document_alt"></i>
                         <span>Records</span>
                     </a>
                 </li>
-
+                <?php }?>
                 <li id='pnature'>
                     <a class="" href="projectnature.jsp">
                         <i class="icon_star"></i>
                         <span>Project Nature</span>
                     </a>
                 </li>
-
                 <li class="sub-menu" id='reports'>
                     <a class="">
                         <i class="icon_desktop"></i>
@@ -333,9 +338,16 @@
 <script>
 
     function logout() {
-        document.location.href = "logout";
-
+        window.location.replace('logout');
     }
+    $("#projectsub,#reports").click(function(){
+        $('.sub',this).toggle();
+        var flag = $('.sub',this).css('display');
+        if(flag == 'none')
+            $('.arrow_carrot-down',this).addClass('arrow_carrot-right').removeClass('arrow_carrot-down');
+        else
+            $('.arrow_carrot-right',this).addClass('arrow_carrot-down').removeClass('arrow_carrot-right');
+    });
 
 </script>
 </body>
