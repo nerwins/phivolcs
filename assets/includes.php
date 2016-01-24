@@ -30,7 +30,9 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <link href="<?=base_url()?>assets/css/tooltipster.css" rel="stylesheet" type="text/css" />
 <link href="<?=base_url()?>assets/css/jquery.minicolors.css" rel="stylesheet" type="text/css">
 <link href="<?=base_url()?>assets/js/libraries/gantt/jquery.ganttView.css" rel="stylesheet" type="text/css" />
+<link href="<?=base_url()?>assets/js/libraries/sweetalert/sweetalert.css" rel="stylesheet" type="text/css" >
 
+<script src="<?=base_url()?>/assets/js/libraries/js/jquery-1.10.2.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery-ui.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.form.js"></script>
@@ -59,6 +61,19 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <script src="<?=base_url()?>/assets/js/libraries/js/calendar-custom.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.customSelect.min.js" ></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/sparkline-chart.js"></script>
+<script src="<?=base_url()?>/assets/HelperFunctions.js"></script>
 <!--<script src='<?=base_url()?>/assets/js/libraries/js/easy-pie-chart.js'></script>-->
-<script src="<?=base_url()?>/assets/js/libraries/js/jquery-1.10.2.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/bootstrap.min.js"></script>
+<script src="<?=base_url()?>/assets/js/libraries/sweetalert/sweetalert.min.js"></script>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="loading" data-backdrop="static" data-keyboard="false">
+    <div style="display: inline-block;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 200px;
+            height: 100px;
+            margin: auto;"><image src="<?=base_url()?>/assets/images/loading.gif"></div>
+</div>
