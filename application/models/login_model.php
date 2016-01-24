@@ -16,7 +16,11 @@ class Login_model extends CI_Model {
         $password = $this->input->get('password');
 
         $sSQL = "SELECT
-                    A.`id`, `password`, CONCAT_WS(' ',E.`firstname`,E.`lastname`) AS 'fullname'
+                    A.`id`,
+                    `password`,
+                    CONCAT_WS(' ',E.`firstname`,E.`lastname`) AS 'fullname',
+                    E.`position_id` AS 'position',
+                    E.`division_id` AS 'division'
                 FROM
                     `accounts` AS A
                         LEFT JOIN
@@ -30,8 +34,13 @@ class Login_model extends CI_Model {
             if ($dbpassword == $password) {
                 $eid = $row->id;
                 $dbfullname = $row->fullname;
+                $position = $row->position;
+                $division = $row->division;
                 $_SESSION['id'] = $eid;
                 $_SESSION['fullname'] = $dbfullname;
+                $_SESSION['username'] = $username;
+                $_SESSION['position'] = $position;
+                $_SESSION['division'] = $division;
                 return json_encode(array("eid"=>$eid));
             }
             else
