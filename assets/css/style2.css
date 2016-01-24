@@ -46,7 +46,6 @@ table tr th { color: #007AFF;}
 
 #container {
     width: 100%;
-    height: 100%;
 }
 
 
@@ -264,6 +263,7 @@ table tr th { color: #007AFF;}
     height: 100%;
     position: fixed;
     background: #ffffff;
+    top: 7px;
 }
 
 .nav-collapse.collapse {

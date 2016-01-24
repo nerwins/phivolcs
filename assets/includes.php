@@ -41,7 +41,6 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <script src="<?=base_url()?>/assets/js/libraries/gantt/date.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/gantt/jquery.ganttView.js" type="text/javascript"></script>
 <!--<script src="<?=base_url()?>/assets/js/libraries/js/bootstrap-switch.js"></script>-->
-<script src="<?=base_url()?>/assets/js/libraries/js/bootstrap.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.scrollTo.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.nicescroll.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/ga.js" type="text/javascript"></script>
@@ -61,4 +60,5 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.customSelect.min.js" ></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/sparkline-chart.js"></script>
 <!--<script src='<?=base_url()?>/assets/js/libraries/js/easy-pie-chart.js'></script>-->
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="<?=base_url()?>/assets/js/libraries/js/jquery-1.10.2.js"></script>
+<script src="<?=base_url()?>/assets/js/libraries/js/bootstrap.min.js"></script>

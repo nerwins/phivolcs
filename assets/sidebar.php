@@ -15,6 +15,8 @@
     <meta name="description" content="Karmanta - Bootstrap 3 Responsive Admin Template">
     <meta name="author" content="GeeksLabs">
     <meta name="keyword" content="Karmanta, Dashboard, Admin, Template, Theme, Bootstrap, Responsive, Retina, Minimal">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>PHIVOLCS Project Management System</title>
 </head>
 <body>
@@ -295,7 +297,7 @@
                         <?php }?>
                     </ul>
                 </li>
-                <?php if($_SESSION['position'] == 3){?>
+                <?php if($_SESSION['position'] != 3){?>
                 <li id='records'>
                     <a class="" href="records">
                         <i class="icon_document_alt"></i>
