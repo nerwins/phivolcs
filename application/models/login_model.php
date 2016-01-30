@@ -15,10 +15,10 @@ class Login_model extends CI_Model {
         $username = $this->input->get('username');
         $password = $this->input->get('password');
 
-        $sSQL = "SELECT
+        $query = "SELECT
                     A.`id`,
                     `password`,
-                    CONCAT_WS(' ',E.`firstname`,E.`lastname`) AS 'fullname',
+                        CONCAT_WS(' ',E.`firstname`,E.`lastname`) AS 'fullname',
                     E.`position_id` AS 'position',
                     E.`division_id` AS 'division'
                 FROM
@@ -27,7 +27,7 @@ class Login_model extends CI_Model {
                     `employee` AS E ON A.`id` = E.`id`
                 WHERE
                     username = ?";
-        $result = $this->db->query($sSQL, array($username));
+        $result = $this->db->query($query, array($username));
         if ($result->num_rows() > 0) {
             $row = $result->row();
             $dbpassword = $row->password;
