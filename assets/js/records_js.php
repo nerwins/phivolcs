@@ -78,6 +78,7 @@
                     document.getElementById("skillsets").appendChild(tbl);
                     hidecolumn(0,"skillstable");
                     toggleAlert(1);
+                    loadSkills();
                 }
             },'JSON');
     }
