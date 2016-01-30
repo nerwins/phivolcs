@@ -155,7 +155,7 @@ class Employee_model extends CI_Model {
         $this->db->insert_batch('employee_has_skillset', $data);
     }
     function check_employee_has_task($id){
-        $query = "SELECT COUNT(empid) AS 'hastask' FROM `employee_has_task`
+        $query = "SELECT SUM(CASE WHEN(status = 0)THEN 1 ELSE 0 END) AS 'hastask' FROM `employee_has_task`
                   WHERE empid = ?";
         $result = $this->db->query($query, array($id));
         $row = $result->row();
