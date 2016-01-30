@@ -32,9 +32,8 @@ require_once($page_javascript);  ?>
                                 Employees
                                 <button class="btn btn-info pull-right"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" id='empButton'><i class="icon_plus_alt2"></i> Add Employee</button>
                             </header>
-                            <label class='alert alert-danger' id='employeealert' style='width:100%;text-align:center;display:none'></label>
-                            <div id='employee' style='display:none;'>
-                                <br>
+                            <label class='alert alert-danger' id='employeealert' style='width:100%;text-align:center;display:none'>No Employees Found.</label>
+                            <div id='employees' style='display:none;'>
                             </div>
                         </section>
                     </div>
@@ -78,8 +77,6 @@ require_once($page_javascript);  ?>
                     <?php }?>
                     <label>Skillsets</label><br>
                     <div id='sfilters'></div>
-                    <label>Max Load</label>
-                    <input type="text" id="mload" class="form-control" value="30">
                 </div>
             </div>
             <div class="modal-footer">
@@ -111,4 +108,3 @@ require_once($page_javascript);  ?>
         </div>
     </div>
 </div>
-
