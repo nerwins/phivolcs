@@ -39,7 +39,6 @@ require_once($page_javascript);
                             <th style="text-align:center"><i class="icon_datareport_alt"></i> Priority Level</th>
                             <th style="text-align:center"><i class="icon_pin_alt"></i> Location</th>
                             <th style="text-align:center"><i class="icon_cloud"></i> Progress</th>
-                            <th style="text-align:center"><i class="icon_cogs"></i> Action</</tr>
                             </thead>
                             <tbody>
                             </tbody>

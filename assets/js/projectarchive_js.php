@@ -41,8 +41,19 @@
                 $('td:nth-child(1),th:nth-child(1)').hide();
                 $('table td:nth-child(1)').addClass('projid');
                 toggleAlert(1);
+                $("#projecttemp table tbody tr").click(function() {
+                    showRedirect($(this).find(".projid").text(),3);
+                });
+                $(".showTasks,.viewSreport,.showProgressReports").click(function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
             }
         });
+    }
+    function showRedirect(id,redirect){
+        var pages = ['viewreport','progress','task','viewproject','assignproject','createreport'];
+        window.location.replace(pages[redirect] +'?id=' + id);
     }
     function toggleAlert(status){
         switch(status){
