@@ -19,9 +19,21 @@ require_once($page_javascript);  ?>
                             <header class="panel-heading">
                                 Skillsets
                                 <button class="btn btn-info pull-right"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='skillbutton'><i class="icon_plus_alt2"></i> Add Skillset</button>
+                                <button class="btn btn-default pull-right"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='skillfilterbutton' data-toggle="collapse" data-target="#skillfilterdiv"><i class="icon_search"></i> Filters</button>
                             </header>
                             <label class='alert alert-danger' id='skillalert' style='width:100%;text-align:center;display:none'>No Skillset Found.</label>
-
+                            <label class='alert alert-success' id='skillalertadd' style='width:100%;text-align:center;display:none'>Skillset Added!</label>
+                            <label class='alert alert-success' id='skillalertupdate' style='width:100%;text-align:center;display:none'>Skillset Updated!</label>
+                            <label class='alert alert-success' id='skillalertdelete' style='width:100%;text-align:center;display:none'>Skillset Deleted!</label>
+                            <div id="skillfilterdiv" class="collapse">
+                                <section class="panel">
+                                    <div class="col-lg-12">
+                                        Name or Description
+                                        <input type="text" class="form-control" id="searchSkillset"><br>
+                                        <button class="btn btn-info col-lg-12" type="button" id="searchSkillsetButton">Search</button>
+                                    </div>
+                                </section>
+                            </div>
                             <div id='skillsets' style='display:none'>
                             </div>
                         </section>
@@ -31,8 +43,43 @@ require_once($page_javascript);  ?>
                             <header class="panel-heading">
                                 Employees
                                 <button class="btn btn-info pull-right"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" id='empButton'><i class="icon_plus_alt2"></i> Add Employee</button>
+                                <button class="btn btn-default pull-right"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='empfilterbutton'  data-toggle="collapse" data-target="#empfilterdiv"><i class="icon_search"></i> Filters</button>
                             </header>
                             <label class='alert alert-danger' id='employeealert' style='width:100%;text-align:center;display:none'>No Employees Found.</label>
+                            <label class='alert alert-success' id='employeeadd' style='width:100%;text-align:center;display:none'>Employee Added!</label>
+                            <label class='alert alert-success' id='employeeupdate' style='width:100%;text-align:center;display:none'>Employee Updated!</label>
+                            <label class='alert alert-success' id='employeedelete' style='width:100%;text-align:center;display:none'>Employee Deleted!</label>
+                            <div id="empfilterdiv" class="collapse">
+                                <section class="panel">
+                                    <div class="col-lg-12">
+                                        <div style="float:left;" class='col-lg-12'>
+                                            Name
+                                            <input type="text" class="form-control" id="searchEmp">
+                                        </div>
+                                        <div style="float:left;" class='col-lg-12'>
+                                        Division
+                                        <select id="divisionddl" class='form-control'>
+                                            <option value="0">All</option>
+                                            <option value="1">Volcanology</option>
+                                            <option value="2">Seismology</option>
+                                            <option value="3">Finance and Admin</option>
+                                            <option value="4">Research and Development</option>
+                                            <option value="5">Disaster Preparedness</option>
+                                        </select></div>
+                                        <div style="float:left;" class='col-lg-12'>
+                                        Position
+                                        <select id="positionddl" class='form-control'>
+                                            <option value="0">All</option>
+                                            <option value="2">Division Chief</option>
+                                            <option value="3">Project Member</option>
+                                        </select></div>
+                                            <div style="float:left;" class='col-lg-12'>Date Started</div>
+                                            <div style="float:left;" class='col-lg-6'>From: <input type="text" class="form-control" id="datestartfrom"></div>
+                                            <div  class='col-lg-6'>To: <input type="text" class="form-control" id="datestartto"></div>
+                                            <div><br><button class="btn btn-info col-lg-12" type="button" id="searchEmpButton">Search</button></div>
+                                    </div>
+                                </section>
+                            </div>
                             <div id='employees' style='display:none;'>
                             </div>
                         </section>

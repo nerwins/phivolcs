@@ -12,7 +12,13 @@ class Skillset_model extends CI_Model {
     }
 
     function get_skillset_list(){
-        $query = "SELECT `id`,`name`,`description` FROM `skillset`;";
+        $searchSkillset = $this->input->get('searchSkillset');
+        $whereStr = "";
+        if(trim($searchSkillset) != ""){
+            $whereStr = " WHERE `name` LIKE '%".$searchSkillset."%' OR `description` LIKE '%".$searchSkillset."%' ";
+        }
+        $query = "SELECT `id`,`name`,`description` FROM `skillset`" .$whereStr;
+        //print_r($query);
         $result = $this->db->query($query);
         if ($result->num_rows() > 0) {
             $skillSetList = array();

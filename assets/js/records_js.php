@@ -25,6 +25,32 @@
             var id = $(this).attr('name') == "null"?0:$(this).attr('name');
             saveEmployee(id);
         });
+        $('#searchSkillsetButton').click(function(){
+            toggleAlert(11);
+            getSkillSetList();
+        });
+        $("#searchSkillset").keyup(function (e) {
+            if (e.keyCode == 13) {
+                toggleAlert(11);
+                getSkillSetList();
+            }
+        });
+
+        $("#searchEmp").keyup(function (e) {
+            if (e.keyCode == 13) {
+                toggleAlert(15);
+                getEmployeesList();
+            }
+        });
+        $("#searchEmpButton").click(function(){
+            toggleAlert(15);
+                getEmployeesList();
+        });
+        $("#datestartfrom, #datestartto").datepicker({
+          dateFormat: "yy-mm-dd"
+        });
+        $("#divisionddl").chosen({width: "100%"});
+        $("#positionddl").chosen({width: "100%"});
         loadSkills();
     });
     function newSkillSet(){
@@ -37,7 +63,7 @@
         $('#skillsModal').modal('show');
     }
     function getSkillSetList(){
-        $.get("<?=base_url()?>records/get_skillset_list_control",
+        $.get("<?=base_url()?>records/get_skillset_list_control",{searchSkillset:$("#searchSkillset").val()},
             function(data) {
                 if (data == "error")
                     toggleAlert(0);
@@ -98,6 +124,10 @@
                 else{
                     toggleAlert(5);
                     $('#skillsModal').modal('hide');
+                    if(id == 0)
+                        toggleAlert(8);
+                    else
+                        toggleAlert(9);
                     getSkillSetList();
                 }
             });
@@ -132,8 +162,10 @@
                         list += "\n";
                     }
                     swal("Unable to delete", "Conflicts found! The following employee have this skillset:\n"+list,"info");
-                }else
+                }else{
+                    toggleAlert(10);
                     getSkillSetList();
+                }
             });
     }
 
@@ -155,6 +187,11 @@
     }
     function getEmployeesList(){
         $.get("<?=base_url()?>records/get_employees_list_control",
+            {name: $("#searchEmp").val(),
+            division: $("#divisionddl").val(),
+            position: $("#positionddl").val(),
+            datefrom: $("#datestartfrom").val(),
+            dateto: $("#datestartto").val()},
             function(data) {
                 if (data == "error")
                     toggleAlert(2);
@@ -165,7 +202,7 @@
                     tbl.setAttribute("id","employeestable");
                     tbl.setAttribute("style","text-align:center");
                     var thead=document.createElement('thead');
-
+                    var tr=document.createElement("tr");
                     var th=document.createElement("th");
                     th.innerHTML="<center>ID</center>";
                     var th2=document.createElement("th");
@@ -176,11 +213,12 @@
                     th4.innerHTML="<center><i class='icon_genius'></i>&nbsp;Position</center>";
                     var th5=document.createElement("th");
                     th5.innerHTML="<center><i class='icon_calendar'></i>&nbsp;Date Started</center>";
-                    thead.appendChild(th);
-                    thead.appendChild(th2);
-                    thead.appendChild(th3);
-                    thead.appendChild(th4);
-                    thead.appendChild(th5);
+                    tr.appendChild(th);
+                    tr.appendChild(th2);
+                    tr.appendChild(th3);
+                    tr.appendChild(th4);
+                    tr.appendChild(th5);
+                    thead.appendChild(tr);
                     var tbody=document.createElement("tbody");
                     for(var x = 0; x < data.length; x++){
                         var tr=document.createElement("tr");
@@ -230,6 +268,10 @@
                     toggleAlert(6);
                 else{
                     toggleAlert(7);
+                    if(id == 0)
+                        toggleAlert(12);
+                    else
+                        toggleAlert(13);
                     $('#employeeModal').modal('hide');
                     getEmployeesList();
                 }
@@ -264,8 +306,10 @@
                 data = data.replace(/\"/g, "");
                 if(data == 'error'){
                     swal("Unable to delete", "This employee is currently assigned to a project.","info");
-                }else
+                }else{
+                    toggleAlert(14);
                     getEmployeesList();
+                }
             });
     }
     function loadSkills(){
@@ -331,6 +375,63 @@
             case 7:
                 //employee exists hide
                 $('#emodalalert').hide();
+                break;
+            case 8:
+                //add skillset
+                $("#skillalertadd").show();
+                $("#skillalert").hide();
+                $("#skillalertupdate").hide();
+                $("#skillalertdelete").hide();
+                break;
+            case 9:
+                //update skillset
+                $("#skillalertadd").hide();
+                $("#skillalert").hide();
+                $("#skillalertupdate").show();
+                $("#skillalertdelete").hide();
+                break;
+            case 10:
+                //delete skillset
+                $("#skillalertadd").hide();
+                $("#skillalert").hide();
+                $("#skillalertupdate").hide();
+                $("#skillalertdelete").show();
+                break;
+            case 11:
+                //hide or reset all skillset
+                $("#skillalertadd").hide();
+                $("#skillalert").hide();
+                $("#skillalertupdate").hide();
+                $("#skillalertdelete").hide();
+                break;
+            case 12:
+                //add employee
+                $("#employeeadd").show();
+                $("#employeealert").hide();
+                $("#employeeupdate").hide();
+                $("#employeedelete").hide();
+                break;
+            case 13:
+                //update employee
+                $("#employeeadd").hide();
+                $("#employeealert").hide();
+                $("#employeeupdate").show();
+                $("#employeedelete").hide();
+                break;
+            case 14:
+                //delete employee
+                $("#employeeadd").hide();
+                $("#employeealert").hide();
+                $("#employeeupdate").hide();
+                $("#employeedelete").show();
+                break;
+            case 15:
+                //hide or reset all employee
+                $("#employeeadd").hide();
+                $("#employeealert").hide();
+                $("#employeeupdate").hide();
+                $("#employeedelete").hide();
+                break;
         }
     }
 </script>
