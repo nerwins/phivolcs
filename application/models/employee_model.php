@@ -12,6 +12,27 @@ class Employee_model extends CI_Model {
     }
 
     function get_employees_list(){
+        $id = $_SESSION['id'];
+        $name = $this->input->get('name');
+        $division = $this->input->get('division');
+        $position = $this->input->get('position');
+        $datefrom = $this->input->get('datefrom');
+        $dateto = $this->input->get('dateto');
+
+        $whereString = "";
+        if(trim($name) != "")
+            $whereString .= " AND CONCAT_WS(', ',`lastname`,`firstname`,`middleinitial`) LIKE '%".$name."%'";
+        if($division != 0)
+            $whereString .= " AND `division_id` = ". $division;
+        if($position != 0)
+            $whereString .= " AND `position_id` = ". $position;
+        if(trim($datefrom) != "" && trim($dateto) != ""){
+            $whereString .= " AND date_started >= '" .$datefrom ."'";
+            $whereString .= " AND date_started <= '" .$dateto ."'";
+        }
+        if(trim($datefrom) != "" && trim($dateto) == "")
+            $whereString .= " AND date_started = '" .$datefrom ."'";
+
         $query = "SELECT `id`, CONCAT_WS(', ', `lastname`,`firstname`) AS 'fullname',
                     CASE WHEN `division_id` = 1 THEN 'Volcanology'
                         WHEN `division_id` = 2 THEN 'Seismology'
@@ -23,8 +44,7 @@ class Employee_model extends CI_Model {
                         WHEN `position_id` = 3 THEN 'Project Member' END AS 'position',
                     `date_started` AS 'datestarted'
                      FROM `employee`
-                     WHERE `id` <> ?";
-        $id = $_SESSION['id'];
+                     WHERE `id` <> ? " .$whereString;
         $result = $this->db->query($query, array($id));
         if ($result->num_rows() > 0) {
             $employeesList = array();
@@ -79,10 +99,10 @@ class Employee_model extends CI_Model {
                 'lastname' => $lname,
                 'email' => $email,
                 'division_id' => $did,
-                'position_id' => $pid,
-                'date_started'=>date("Y-m-d")
+                'position_id' => $pid
             );
             if ($id == 0) {
+                $data['date_started'] = date("Y-m-d");
                 $this->db->insert('employee', $data);
                 $id = $this->db->insert_id();
             }else{
@@ -146,13 +166,16 @@ class Employee_model extends CI_Model {
         $this->db->where('employeeid', $id);
         $this->db->delete('employee_has_skillset');
         for($x = 0; $x < count($skillSets);$x++){
-            $arr = array(
-                'employeeid' =>$id,
-                'skillsetid' =>$skillSets[$x]
-            );
-            array_push($data,$arr);
+            if(!empty($skillSets[$x])){
+                $arr = array(
+                    'employeeid' =>$id,
+                    'skillsetid' =>$skillSets[$x]
+                );
+                array_push($data,$arr);
+            }
         }
-        $this->db->insert_batch('employee_has_skillset', $data);
+        if(count($data) > 0)
+            $this->db->insert_batch('employee_has_skillset', $data);
     }
     function check_employee_has_task($id){
         $query = "SELECT SUM(CASE WHEN(status = 0)THEN 1 ELSE 0 END) AS 'hastask' FROM `employee_has_task`
