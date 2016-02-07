@@ -11,6 +11,11 @@
     $(function() {
         getSkillSetList();
         getEmployeesList();
+        $("#divisionddl").chosen({width: "100%"});
+        $("#positionddl").chosen({width: "100%"});
+        $("#datestartfrom, #datestartto").datepicker({
+          dateFormat: "yy-mm-dd"
+        });
         $('#skillbutton').click(function(){
             newSkillSet();
         });
@@ -25,33 +30,22 @@
             var id = $(this).attr('name') == "null"?0:$(this).attr('name');
             saveEmployee(id);
         });
-        $('#searchSkillsetButton').click(function(){
+        $("#searchSkillset").keyup(function (e) {
             toggleAlert(11);
             getSkillSetList();
         });
-        $("#searchSkillset").keyup(function (e) {
-            if (e.keyCode == 13) {
-                toggleAlert(11);
-                getSkillSetList();
-            }
-        });
-
-        $("#searchEmp").keyup(function (e) {
-            if (e.keyCode == 13) {
-                toggleAlert(15);
-                getEmployeesList();
-            }
-        });
-        $("#searchEmpButton").click(function(){
+        $('#divisionddl, #positionddl').on('change', function(e) {
             toggleAlert(15);
-                getEmployeesList();
+            getEmployeesList();
         });
-        $("#datestartfrom, #datestartto").datepicker({
-          dateFormat: "yy-mm-dd"
+        $("#searchEmp").keyup(function (e) {
+            toggleAlert(15);
+            getEmployeesList();
         });
-        $("#divisionddl").chosen({width: "100%"});
-        $("#positionddl").chosen({width: "100%"});
-        loadSkills();
+        $("#datestartfrom, #datestartto").change(function(){
+            toggleAlert(15);
+            getEmployeesList();
+        });
     });
     function newSkillSet(){
         $('#skilltitle').html("Add Skillset");
@@ -95,7 +89,7 @@
                             tr.appendChild(td);
                         }
                         var tdbutton=document.createElement("td");
-                        tdbutton.innerHTML="<button onclick='deleteSkillSet(this)' class='btn btn-danger'><i class='icon_close_alt2'></i></button>";
+                        tdbutton.innerHTML="<button onclick='deleteSkillSet("+data[x][0]+")' class='btn btn-danger'><i class='icon_close_alt2'></i></button>";
                         tr.appendChild(tdbutton);
                         tbody.appendChild(tr);
                     }
@@ -103,6 +97,7 @@
                     tbl.appendChild(tbody);
                     document.getElementById("skillsets").appendChild(tbl);
                     hidecolumn(0,"skillstable");
+                    activateSorting("skillstable")
                     toggleAlert(1);
                     loadSkills();
                 }
@@ -206,13 +201,14 @@
                     var th=document.createElement("th");
                     th.innerHTML="<center>ID</center>";
                     var th2=document.createElement("th");
-                    th2.innerHTML="<center><i class='icon_profile'></i>&nbsp;Name</center>";
+                    th2.innerHTML="<font color='#797979'><center><i class='icon_profile'></i>&nbsp;Name</center></font>";
                     var th3=document.createElement("th");
-                    th3.innerHTML="<center><i class='icon_globe'></i>&nbsp;Division</center>";
+                    th3.innerHTML="<font color='#797979'><center><i class='icon_globe'></i>&nbsp;Division</center></font>";
                     var th4=document.createElement("th");
-                    th4.innerHTML="<center><i class='icon_genius'></i>&nbsp;Position</center>";
+                    th4.innerHTML="<font color='#797979'><center><i class='icon_genius'></i>&nbsp;Position</center></font>";
                     var th5=document.createElement("th");
-                    th5.innerHTML="<center><i class='icon_calendar'></i>&nbsp;Date Started</center>";
+                    th5.innerHTML="<font color='#797979'><center><i class='icon_calendar'></i>&nbsp;Date Started</center></font>";
+                    tr.append
                     tr.appendChild(th);
                     tr.appendChild(th2);
                     tr.appendChild(th3);
@@ -228,10 +224,10 @@
                             tr.appendChild(td);
                         }
                         var tdbutton2=document.createElement("td");
-                        tdbutton2.innerHTML="<button onclick='getEmployeeDetails(this)' class='btn btn-info'><i class='icon_cog'></i></button>";
+                        tdbutton2.innerHTML="<button onclick='getEmployeeDetails("+data[x][0]+")' class='btn btn-info'><i class='icon_cog'></i></button>";
                         tr.appendChild(tdbutton2);
                         var tdbutton=document.createElement("td");
-                        tdbutton.innerHTML="<button onclick='deleteEmployee(this)' class='btn btn-danger'><i class='icon_close_alt2'></i></button>";
+                        tdbutton.innerHTML="<button onclick='deleteEmployee("+data[x][0]+")' class='btn btn-danger'><i class='icon_close_alt2'></i></button>";
                         tr.appendChild(tdbutton);
                         tbody.appendChild(tr);
                     }
@@ -239,6 +235,7 @@
                     tbl.appendChild(tbody);
                     document.getElementById("employees").appendChild(tbl);
                     hidecolumn(0,"employeestable");
+                    activateSorting("employeestable");
                     toggleAlert(3);
                 }
             },'JSON');
@@ -279,8 +276,7 @@
     }
     function getEmployeeDetails(x){
         $("#employeetitle").html("Update Employee");
-        var rowindex=x.parentNode.parentNode.rowIndex;
-        var id=document.getElementById("employeestable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[rowindex].getElementsByTagName("td")[0].innerHTML;
+        var id = x;
         $.getJSON("<?=base_url()?>records/get_employee_detail_control",{id:id},function(data){
             $('#fname').val(data[0]);
             $('#mi').val(data[1]);
@@ -297,8 +293,7 @@
         $('#employeeModal').modal('show');
     }
     function deleteEmployee(x){
-        var index=x.parentNode.parentNode.rowIndex;
-        var employeeID=document.getElementById("employeestable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[index].getElementsByTagName("td")[0].innerHTML;
+        var employeeID = x;
         $.post("<?=base_url()?>records/delete_employee_detail_control",
             {
                 employeeID: employeeID

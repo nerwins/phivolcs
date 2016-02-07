@@ -26,10 +26,13 @@ class Employee_model extends CI_Model {
             $whereString .= " AND `division_id` = ". $division;
         if($position != 0)
             $whereString .= " AND `position_id` = ". $position;
-        if(trim($datefrom) != "")
+        if(trim($datefrom) != "" && trim($dateto) != ""){
             $whereString .= " AND date_started >= '" .$datefrom ."'";
-        if(trim($datefrom) != "")
             $whereString .= " AND date_started <= '" .$dateto ."'";
+        }
+        if(trim($datefrom) != "" && trim($dateto) == "")
+            $whereString .= " AND date_started = '" .$datefrom ."'";
+
         $query = "SELECT `id`, CONCAT_WS(', ', `lastname`,`firstname`) AS 'fullname',
                     CASE WHEN `division_id` = 1 THEN 'Volcanology'
                         WHEN `division_id` = 2 THEN 'Seismology'

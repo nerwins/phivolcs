@@ -65,6 +65,7 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <!--<script src='<?=base_url()?>/assets/js/libraries/js/easy-pie-chart.js'></script>-->
 <script src="<?=base_url()?>/assets/js/libraries/js/bootstrap.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/sweetalert/sweetalert.min.js"></script>
+<script src="<?=base_url()?>/assets/js/libraries/js/tinysort.min.js"></script>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="loading" data-backdrop="static" data-keyboard="false">
     <div style="display: inline-block;

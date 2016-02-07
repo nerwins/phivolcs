@@ -30,7 +30,6 @@ require_once($page_javascript);  ?>
                                     <div class="col-lg-12">
                                         Name or Description
                                         <input type="text" class="form-control" id="searchSkillset"><br>
-                                        <button class="btn btn-info col-lg-12" type="button" id="searchSkillsetButton">Search</button>
                                     </div>
                                 </section>
                             </div>
@@ -76,7 +75,6 @@ require_once($page_javascript);  ?>
                                             <div style="float:left;" class='col-lg-12'>Date Started</div>
                                             <div style="float:left;" class='col-lg-6'>From: <input type="text" class="form-control" id="datestartfrom"></div>
                                             <div  class='col-lg-6'>To: <input type="text" class="form-control" id="datestartto"></div>
-                                            <div><br><button class="btn btn-info col-lg-12" type="button" id="searchEmpButton">Search</button></div>
                                     </div>
                                 </section>
                             </div>
