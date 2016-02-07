@@ -83,7 +83,7 @@
                         var tr=document.createElement("tr");
                         for(var y = 0; y < data[x].length; y++){
                             var td=document.createElement("td");
-                            td.setAttribute("onclick","getSkillsetDetails(this);");
+                            td.setAttribute("onclick","getSkillsetDetails("+data[x][0]+");");
                             td.setAttribute("style","word-wrap: break-word;");
                             td.appendChild(document.createTextNode(data[x][y]));
                             tr.appendChild(td);
@@ -129,9 +129,10 @@
     }
     function getSkillsetDetails(x){
         $('#skilltitle').html("Update Skillset");
-        var index=x.parentNode.rowIndex;
-        rowindex=index;
-        var id=document.getElementById("skillstable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[index].getElementsByTagName("td")[0].innerHTML;
+        //var index=x.parentNode.rowIndex;
+        //rowindex=index;
+        //var id=document.getElementById("skillstable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[index].getElementsByTagName("td")[0].innerHTML;
+        var id = x;
         $('#saveSkillSet').attr('name',id);
 
         $.getJSON("<?=base_url()?>records/get_skillset_detail_control",{id:id},function(data){
@@ -142,8 +143,9 @@
         });
     }
     function deleteSkillSet(x){
-        var index=x.parentNode.parentNode.rowIndex;
-        var skillID=document.getElementById("skillstable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[index].getElementsByTagName("td")[0].innerHTML;
+        //var index=x.parentNode.parentNode.rowIndex;
+        //var skillID=document.getElementById("skillstable").getElementsByTagName("tbody")[0].getElementsByTagName("tr")[index].getElementsByTagName("td")[0].innerHTML;
+        var skillID = x;
         $.post("<?=base_url()?>records/delete_skillset_detail_control",
             {
                 skillID: skillID
