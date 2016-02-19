@@ -6,8 +6,8 @@
  * Time: 7:35 PM
  */
 require_once("assets/includes.php");
-require_once("assets/sidebar.php");
 require_once($page_javascript);
+require_once("assets/sidebar.php");
 ?>
 <style>
     .progress {
@@ -30,6 +30,9 @@ require_once($page_javascript);
                         Project List
                     </header>
                     <label class="alert alert-danger" id="projectalert" style="width:100%;text-align:center;display:none;">No Records Found</label>
+                    <label class='alert alert-success' id='projectapproved' style='width:100%;text-align:center;display:none'>Project Approved!</label>
+                    <label class='alert alert-success' id='revisionapproved' style='width:100%;text-align:center;display:none'>Revisions Approved!</label>
+                    <label class='alert alert-success' id='projectdeclined' style='width:100%;text-align:center;display:none'>Project Declined!</label>
                     <div id="projecttemp" style="display:none">
                         <table class="table table-striped table-advance table-hover" id="projecttable" style="text-align:center">
                             <thead>

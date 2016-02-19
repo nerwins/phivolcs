@@ -17,7 +17,7 @@ require_once($page_javascript);?>
 				<div class="profile-widget profile-widget-info">
 					<div class="panel-body">
 						<div class="col-lg-2 col-sm-2">
-							<h4><?php echo $_SESSION['fullname'];?></h4>
+							<h4><div id="projectHeadName"></div></h4>
 							<div class="follow-ava">
                                 <img src="<?=base_url()?>/assets/images/profile-widget-avatar.jpg" alt="">
                             </div>
@@ -35,14 +35,9 @@ require_once($page_javascript);?>
                             <p>Project Duration:</p>
                             <h6>
                                 <span><i class="icon_calendar"></i> From:<span id="datefrom"></span></span>
-                                <span><i class="icon_calendar"></i> To:<span id="dateto"></span></span>                            
+                                <span><i class="icon_calendar"></i> To:<span id="dateto"></span></span>
                             </h6>
                             <br>
-                            <div style="float: left;"><button class='btn btn-success' title='View End of Summary Report' onclick='showRedirect(0);'><i class='icon_datareport_alt'></i></button>&nbsp;</div>
-                        	<div style="float: left;"><button class='btn btn-danger' title='View Progress Reports' onclick='showRedirect(1);'><i class='icon_percent_alt'></i></button>&nbsp;</div>
-                        	<div style="float: left;"><button class='btn btn-warning' title='View tasks for project' onclick='showRedirect(2);'><i class='icon_lightbulb_alt'></i></button>&nbsp;</div>
-                        	<div style="float: left;"><button class='btn btn-danger' title='Make Project Team' onclick='showRedirect(3);'><i class='icon_group'></i></button>&nbsp;</div>
-                        	<div style="float: left;"><button class='btn btn-success' title='Declare Project as Done' onclick='showRedirect(4)'><i class='icon_box-checked'></i></button></div>
                         </div>
                         <div class="col-lg-6 col-sm-6 follow-info weather-category">
                             <ul>
@@ -59,6 +54,11 @@ require_once($page_javascript);?>
                                     <i class="icon_plus_alt2"></i> Total Task
                                 </li>
                             </ul>
+                            <div style="float:left;"><button style="display:none;" class='btn btn-success' id='redirectButton1' title='View End of Summary Report' onclick='showRedirect(0);'><i class='icon_datareport_alt'></i> View End of Summary Report</button>&nbsp;</div>
+                            <div style="float:left;"><button style="display:none;" class='btn btn-danger' id='redirectButton2' title='View Progress Reports' onclick='showRedirect(1);' hidden><i class='icon_percent_alt'></i> View Progress Reports</button>&nbsp;</div>
+                            <div style="float:left;"><button style="display:none;" class='btn btn-warning' id='redirectButton3' title='View tasks for project' onclick='showRedirect(2);' hidden><i class='icon_lightbulb_alt'></i> View tasks for project</button>&nbsp;</div>
+                            <div style="float:left;"><button style="display:none;" class='btn btn-danger' id='redirectButton4' title='Make Project Team' onclick='showRedirect(3);' hidden><i class='icon_group'></i> Make Project Team'</button>&nbsp;</div>
+                            <div style="float:left;"><button style="display:none;" class='btn btn-success' id='redirectButton5' title='Declare Project as Done' onclick='showRedirect(4)' hidden><i class='icon_box-checked'></i> Declare Project as Done</button></div>
                         </div>
 					</div>
 				</div>
@@ -133,11 +133,13 @@ require_once($page_javascript);?>
                                     	<h4 style="text-align:center;">Work Plan:&nbsp;<button class='btn btn-success' id='section5'><i class='icon_plus_alt2'></i></button><button class='btn btn-warning' id='rev5' onclick='addComment(this, 5)' title='Revise'><i class='icon_clipboard'></i></button></h4>
                                     	<table class="table  table-advance table-hover" id="tasktable" style="text-align:center">
                                             <thead>
+                                                <th style="display:none">id</th>
 	                                            <th style="text-align:center">Major Activity</th>
 	                                            <th style="text-align:center">Milestone</th>
 	                                            <th style="text-align:center">Indication Date</th>
+                                                <th style="display:none">Member Count</th>
 	                                            <th style="text-align:center">Priority Level</th>
-	                                            <th style="text-align:center">Output</th>
+                                                <th style="text-align:center">Output</th>
                                             </thead>
                                             <tbody></tbody>
                                         </table>
@@ -154,6 +156,7 @@ require_once($page_javascript);?>
                                     		</div>
                                     		<table class="table table-hover personal-task" id="budgettable" >
                                                 <thead>
+                                                    <th style="display: none"></th>
 	                                                <th style="text-align:center">Budget Item</th>
 	                                                <th style="text-align:center">Expense Type</th>
 	                                                <th style="text-align:center">Quantity</th>
@@ -223,11 +226,27 @@ require_once($page_javascript);?>
                                             <h4 style="text-align:center;">Project Output:&nbsp;<button class='btn btn-success'  id='section6'><i class='icon_plus_alt2'></i></button><button class='btn btn-warning' id='rev6' onclick='addComment(this, 6)' title='Revise'><i class='icon_clipboard'></i></button></h4>
                                             <table class="table table-hover personal-task" id="outputtable" >
                                                 <thead>
+                                                <th style="display:none"></th>
                                                 <th style="text-align:center">Expected Output</th>
                                                 <th style="text-align:center">Performance Indicator</th>
                                                 </thead>
                                                 <tbody></tbody>
                                             </table>											
+                                        </div>
+                                    </div>
+                                    <div id="filesdiv">
+                                        <div class="bio-graph-heading3"> 
+                                            <h4 style="text-align:center;">Project Files:&nbsp;<button class='btn btn-success'  id='uploadButton'><i class='icon_plus_alt2'></i></button></h4>
+                                            <table class="table table-hover personal-task" id="filestable" >
+                                                <thead>
+                                                    <th style="display:none"></th>
+                                                    <th style="text-align:center">File Name</th>
+                                                    <th style="text-align:center">File Size</th>
+                                                    <th style="text-align:center">Uploader</th>
+                                                    <th style="text-align:center">Date</th>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
                                         </div>
                                     </div>
                             	</section>
@@ -250,9 +269,6 @@ require_once($page_javascript);?>
                                 <div id="map-canvas" ></div>  
                             </div>
                             <div id="pexpenses" class="tab-pane">
-                                <%if (status == 6) {%>
-                                <button class="btn btn-primary btn-small" id="aexpense"><i class="icon_plus_alt"></i>&nbsp;Add</button>
-                                <%}%>
                                 <table id="pexpensest" class="table table-bordered table-hover table-striped">
                                     <thead>
                                     <th>Expense</th>
@@ -331,7 +347,7 @@ require_once($page_javascript);?>
                     <div class="form-group">
                         <label>Reason:</label>                                                                                                           													
                         <div class="input-group">
-                            <textarea rows="9" cols="70" id="budgreason" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                            <textarea class="form-control" rows="9" cols="73" id="budgreason" style="min-width: 100%;"></textarea>
                         </div><!-- /input-group -->   
                     </div>                                               
                 </form>
@@ -384,7 +400,7 @@ require_once($page_javascript);?>
                     <div class="form-group">
                         <label>Reason:</label>                                                                                                           													
                         <div class="input-group">
-                            <textarea rows="9" cols="70" id="budgreason2" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                            <textarea class="form-control" rows="9" cols="73" id="budgreason2" style="min-width: 100%;"></textarea>
                         </div><!-- /input-group -->   
                     </div>                                               
                 </form>
@@ -425,7 +441,7 @@ require_once($page_javascript);?>
                 </div>
                 <div class="form-group">
                     <label>Reason:</label>
-                    <textarea rows="9" cols="73" id="reason2" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                    <textarea class="form-control" rows="9" cols="73" id="reason2" style="min-width: 100%;"></textarea>
                 </div>
                 <br>
                 <form class="form-inline" role="form">
@@ -446,7 +462,7 @@ require_once($page_javascript);?>
             <div class="modal-body">
                 <div class="form-group">
                     <label>Reason:</label>
-                    <textarea rows="9" cols="73" id="projreason" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                    <textarea class="form-control" rows="9" cols="73" id="projreason" style="min-width: 100%;"></textarea>
                 </div>
                 <br>
             </div>
@@ -488,7 +504,7 @@ require_once($page_javascript);?>
             <div class="modal-body">
                 <div class="form-group">
                     <label id='proj'></label>
-                    <textarea rows="9" cols="73" id="projcom" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                    <textarea  class="form-control" rows="9" cols="73" id="projcom" style="min-width: 100%;"></textarea>
                 </div>
                 <br>
             </div>
@@ -513,7 +529,7 @@ require_once($page_javascript);?>
                         <p>Qty need to be bought:</p>
                         <p>Amount per equipment:</p>
                         <p>Reason:</p>
-                        <textarea rows="9" cols="73" id="qreason" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                        <textarea class="form-control" rows="9" cols="73" id="qreason" style="min-width: 100%;"></textarea>
                     </div>
                     <div class="col-sm-6" align='left'>
                         <p id='qhave'></p>
@@ -566,7 +582,7 @@ require_once($page_javascript);?>
                     <br><br>
                     <div class="form-group">
                         <label>Performance indicator</label>
-                        <textarea rows="9" cols="70" id="pindicator" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                        <textarea class="form-control" rows="9" cols="70" id="pindicator" style="min-width: 100%;"></textarea>
                     </div>
                 </form> 
                 <br>
@@ -788,14 +804,14 @@ require_once($page_javascript);?>
                 <form class="form-inline" role="form">
                     <div class="form-group">
                         <label>Milestone Indicator:</label>
-                        <textarea rows="9" cols="70" id="milestone" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                        <textarea class="form-control" rows="9" cols="73" id="milestone" style="min-width: 100%;"></textarea>
                     </div>
                 </form>
                 <br>
                 <form class="form-inline" role="form">
                     <div class="form-group">
                         <label>Output:</label>
-                        <textarea rows="9" cols="70" id="outputs" style="resize: none;overflow-y: scroll;overflow-x: scroll;"></textarea>
+                        <textarea class="form-control" rows="9" cols="73" id="outputs" style="min-width: 100%;"></textarea>
                     </div>
                 </form>
                 <form class="form-inline" role="form">

@@ -21,6 +21,16 @@
             $(selector).chosen(config[selector]);
         }
         getProjectList();
+        var status = "";
+        if(getUrlParameter("status") != ""){
+            status = getUrlParameter("status");
+            if(status == 1)
+                toggleAlert(2);
+            else if (status == 2)
+                toggleAlert(3);
+            else if(status == 3)
+                toggleAlert(4);
+        }
     });
 
     function getProjectList(){
@@ -66,6 +76,30 @@
                 //show projects table
                 $("#projectalert").hide();
                 $('#projecttemp').show();
+                break;
+            case 2:
+                //redirected from approved project
+                $("#projectapproved").show();
+                $("#projectalert").hide();
+                $('#projecttemp').hide();
+                $("#revisionapproved").hide();
+                $("#projectdeclined").hide();
+                break;
+            case 3:
+                //redirected from approved revisions
+                $("#revisionapproved").show();
+                $("#projectapproved").hide();
+                $("#projectalert").hide();
+                $("#projectdeclined").hide();
+                $('#projecttemp').hide();
+                break;
+            case 4:
+                //redirected from declined project
+                $("#projectdeclined").show();
+                $("#revisionapproved").hide();
+                $("#projectapproved").hide();
+                $("#projectalert").hide();
+                $('#projecttemp').hide();
                 break;
         }
     }
