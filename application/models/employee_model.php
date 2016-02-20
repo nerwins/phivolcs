@@ -184,4 +184,61 @@ class Employee_model extends CI_Model {
         $row = $result->row();
         return ($row->hastask) > 0? true:false;
     }
+    function get_employee_project_load(){
+        $employeeIDs = $this->input->get('employeeIDs');
+        $this->db->select("id, CONCAT(`lastname`,' ',`firstname`,' ',`middleinitial`) 'name'");
+        if(is_array($employeeIDs)){
+            $this->db->where_in('id', $employeeIDs);
+        }
+        $query = $this->db->get('employee');
+        if ($query->num_rows() > 0) {
+            $employees = array();
+            foreach ($query->result() as $row)
+            {
+                $employee[0] = $row->name;
+                $employee[1] = $this->get_employee_projects_involved($row->id);
+                array_push($employees,$employee);
+            }
+            return json_encode($employees);
+        }else
+            return "error";
+        
+    }
+    function get_employee_projects_involved($id){
+        $query = "SELECT 
+                        P.`name`,P.`priority`,CONCAT(date_format(P.`datefrom`,'%M %d,%Y'),' - ',date_format(P.`dateto`,'%M %d,%Y')) AS 'date', P.`locationname`
+                    FROM
+                        `employee_has_task` AS EHT
+                            LEFT JOIN
+                        `task` AS T ON T.`id` = EHT.`taskid`
+                            LEFT JOIN
+                        `project` AS P ON P.`id` = T.`projectid`
+                            AND P.`status` IN (5 , 6)
+                    WHERE
+                        EHT.`empid` = ?
+                            AND P.`name` IS NOT NULL";
+        $result = $this->db->query($query, array($id));
+        if ($result->num_rows() > 0) {
+            $project = "";
+            foreach ($result->result() as $row)
+            {
+                $project .= "<b>" .$row->name . "</b> ";
+                switch($row->priority){
+                    case 1:
+                        $project .="<label class='label label-success'>Low</label> ";
+                    break;
+                    case 2:
+                        $project .="<label class='label label-warning'>Medium</label> ";
+                    break;
+                    case 3:
+                        $project .="<label class='label label-danger'>High</label> ";
+                    break;
+                }
+                $project .= $row->locationname .": ";
+                $project .= $row->date . "<br>";
+            }
+            return $project;
+        }else
+            return "N/A";
+    }
 }
