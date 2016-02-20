@@ -216,28 +216,37 @@ class Employee_model extends CI_Model {
                             AND P.`status` IN (5 , 6)
                     WHERE
                         EHT.`empid` = ?
-                            AND P.`name` IS NOT NULL";
+                            AND P.`name` IS NOT NULL
+                    ORDER BY P.`priority` DESC";
         $result = $this->db->query($query, array($id));
         if ($result->num_rows() > 0) {
             $project = "";
+            $table = '<table style="margin-top:10px;" class="table table-bordered table-hover table-striped">';
+            $table .= "<thead><tr><th>Project Name</th><th>Priority</th><th>Location</th><th>Date</th></tr></thead>";
+            $table .= "<tbody>";
             foreach ($result->result() as $row)
             {
+                $table .="<tr>";
+                $table .="<td>" ."<b>" .$row->name . "</b></td>";
                 $project .= "<b>" .$row->name . "</b> ";
                 switch($row->priority){
                     case 1:
-                        $project .="<label class='label label-success'>Low</label> ";
+                        $table .="<td><label class='label label-success'>Low</label></td>";
                     break;
                     case 2:
-                        $project .="<label class='label label-warning'>Medium</label> ";
+                        $table .="<td><label class='label label-warning'>Medium</label></td>";
                     break;
                     case 3:
-                        $project .="<label class='label label-danger'>High</label> ";
+                        $table .="<td><label class='label label-danger'>High</label></td>";
                     break;
                 }
-                $project .= $row->locationname .": ";
-                $project .= $row->date . "<br>";
+                $table .="<td>" .$row->locationname . "</td>";
+                $table .="<td>" .$row->date . "</td>";
+                $table .="</tr>";
             }
-            return $project;
+            $table .= "</tbody>";
+            $table .= "</table>";
+            return $table;
         }else
             return "N/A";
     }

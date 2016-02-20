@@ -70,7 +70,7 @@
 				 }
 				 tbody.append(string);
 				 $("#ploadtable").show();
-				 activateSorting("ploadtable");
+				 //activateSorting("ploadtable");
 		});
 	}
 </script>
