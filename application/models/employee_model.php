@@ -186,7 +186,7 @@ class Employee_model extends CI_Model {
     }
     function get_employee_project_load(){
         $employeeIDs = $this->input->get('employeeIDs');
-        $this->db->select("id, CONCAT(`lastname`,' ',`firstname`,' ',`middleinitial`) 'name'");
+        $this->db->select("id, CONCAT(`lastname`,', ',`firstname`,' ',`middleinitial`) 'name'");
         if(is_array($employeeIDs)){
             $this->db->where_in('id', $employeeIDs);
         }
