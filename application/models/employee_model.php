@@ -252,7 +252,7 @@ class Employee_model extends CI_Model {
     function get_projects_and_employees(){
         $employeeID = $this->input->get('employeeID');
         $datefrom = $this->input->get('datefrom');
-        $dateto = $this->input->get('dateto') ."23:59:59";
+        $dateto = $this->input->get('dateto') ." 23:59:59";
         $query = "SELECT 
                     P.`id`,
                     P.`name`,
