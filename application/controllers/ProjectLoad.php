@@ -10,13 +10,15 @@ class ProjectLoad extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->database();
-        //$this->load->model("login_model");
+        $this->load->model("employee_model");
     }
     function index(){
         $data = array(
             "page_javascript" => "assets/js/projectload_js.php",
         );
         $this->load->view('projectload_view', $data);
-        //session_destroy();
     }
+
+    function get_employees_list_control() { echo $this->employee_model->get_employees_list(); }
+    function get_employee_project_load_control() { echo $this->employee_model->get_employee_project_load(); }
 }

@@ -184,4 +184,148 @@ class Employee_model extends CI_Model {
         $row = $result->row();
         return ($row->hastask) > 0? true:false;
     }
+    function get_employee_project_load(){
+        $employeeIDs = $this->input->get('employeeIDs');
+        $this->db->select("id, CONCAT(`lastname`,' ',`firstname`,' ',`middleinitial`) 'name'");
+        if(is_array($employeeIDs)){
+            $this->db->where_in('id', $employeeIDs);
+        }
+        $query = $this->db->get('employee');
+        if ($query->num_rows() > 0) {
+            $employees = array();
+            foreach ($query->result() as $row)
+            {
+                $employee[0] = $row->name;
+                $employee[1] = $this->get_employee_projects_involved($row->id);
+                array_push($employees,$employee);
+            }
+            return json_encode($employees);
+        }else
+            return "error";
+    }
+    function get_employee_projects_involved($id){
+        $query = "SELECT 
+                        P.`name`,P.`priority`,CONCAT(date_format(P.`datefrom`,'%M %d,%Y'),' - ',date_format(P.`dateto`,'%M %d,%Y')) AS 'date', P.`locationname`
+                    FROM
+                        `employee_has_task` AS EHT
+                            LEFT JOIN
+                        `task` AS T ON T.`id` = EHT.`taskid`
+                            LEFT JOIN
+                        `project` AS P ON P.`id` = T.`projectid`
+                            AND P.`status` IN (5 , 6)
+                    WHERE
+                        EHT.`empid` = ?
+                            AND P.`name` IS NOT NULL
+                    ORDER BY P.`priority` DESC";
+        $result = $this->db->query($query, array($id));
+        if ($result->num_rows() > 0) {
+            $project = "";
+            $table = '<table style="margin-top:10px;" class="table table-bordered table-hover table-striped">';
+            $table .= "<thead><tr><th>Project Name</th><th>Priority</th><th>Location</th><th>Date</th></tr></thead>";
+            $table .= "<tbody>";
+            foreach ($result->result() as $row)
+            {
+                $table .="<tr>";
+                $table .="<td>" ."<b>" .$row->name . "</b></td>";
+                $project .= "<b>" .$row->name . "</b> ";
+                switch($row->priority){
+                    case 1:
+                        $table .="<td><label class='label label-success'>Low</label></td>";
+                    break;
+                    case 2:
+                        $table .="<td><label class='label label-warning'>Medium</label></td>";
+                    break;
+                    case 3:
+                        $table .="<td><label class='label label-danger'>High</label></td>";
+                    break;
+                }
+                $table .="<td>" .$row->locationname . "</td>";
+                $table .="<td>" .$row->date . "</td>";
+                $table .="</tr>";
+            }
+            $table .= "</tbody>";
+            $table .= "</table>";
+            return $table;
+        }else
+            return "N/A";
+    }
+    function get_projects_and_employees(){
+        $employeeID = $this->input->get('employeeID');
+        $datefrom = $this->input->get('datefrom');
+        $dateto = $this->input->get('dateto') ." 23:59:59";
+        $query = "SELECT 
+                    P.`id`,
+                    P.`name`,
+                    P.`priority`,
+                    P.`locationname`,
+                    CONCAT(DATE_FORMAT(P.`datefrom`, '%M %d,%Y'),
+                            ' - ',
+                            DATE_FORMAT(P.`dateto`, '%M %d,%Y')) AS 'date'
+                FROM
+                    `project` AS P
+                WHERE P.`datefrom` >= ?
+                AND P.`dateto` <= ?";
+        $data = array($datefrom,$dateto);
+        $result = $this->db->query($query, $data);
+        if ($result->num_rows() > 0) {
+            $projects = array();
+            foreach ($result->result() as $row)
+            {
+                $project[0] = $row->name;
+                switch($row->priority){
+                    case 1:
+                        $project[1] ="<td><label class='label label-success'>Low</label></td>";
+                    break;
+                    case 2:
+                        $project[1] ="<td><label class='label label-warning'>Medium</label></td>";
+                    break;
+                    case 3:
+                        $project[1] ="<td><label class='label label-danger'>High</label></td>";
+                    break;
+                }
+                $project[2] = $row->locationname;
+                $project[3] = $row->date;
+                $project[4] = $this->get_employees_under_project($row->id,$employeeID);
+                if($project[4] != "N/A")
+                    array_push($projects,$project);
+            }
+            return json_encode($projects);
+        }else
+            return "error";
+    }
+    function get_employees_under_project($projectid,$employeeID){
+        $query = "SELECT 
+                    E.`id`, CONCAT(E.`lastname`, ', ', E.`firstname`, ' ', E.`middleinitial`) AS `name`
+                FROM
+                    `employee` AS E
+                        LEFT JOIN
+                    `employee_has_task` AS EHT ON EHT.`empid` = E.`id`
+                        LEFT JOIN
+                    `task` AS T ON T.`id` = EHT.`taskid`
+                WHERE T.`projectid` = ?
+                GROUP BY E.`id`
+                ORDER BY `name` ASC";
+        $result = $this->db->query($query, array($projectid));
+        if ($result->num_rows() > 0) {
+            $employees = "";     
+            $x = 1;
+            $ids = array();
+            foreach ($result->result() as $row)
+            {
+                $format = $row->name."<br>";
+                $employees .= $format;
+                $x++;
+                array_push($ids, $row->id);
+            }
+            $employees .= "<br>Total Employees: " .count($ids);
+            if($employeeID != 0){
+                if(in_array($employeeID,$ids))
+                    return $employees;
+                else
+                    return "N/A";
+            }else
+                return $employees;
+        }else
+            return "N/A";
+    }
 }
