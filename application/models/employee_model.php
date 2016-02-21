@@ -184,4 +184,8 @@ class Employee_model extends CI_Model {
         $row = $result->row();
         return ($row->hastask) > 0? true:false;
     }
+    // function get_projects($id){
+    //     $query = "";
+    //     // $result = $this->db->query($query, array($id));
+    // }
 }
