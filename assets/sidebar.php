@@ -252,11 +252,11 @@
                         <li>
                             <a href="projectarchive"><i class="icon_archive_alt"></i>View Projects</a>
                         </li>
-                        <?php if($_SESSION['position'] == 3 && $_SESSION['division'] == 3){?>
-                        <li>
-                            <a href="task"><i class="icon_book_alt"></i>Manage Tasks</a>
-                        </li>
-                        <?php }?>
+                        <?php if($_SESSION['position'] != 3 && $_SESSION['division'] != 3){
+                            echo '<li>
+                                    <a href="task"><i class="icon_book_alt"></i>Manage Tasks</a>
+                                </li>';
+                            }?>
                         <li>
                             <a href="javascript:void(0)" onclick="logout()"><i class="icon_key_alt"></i> Log Out</a>
                         </li>
@@ -292,7 +292,7 @@
                         <li id='propose'><a class=""  href="proposeproject">Propose New Project</a></li>
                         <?php }if($_SESSION['position'] == 3){?>
                         <li id='progress'><a class=""  href="progress">Make Progress Report</a></li>
-                        <?php }if($_SESSION['position'] == 3 && $_SESSION['division'] == 3){?>
+                        <?php }if($_SESSION['position'] != 3 && $_SESSION['division'] != 3){?>
                         <li id='manage'><a class=""  href="task">Manage Task</a></li>
                         <?php }?>
                     </ul>
