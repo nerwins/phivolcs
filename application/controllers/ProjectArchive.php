@@ -10,13 +10,14 @@ class ProjectArchive extends CI_Controller {
     function __construct() {
         parent::__construct();
         $this->load->database();
-        //$this->load->model("login_model");
+        $this->load->model("project_model");
     }
     function index(){
         $data = array(
             "page_javascript" => "assets/js/projectarchive_js.php",
         );
         $this->load->view('projectarchive_view', $data);
-        //session_destroy();
     }
+
+    function get_project_list_control() {echo $this->project_model->get_project_list(); }
 }

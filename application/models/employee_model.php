@@ -328,4 +328,12 @@ class Employee_model extends CI_Model {
         }else
             return "N/A";
     }
+    function add_task_to_employee($taskid){
+        $data = array(
+            'empid' => $_SESSION['id'],
+            'taskid' => $taskid
+        );
+        $this->db->insert('employee_has_task', $data); 
+        return;
+    }
 }

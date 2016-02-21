@@ -2,7 +2,7 @@
     $(function(){
 
         $('#username').focus();
-        $('#pass').keypress(function(evt){
+        $('#username,#pass').keypress(function(evt){
             if (evt.keyCode == 13)
                 login();
         });
