@@ -42,7 +42,7 @@ function activateSorting(tableid){
 
 $( document ).ajaxStart(function() {
     var controller = document.location.href.match(/[^\/]+$/) != null?document.location.href.match(/[^\/]+$/)[0]:0;
-    var excludes = ["login","records"];
+    var excludes = ["login","records","projectload"];
     if(jQuery.inArray(controller,excludes) === -1 && controller != 0)
         $('#loading').modal('show');
 });
