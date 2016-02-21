@@ -11,6 +11,17 @@
  		$('#reports').addClass("active");
 	    $('#rproj4').addClass("active");
 	    $('#datefrom').datepicker({dateFormat: "yy-mm-dd",
+	    	beforeShow: function(input, inst){
+		        var cal = inst.dpDiv;
+			     var top  = $(this).offset().top + $(this).outerHeight();
+			     var left = $(this).offset().left;
+			     setTimeout(function() {
+			        cal.css({
+			            'top' : top,
+			            'left': left
+			        });
+			     }, 10);
+		    },
         	onClose: function (selectedDate) {
         	    $("#dateto").datepicker("option", "minDate", selectedDate);
     	    },
@@ -19,6 +30,17 @@
 	        }
     	});
 	    $('#dateto').datepicker({dateFormat: "yy-mm-dd",
+	    	beforeShow: function(input, inst){
+		        var cal = inst.dpDiv;
+			     var top  = $(this).offset().top + $(this).outerHeight();
+			     var left = $(this).offset().left;
+			     setTimeout(function() {
+			        cal.css({
+			            'top' : top,
+			            'left': left
+			        });
+			     }, 10);
+		    },
         	onClose: function (selectedDate) {
             	$("#datefrom").datepicker("option", "maxDate", selectedDate);
         	},
