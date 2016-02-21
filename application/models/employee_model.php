@@ -302,7 +302,9 @@ class Employee_model extends CI_Model {
                     `employee_has_task` AS EHT ON EHT.`empid` = E.`id`
                         LEFT JOIN
                     `task` AS T ON T.`id` = EHT.`taskid`
-                WHERE T.`projectid` = ?";
+                WHERE T.`projectid` = ?
+                GROUP BY E.`id`
+                ORDER BY `name` ASC";
         $result = $this->db->query($query, array($projectid));
         if ($result->num_rows() > 0) {
             $employees = "";     
@@ -310,11 +312,12 @@ class Employee_model extends CI_Model {
             $ids = array();
             foreach ($result->result() as $row)
             {
-                $format = $x.".) ".$row->name."<br>";
+                $format = $row->name."<br>";
                 $employees .= $format;
                 $x++;
                 array_push($ids, $row->id);
             }
+            $employees .= "<br>Total Employees: " .count($ids);
             if($employeeID != 0){
                 if(in_array($employeeID,$ids))
                     return $employees;
