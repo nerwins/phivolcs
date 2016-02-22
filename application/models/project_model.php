@@ -98,7 +98,7 @@ class Project_model extends CI_Model {
             $whereCondition = " `createdby` = " . $empid;
         }elseif($position == 3 && $division != 3){
             //projects head projects
-            $whereCondition = " where (`status`=-1 or `status`>=5) AND `empid` = " . $empid;
+            $whereCondition = " (`status`=-1 or `status`>=5) AND `empid` = " . $empid;
         }
         $query = "SELECT 
                         `id`,`name`,`datefrom`,`dateto`,`priority`,`locationname`,`status`,
@@ -178,14 +178,12 @@ class Project_model extends CI_Model {
             $project['background'] = $row->background;
             $project['locationname'] = $row->locationname;
             $status = "";
-
             $percentage = $this->get_project_percentage($projectid);
             $totalbudget = $this->budget_model->get_total_project_budget($projectid);
             $tasks = $this->tasks_model->get_project_tasks($projectid,$row->status, $row->empid);
             $budgets = $this->budget_model->get_project_budgets($projectid);
             $outputs = $this->outputs_model->get_project_outputs($projectid);
             $directorComments = $this->revisions_model->get_director_comments($projectid,$_SESSION['position'],$row->status);
-
             switch($row->status){
                 case -1: $status = "Waiting for employee approval"; break;
                 case 0: $status = "Pending"; break;
@@ -277,5 +275,167 @@ class Project_model extends CI_Model {
             );
         $this->db->where('id', $pid);
         $this->db->update('project', $data);
+    }
+    function check_task($empid,$projectid,$taskid){
+        $query = "SELECT 
+                    (CASE
+                        WHEN
+                            (SELECT 
+                                    COUNT(*)
+                                FROM
+                                    `employee_has_task`
+                                WHERE
+                                    `taskid` = T.`id` AND `empid` = ?
+                                        AND `isApproved` = 0)
+                        THEN
+                            1
+                        ELSE 0
+                    END) 'check'
+                FROM
+                    task T
+                WHERE
+                    `projectid` = ? AND `id` = ?;";
+        $result = $this->db->query($query, array($empid,$projectid,$taskid));
+        if ($result->num_rows() > 0) {
+            $row = $result->row();
+            return $row->check;
+        }else
+            return 0;
+    }
+    function get_project_nature_list(){
+    	$this->db->select('id,name');
+        $query = $this->db->get('project_nature');
+        if ($query->num_rows() > 0) {
+        	$arr = array();
+            foreach ($query->result() as $row){
+                $arr[] = $row;  
+            }
+        }
+        return json_encode($arr);
+    }
+    function get_projects_status(){
+        $arr = array();
+        $empid = $this->session->userdata('id');
+        $createdby = $this->session->userdata('id');
+
+        $query1 = "SELECT P.`id` 
+        FROM `project` P 
+        JOIN  `task` T ON P.`id`=T.`projectid` 
+        JOIN `employee_has_task` ET ON ET.`taskid`=T.`id` 
+        WHERE 
+        (P.`status`>=5 and P.`status`!=3 and P.`status`!=7) 
+        AND 
+        (ET.`empid` = ? or P.`empid` = ? or P.`createdby`= ?)  
+        GROUP BY P.`id`";
+
+        $result = $this->db->query($query1, array($empid, $empid, $createdby));
+
+        $arr['count_project_inProgress'] = $result->num_rows();
+
+        //completed projects
+        $query2 = "SELECT P.`id` 
+        FROM `project` P 
+        JOIN  `task` T ON P.`id`=T.`projectid` 
+        JOIN `employee_has_task` ET ON ET.`taskid`=T.`id` 
+        WHERE 
+        (P.`status`!=3 and P.`status`=7) 
+        AND 
+        (ET.`empid` = ? or P.`empid` = ? or P.`createdby`= ?)  
+        GROUP BY P.`id`";
+
+        $result = $this->db->query($query2, array($empid, $empid, $createdby));
+        $arr['count_project_completed'] = $result->num_rows();
+
+        //total
+        $arr['count_project_total'] = $arr['count_project_inProgress'] + $arr['count_project_completed'];
+
+        return json_encode($arr);
+    }
+    function get_member_tasks_status(){
+        $arr = array();
+        $empid = $this->session->userdata('id');
+        $division = $this->session->userdata('division');
+
+        //pending tasks
+        $query1 = "SELECT count(*) 'id' FROM task T 
+        left join  employee_has_task ET on T.id=ET.taskid 
+        left join project P on P.id=T.projectid 
+        left join employee E on E.`id`=ET.`empid` 
+        where (P.`status`!=3 and P.`status`>=5 and P.`status`!=7) 
+        and ET.`status`= 0 and E.`division_id`= ? and E.`id`!= ?";
+
+        $result = $this->db->query($query1, array($division, $empid));
+        foreach ($result->result() as $row){
+           $a = $row->id;
+           // var_dump($a);
+       }
+
+        $arr['count_task_inProgress'] = $a;
+        // var_dump($arr['count_task_inProgress']);
+
+        //completed tasks
+        $query2 = "SELECT count(*) 'id' FROM task T 
+        left join  employee_has_task ET on T.id=ET.taskid 
+        left join project P on P.id=T.projectid 
+        left join employee E on E.`id`=ET.`empid` 
+        where (P.`status`!=3 and P.`status`>=5) 
+        and ET.`status`= 1 
+        and (P.`empid`!= ? or ET.`empid`!= ?)";
+
+        $result = $this->db->query($query2, array($empid, $empid));
+        foreach ($result->result() as $row){
+           $b = $row->id;
+           // var_dump($a);
+       }
+
+       $arr['count_task_completed'] = $b;
+       $arr['count_task_total'] = $arr['count_task_inProgress'] + $arr['count_task_completed'];
+
+       return json_encode($arr);
+    }
+    function get_tasks_status(){
+        $arr = array();
+        $empid = $this->session->userdata('id');
+        $division = $this->session->userdata('division');
+
+        //pending tasks
+        $query1 = "SELECT count(*) 'id' FROM task T 
+        left join  employee_has_task ET on T.id=ET.taskid 
+        left join project P on P.id=T.projectid 
+        left join employee E on E.`id`=ET.`empid` 
+        where (P.`status`!=3 and P.`status`>=5 and P.`status`!=7) 
+        and ET.`status`= 0 and E.`division_id`= ? and E.`id`!= ?" ;
+
+
+        $result = $this->db->query($query1, array($division, $empid));
+        if ($result->num_rows() > 0) {
+            foreach ($result->result() as $row){
+                $a = $row->id;
+                // var_dump($a);
+            }
+        } else
+            $a = 0;
+
+        $arr['count_task_inProgress'] = $a;
+        // var_dump($arr['count_task_inProgress']);
+
+
+        $query2 = "SELECT count(*) 'id' FROM task T 
+        left join  employee_has_task ET on T.id=ET.taskid 
+        left join project P on P.id=T.projectid 
+        left join employee E on E.`id`=ET.`empid` 
+        where (P.`status`!=3 and P.`status`>=5) 
+        and ET.`status`= 1 and E.`division_id`= ? and E.`id`!= ?";
+
+        $result = $this->db->query($query2, array($division, $empid));
+        foreach ($result->result() as $row){
+           $b = $row->id;
+           // var_dump($a);
+       }
+       
+       $arr['count_task_completed'] = $b;
+       $arr['count_task_total'] = $arr['count_task_inProgress'] + $arr['count_task_completed'];
+
+       return json_encode($arr);
     }
 }
