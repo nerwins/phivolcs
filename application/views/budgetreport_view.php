@@ -22,7 +22,7 @@ require_once("assets/sidebar.php");
                                 <button class="btn btn-default"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='skillfilterbutton' data-toggle="collapse" data-target="#filterdiv"><i class="icon_search"></i> Filters</button>
                             </header>
                             <div class="container">
-                                <div id="filterdiv" class="collapse">
+                                <div id="filterdiv" class="in" style="height: auto;">
                                     <section class="panel">
                                         <div class="col-md-12">
                                             <div class="row">
