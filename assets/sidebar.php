@@ -322,8 +322,7 @@
                         <li id='rproj2'><a class="" href="equipmentstatus">Equipment Status</a></li>
                         <li id='rproj3'><a class="" href="projectload">Project Load</a></li>
                         <li id='rproj4'><a class="" href="personnel">Personnel Involved</a></li>
-                        <li id='rproj5' style="display:none"><a class="" href="budgetreport">Budget Report</a></li>
-                        <li id='rproj6' ><a class="" href="budgetreport2">Budget Report</a></li>
+                        <li id='rproj6' ><a class="" href="budgetreport">Budget Report</a></li>
                     </ul>
                 </li>
                 <li id='profile'>
