@@ -58,4 +58,15 @@ class Budget_model extends CI_Model {
         $this->db->insert('general_expenses', $data); 
         return;
     }
+    function get_total_proposed_and_actual_project_budget($id){
+        $this->db->select('sum(proposedamount) AS `totalproposed`,sum(amount) AS `totalactual`');
+        $this->db->where('projectid', $id); 
+        $this->db->group_by("projectid"); 
+        $query = $this->db->get('budget');
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+            return [number_format($row->totalproposed,1),number_format($row->totalactual,1)];
+        }
+        return [0,0];
+    }
 }

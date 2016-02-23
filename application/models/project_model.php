@@ -438,4 +438,52 @@ class Project_model extends CI_Model {
 
        return json_encode($arr);
     }
+    function get_project_list_for_budget_report(){
+        $datefrom = $this->input->get('datefrom');
+        $dateto = $this->input->get('dateto') ." 23:59:59";
+        $division = $this->input->get('division');
+        $nature = $this->input->get('nature');
+        $divisionString = $division == 0? "":" AND E.`division_id` = " . $division;
+        $query = "SELECT 
+                P.`id`, P.`name`, CONCAT(E.`lastname`,', ', E.`firstname`, ' ', E.`middleinitial`) AS 'projecthead',
+                CASE WHEN E.`division_id` = 1 THEN 'Volcanology'
+                    WHEN E.`division_id` = 2 THEN 'Seismology'
+                    WHEN E.`division_id` = 3 THEN 'Finance and Admin'
+                    WHEN E.`division_id` = 4 THEN 'Research and Development'
+                    ELSE 'Distaster Preparedness' END AS 'division',
+                COALESCE(PN.`id`,0) AS `nature`
+            FROM
+                `project` AS P
+            LEFT JOIN `employee` AS E ON E.`id` = P.`empid`
+            LEFT JOIN `employee_has_skillset` AS EHS ON EHS.`employeeid` = E.`id`
+            LEFT JOIN `skillset` AS S ON S.`id` = EHS.`skillsetid`
+            LEFT JOIN `project_nature_has_skillset` AS PNHS ON PNHS.`id_skillset` = S.`id`
+            LEFT JOIN `project_nature` AS PN ON PN.`id` = PNHS.`pid`
+            WHERE P.`datefrom` >= ? 
+                AND P.`dateto` <= ? " .$divisionString
+            ." GROUP BY P.`id` ORDER BY `status` ASC , `priority` DESC , `modified` DESC";
+        $data = array($datefrom,$dateto);
+        $result = $this->db->query($query, $data);
+        if ($result->num_rows() > 0) {
+            $projectList = array();
+            foreach ($result->result() as $row)
+            {
+                $totals = $this->budget_model->get_total_proposed_and_actual_project_budget($row->id);
+                $project[0] = $row->id;
+                $project[1] = $row->name;
+                $project[2] = $row->projecthead;
+                $project[3] = $row->division;
+                $project[4] = $totals[0];
+                $project[5] = $totals[1];
+                if($nature == 0)
+                    array_push($projectList,$project);
+                else
+                    if($row->nature == $nature)
+                        array_push($projectList,$project);
+            }
+            return json_encode($projectList);
+        }
+        else
+            return json_encode("error");
+    }
 }
