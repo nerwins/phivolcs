@@ -10,6 +10,7 @@
  	$(function(){
  		$('#reports').addClass("active");
 	    $('#rproj4').addClass("active");
+	    activateSorting("personneltable");
 	    $('#datefrom').datepicker({dateFormat: "yy-mm-dd",
 	    	beforeShow: function(input, inst){
 		        var cal = inst.dpDiv;
@@ -92,7 +93,6 @@
 	 			$("#personneltable").show();
 	 		}else
 	 			$("#personneltable").hide();
-	 		activateSorting("personneltable");
  		});
  	}
  </script>
