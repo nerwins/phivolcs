@@ -31,13 +31,14 @@ class Nature_model extends CI_Model {
         $type = $this->input->get('type');
         $id = $this->input->get('id');
         $this->db->select('id, name, description');
+        $skillsets = array();
         if ($type == 2) {
             $this->db->where('id', $id);
 
             $query = "SELECT `id_skillset` FROM `project_nature_has_skillset` where `pid`=? ";
             $result = $this->db->query($query, array($id));
             if ($result->num_rows() > 0) {
-                $skillsets = array();
+               
             foreach ($result->result() as $row)
                 {
                     array_push($skillsets,$row->id_skillset);
@@ -81,28 +82,29 @@ class Nature_model extends CI_Model {
             if ($type == 0) {
                 $this->db->insert('project_nature', $data);
                 $inserted_id = $this->db->insert_id();
-                foreach ($skills as $skill) {
+                for ($x = 0; $x < count($skills); $x++) {
                     $data2 = array(
                         'pid' => $inserted_id,
-                        'id_skillset' => $skill
+                        'id_skillset' => $skills[$x]
                     );
+                    $this->db->insert('project_nature_has_skillset', $data2);
                 }
-                $this->db->insert('project_nature_has_skillset', $data2);
-
             }
             else {
                 $this->db->where('id', $id);
                 $this->db->update('project_nature', $data);
-                foreach ($skills as $skill) {
+                $this->db->delete('project_nature_has_skillset', array('pid' => $id));
+                for ($x = 0; $x < count($skills); $x++) {
                     $data2 = array(
                         'pid' => $id,
-                        'id_skillset' => $skill
+                        'id_skillset' => $skills[$x]
                     );
+                    $this->db->insert('project_nature_has_skillset', $data2);
                 }
-                $this->db->insert('project_nature_has_skillset', $data2);
             }
+            return json_encode("1");
         }else
-            return json_encode("error");
+            return json_encode("Project Nature already exists!");
     }
 
     function check_existing_nature($id, $name){
@@ -121,6 +123,6 @@ class Nature_model extends CI_Model {
         $id = $this->input->post('id');
         $this->db->delete('project_nature', array('id' => $id));
         $this->db->delete('project_nature_has_skillset', array('pid' => $id));
-        return json_encode('deleted');
+        return json_encode('1');
     }
 }

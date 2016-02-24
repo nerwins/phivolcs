@@ -9,6 +9,9 @@
 
 
     $('#filters').chosen({width: "100%"});
+    function closeAlert() {
+        $('#modalAlert').css("display","none");
+    }
     //$('#pbutton').on('click', function () {
     function addNature() {
         $('#save').val(0);
@@ -18,6 +21,8 @@
         $('#filters').val(-1);
         $('#filters').trigger("chosen:updated");
         $('#dataModal').modal('show');
+        $('#modalAlert').hide();
+        $('#addmodalbody').find("input,ul,textarea").css('border-color', '');
     }
     //});
     function saveNature() {
@@ -25,11 +30,11 @@
         $('#addmodalbody').find("input,ul,textarea").css('border-color', '');
         var flag = false;
         $('#addmodalbody').find("input,select,textarea").each(function () {
-            if ($(this).val() === "" || $(this).val() === null) {
+            if ($(this).val() == "" || $(this).val() == null) {
                 if ($(this).is("select")) {
                     $($(this).closest("td")[0]).find("ul").css('border-color', 'red');
                     flag = true;
-                } else if ($(this).parent().attr("class") === undefined) {
+                } else if ($(this).parent().attr("class") == undefined) {
                     $(this).css('border-color', 'red');
                     flag = true;
                 }
@@ -37,21 +42,25 @@
         })
         if (flag) {
             $('#alertMessage').html("Field/s cannot be left blank!");
-            $('#modalAlert').show();
+            $('#modalAlert').css("display","block");
             return;
         }
     
         var id = 0;
-        //if (parseInt($(this).val()) === 1) {
-        //    id = $(this).attr("nid");
-        //}
+        if ($('#save').val() == 1) {
+            id = $('#save').attr("nid");
+        }
      
         var skills_arr = $("#filters").val();
      
-        $.post("<?=base_url()?>projectnature/update_nature_control", {id: id, type: $(this).val(), name: $('#name').val(), description: $('#description').val(), skills: JSON.stringify(skills_arr)}, function (data) {
-            if (data === 1) {
+        $.post("<?=base_url()?>projectnature/update_nature_control", {id: id, type: $('#save').val(), name: $('#name').val(), description: $('#description').val(), 'skills[]': skills_arr }, function (data) {
+            if (data == 1) {
                 $('#dataModal').modal('hide');
                 loadNatures();
+            }
+            else {
+                $('#alertMessage').html(data);
+                $('#modalAlert').css("display","block");
             }
 
         }, 'json');
@@ -69,12 +78,8 @@
             for (var y = 0; y < data.length; y++) {
                 $('#pnaturetable tbody').append("<tr><td>" + data[y][1] + "</td><td>" + data[y][2] + "</td>\n\
     	<td><button class='btn btn-info' onclick='editNature(" + data[y][0] + ")'><i class='icon_cog'></i></button>\n\
-        <button class='btn btn-danger' onclick='deleteNature(" + data[y][0] + ")'><i class='icon_trash'></i></button></td></tr>")
-
-
+        <button class='btn btn-danger' onclick='deleteNature(" + data[y][0] + ")'><i class='icon_trash'></i></button></td></tr>");
             }
-
-
         });
     }
 
@@ -113,6 +118,8 @@
             $('#filters').val(data[1]);
             $('#filters').trigger("chosen:updated");
             $('#dataModal').modal('show');
+            $('#modalAlert').hide();
+            $('#addmodalbody').find("input,ul,textarea").css('border-color', '');
         });
 
     }
@@ -120,15 +127,12 @@
         var check = confirm("Proceed to deleting project nature?");
         if (check) {
             $.post("<?=base_url()?>projectnature/delete_nature_control", {id: id}, function (data) {
-                if (data === 1) {
+                if (data == "1") {
                     $('#dataModal').modal('hide');
                     loadNatures();
                 }
-
-
             }, 'json');
         }
-
     }
     $('#pnature').addClass('active')
 </script>

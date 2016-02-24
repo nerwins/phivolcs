@@ -63,7 +63,7 @@ require_once($page_javascript);?>
             <div class="modal-body">
                 <!--Add some text here-->
                 <label class='alert alert-danger' id='modalAlert' style='display:none;text-align:center;width:100%'>
-                    <a class='close'>&times;</a>
+                    <a class='close' onclick="closeAlert();">&times;</a>
                     <span id='alertMessage'></span>
                 </label>
                 <div class="modal-body" id='addmodalbody'>
