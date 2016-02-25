@@ -24,4 +24,5 @@ class Dashboard extends CI_Controller {
     function get_projects_status_control(){ echo $this->project_model->get_projects_status(); }
     function get_tasks_status_control(){ echo $this->project_model->get_tasks_status(); }
     function get_member_tasks_status_control(){ echo $this->project_model->get_member_tasks_status(); }
+    function get_projects_calendar_control(){ echo $this->project_model->get_projects_calendar(); }
 }

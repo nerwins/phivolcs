@@ -9,8 +9,8 @@
 	$(function(){
 		initDateTime();
         initDepartmentName();
-        initCalendar();
         getProjects();
+        //initCalendar();
         initProjectStatusCount();
         initTaskStatusCount();
         initTaskMemberStatusCount();
@@ -54,6 +54,7 @@
     		break;
     	}
     }
+    var sources = []; //store calendar data
     function initCalendar(){
     	var date = new Date();
 	    var d = date.getDate();
@@ -76,59 +77,148 @@
 		var month =new Array();
 		month[0]= monthSource;
 
+		// $('#calendar').fullCalendar({
+		//             header: {
+		//                 left: 'prev,next',
+		//                 center: 'title',
+		//                 // right: 'month,agendaWeek,agendaDay'
+		//                 right: 'today'
+		//             },
+		//             columnFormat: {
+		//                 month: 'ddd',
+		//                 week: 'ddd d/M',
+		//                 day: 'dddd d/M'
+		//             },          
+		//             defaultView: 'month',     
+
+		//         viewDisplay: function(view) {
+		//             if (lastView == undefined) { lastView = 'firstRun';  }
+
+		//             if (view.name != lastView ) {
+
+		//             if (view.name == 'agendaWeek') { 
+		//                 $('#calendar').fullCalendar( 'addEventSource', month ); 
+		//                 $('#calendar').fullCalendar( 'removeEventSource', day ); 
+		//                 $('#calendar').fullCalendar( 'removeEventSource', day ); 
+		//                 $('#calendar').fullCalendar('renderEvents');
+		//             }
+		//             if (view.name == 'agendaDay') { 
+		//                 $('#calendar').fullCalendar( 'addEventSource', day ); 
+		//                 $('#calendar').fullCalendar( 'removeEventSource', month ); 
+		//                 $('#calendar').fullCalendar( 'removeEventSource', month ); 
+		//                 $('#calendar').fullCalendar('renderEvents');
+		//             }
+
+		//             if (view.name == 'month') { 
+		//                 $('#calendar').fullCalendar( 'addEventSource', month ); 
+		//                 $('#calendar').fullCalendar( 'removeEventSource', day ); 
+		//                 $('#calendar').fullCalendar( 'removeEventSource', day );
+		//                 $('#calendar').fullCalendar('renderEvents'); 
+		//             }
+		//             lastView = view.name;
+		//             }
+		//         },
+
+		//         timeFormat: { // for event elements
+		//             agendaDay: '',
+		//             agendaWeek: '',
+		//             month: '',
+		//             '': 'h(:mm)t' // default
+		//         },          
+
+		//     });
 		$('#calendar').fullCalendar({
-		            header: {
-		                left: 'prev,next',
-		                center: 'title',
-		                // right: 'month,agendaWeek,agendaDay'
-		                right: 'today'
-		            },
-		            columnFormat: {
-		                month: 'ddd',
-		                week: 'ddd d/M',
-		                day: 'dddd d/M'
-		            },          
-		            defaultView: 'month',     
+	        header: {
+	            left: 'prev,next', //today
+	            center: 'title',
+	            //right: 'month,agendaWeek,agendaDay'
+	            right: 'today'
+	        },
+	        columnFormat: {
+                month: 'ddd',
+                week: 'ddd d/M',
+                day: 'dddd d/M'
+            },          
+            defaultView: 'month',    
+	        selectable: true,
+	        selectHelper: true,
+	        select: function (start, end) {
 
-		        viewDisplay: function(view) {
-		            if (lastView == undefined) { lastView = 'firstRun';  }
+	            // var m = $.fullCalendar.moment(start);
+	            // var m2 = $.fullCalendar.moment(end);
+	            // m.stripTime();
+	            // m2.stripTime();
+	            // var startdate = m.format();
+	            // var enddate = new Date(m2.format());
+	            // enddate.setDate(enddate.getDate() - 1);
 
-		            if (view.name != lastView ) {
+	            // var mfinal = $.fullCalendar.moment(enddate);
+	            // mfinal.stripTime();
+	            // var finalenddate = mfinal.format();
 
-		            if (view.name == 'agendaWeek') { 
-		                $('#calendar').fullCalendar( 'addEventSource', month ); 
-		                $('#calendar').fullCalendar( 'removeEventSource', day ); 
-		                $('#calendar').fullCalendar( 'removeEventSource', day ); 
-		                $('#calendar').fullCalendar('renderEvents');
-		            }
-		            if (view.name == 'agendaDay') { 
-		                $('#calendar').fullCalendar( 'addEventSource', day ); 
-		                $('#calendar').fullCalendar( 'removeEventSource', month ); 
-		                $('#calendar').fullCalendar( 'removeEventSource', month ); 
-		                $('#calendar').fullCalendar('renderEvents');
-		            }
+	            $('#calendar').fullCalendar('unselect');
+	        },
+	        editable: false,
+	        eventSources: sources,
+	        eventRender: function (event, element) {
+	            var tooltip = event.Description;
+	            var newdate = moment(event.realstart).format('MM/DD/YYYY');
+	            var newdate2 = moment(event.realend).format('MM/DD/YYYY');
+	            var date1 = new Date(newdate);
+	            var date2 = new Date(newdate2);
+	            date2.setDate(date2.getDate() - 1);
+	            var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+	            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+	            var date = new Date();
+	            var timeDiff2 = Math.abs(date2.getTime() - date.getTime());
+	            var diffDays2 = Math.ceil(timeDiff2 / (1000 * 3600 * 24));
+	            var date = "<strong>Task Name:</strong>&nbsp;" + event.taskname + "<br><strong>Project Name:</strong>&nbsp; " + tooltip + "<br><label class='label label-danger'><i class='icon_clock_alt'></i>&nbsp;" + diffDays2 + " days from now</label>";
+	            //var date = "<strong>Task Name:</strong>&nbsp;" + event.title + "<br><strong>Project Name:</strong>&nbsp; " + tooltip + "<br><strong>Duration:</strong>&nbsp;" + diffDays + " days<br><label class='label label-danger'><i class='icon_clock_alt'></i>&nbsp;" + diffDays2 + " days from now</label>";
+	            $(element).attr("data-original-title", date);
+	            $(element).attr("data-placement", "bottom");
+	            $(element).attr("data-html", "true");
+	            $(element).tooltip({container: "body"});
+	        },
+	        eventLimit: true // allow "more" link when too many events
 
-		            if (view.name == 'month') { 
-		                $('#calendar').fullCalendar( 'addEventSource', month ); 
-		                $('#calendar').fullCalendar( 'removeEventSource', day ); 
-		                $('#calendar').fullCalendar( 'removeEventSource', day );
-		                $('#calendar').fullCalendar('renderEvents'); 
-		            }
-		            lastView = view.name;
-		            }
-		        },
-
-		        timeFormat: { // for event elements
-		            agendaDay: '',
-		            agendaWeek: '',
-		            month: '',
-		            '': 'h(:mm)t' // default
-		        },          
-
-		    });
+	    });
     }
     function getProjects(){
-    	
+    	$.getJSON("<?=base_url()?>dashboard/get_projects_calendar_control",  function(data) {
+			if(data == "error") {
+
+			}
+            else { 	
+            	var values = [];
+            	$.each(data, function(key, val) {
+            		var event = [];
+            		var color = "";
+					values[key] = [];
+					values[key][0] = [val.id];
+					values[key][1] = [val.taskname];
+					values[key][2] = [val.datefrom];
+					values[key][3] = [val.dateto];
+					values[key][4] = [val.projname];
+					values[key][5] = [val.priority];
+					if (val.priority == 1) {
+					    color = "blue";
+					} else if (val.priority == 2) {
+					    color = "green";
+					} else if (val.priority == 3) {
+					    color = "orange";
+					} else {
+					    color = "red";
+					}
+					//firstdot																				
+					event.push({id: val.id, taskname: val.taskname, Description: val.projname, start: val.datefrom, end: val.datefrom, realstart: val.datefrom, realend: val.dateto});
+					//sources.push({events: event, color: color, textColor: "white"});
+					//seconddot
+					event.push({id: val.id, taskname: val.taskname, Description: val.projname, start: val.dateto, end: val.dateto, realstart: val.datefrom, realend: val.dateto});
+					sources.push({events: event, color: color, textColor: "white"});
+			  	});  	
+			}
+			initCalendar();
+        });
     }
     function initProjectStatusCount(){
 		$.getJSON("<?=base_url()?>dashboard/get_projects_status_control",  function(data) {
