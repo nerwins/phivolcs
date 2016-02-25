@@ -331,6 +331,12 @@
                         <span>Profile</span>
                     </a>
                 </li>
+                <li id='parchive'>
+                    <a class="" href="completedprojects">
+                        <i class="icon_archive_alt"></i>
+                        <span>Projects Archive</span>
+                    </a>
+                </li>
             </ul>
             <!-- sidebar menu end-->
         </div>

@@ -486,4 +486,89 @@ class Project_model extends CI_Model {
         else
             return json_encode("error");
     }
+    function get_project_list_complete(){
+        $projArray = array();
+        $whereCondition = "";
+        $projectList = array();
+        $query = "SELECT 
+                        `id`,`name`,`datefrom`,`dateto`,`priority`,`locationname`,`status`,
+                        DATE_FORMAT(`datefrom`, '%M %d,%Y') 'datefromformat',
+                        DATE_FORMAT(`dateto`, '%M %d,%Y') 'datetoformat'
+                    FROM
+                        project
+                    WHERE
+                        `status` = 7 #whereCondition
+                    ORDER BY `modified` DESC, `priority` DESC ";
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            $i = 0;
+            foreach ($result->result() as $row)
+            {
+                $projectList[$i]['id'] = $row->id;
+                $projectList[$i]['name'] = $row->name;
+                $projectList[$i]['datefrom'] = $row->datefrom;
+                $projectList[$i]['dateto'] = $row->dateto;
+                $projectList[$i]['priority'] = $row->priority;
+                $projectList[$i]['locationname'] = $row->locationname;
+                $projectList[$i]['status'] = $row->status;
+                $projectList[$i]['datefromformat'] = $row->datefromformat;
+                $projectList[$i]['datetoformat'] = $row->datetoformat;
+                $i++;
+            }
+        }else
+            return json_encode("error");
+
+        $projects = $projectList;
+
+        foreach($projects as $obj =>$proj){
+            $project = array();
+            array_push($project,$proj['id']);
+            array_push($project,$proj['name']);
+            array_push($project,$proj['datefromformat'] ." to ".$proj['datetoformat']);
+            $lbl = "";
+            if($proj['priority'] == 1)
+                $lbl = "<label class='label label-success'>Low</label>";
+            elseif($proj['priority'] == 2)
+                $lbl = "<label class='label label-warning'>Medium</label>";
+            elseif($proj['priority'] == 3)
+                $lbl = "<label class='label label-danger'>High</label>";
+            array_push($project,$lbl);
+            array_push($project,$proj['locationname']);
+
+            //$percentage = $this->get_project_percentage($proj['id']);
+            $stat = "";
+            $done = 0;
+            $total = 0;
+
+            $query = "  SELECT COUNT(*) AS 'done' FROM (
+                            SELECT COALESCE(SUM(S.`percentage`), 0) AS 'percentage', T.`projectid`
+                            FROM `task` AS T
+                            LEFT JOIN `task_has_subtasks` AS S ON S.`taskid` = T.`id` AND S.`status` = 1
+                            WHERE T.`projectid` = ".$proj['id']."
+                            GROUP BY S.`taskid`
+                        ) B 
+                        WHERE B. `percentage` = 100 ";
+            $result = $this->db->query($query);
+            if ($result->num_rows() > 0) {
+                $row = $result->row();
+                $done = $row->done;
+            }
+
+            $query = " SELECT COUNT(*) AS 'total' FROM `task` WHERE `projectid` = ".$proj['id'];
+            $result = $this->db->query($query);
+            if ($result->num_rows() > 0) {
+                $row = $result->row();
+                $total = $row->total;
+            }
+          
+            if ($done == $total)
+                $stat = "<label class='label label-success'>Done</label>";
+            else
+                $stat = "<label class='label label-success'>Partially Completed (".$done."/".$total." tasks)</label>";
+            
+            array_push($project,$stat);
+            array_push($projArray,$project);
+        }
+        return json_encode($projArray);
+    }
 }
