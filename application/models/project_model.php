@@ -20,7 +20,23 @@ class Project_model extends CI_Model {
         $division = $_SESSION['division'];
         $position = $_SESSION['position'];
         $projArray = array();
-        $projects = $this->get_projects($position,$division,$id);
+
+
+        $projectid = $this->input->get('projectid');
+        $location = $this->input->get('location');
+        $priority = $this->input->get('priority');
+        $datefrom = $this->input->get('datefrom');
+        $dateto = $this->input->get('dateto') ." 23:59:59";
+
+        $filters = array(
+            'projectid' => $projectid,
+            'location' => $location,
+            'priority' => $priority,
+            'datefrom'=> $datefrom,
+            'dateto' => $dateto
+            );
+
+        $projects = $this->get_projects($position,$division,$id, $filters);
         if($projects == "error")
             return json_encode("error");
         else
@@ -88,7 +104,7 @@ class Project_model extends CI_Model {
         }
         return json_encode($projArray);
     }
-    function get_projects($position, $division = 0, $empid = 0){
+    function get_projects($position, $division = 0, $empid = 0, $filters){
         $whereCondition = "";
         if($position == 1){
             //director
@@ -100,6 +116,15 @@ class Project_model extends CI_Model {
             //projects head projects
             $whereCondition = " (`status`=-1 or `status`>=5) AND `empid` = " . $empid;
         }
+        if($filters['projectid'] != 0){
+            $whereCondition .= " AND `id` = '".$filters['projectid'] ."' ";
+        }if(strlen($filters['location']) > 1){
+            $whereCondition .= " AND `locationname` = '".$filters['location'] ."' ";
+        }if($filters['priority'] != 0){
+            $whereCondition .= " AND `priority` = '".$filters['priority'] ."' ";
+        }
+        $whereCondition .= " AND `datefrom` >= '".$filters['datefrom'] ."' AND `dateto` <= '" .$filters['dateto'] ."' ";
+
         $query = "SELECT 
                         `id`,`name`,`datefrom`,`dateto`,`priority`,`locationname`,`status`,
                         DATE_FORMAT(`datefrom`, '%M %d,%Y') 'datefromformat',
