@@ -63,14 +63,22 @@
 				 var string = "";
 				 for(var x = 0; x < data.length; x++){
 				 	string += "<tr>";
-				 	for(var y = 0; y < data[x].length; y++){
-				 		string += "<td>" + data[x][y] +"</td>";
+				 	if(data[x][1] != 'N/A'){
+				 		var innertable = "";
+					 	for(var y = 0; y < data[x][1].table.length; y++){
+					 		innertable += data[x][1].table[y];
+					 	}
+					 	string += "<td>" + data[x][0] +"</td>";
+					 	string += "<td>" + innertable +"<br><font color='red'><b>Total Projects: "+data[x][1].count+"</b></font></td>";
+				 	}else{
+				 		for(var y = 0; y < data[x].length; y++){
+					 		string += "<td>" + data[x][y] +"</td>";
+					 	}
 				 	}
 				 	string += "</tr>";
 				 }
 				 tbody.append(string);
 				 $("#ploadtable").show();
-				 //activateSorting("ploadtable");
 		});
 	}
 </script>
