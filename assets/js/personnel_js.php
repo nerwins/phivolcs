@@ -95,4 +95,10 @@
 	 			$("#personneltable").hide();
  		});
  	}
+ 	function print(){
+		$('#personneltable').printThis({
+      		pageTitle: "Personnel Involvement List",
+      		header: ""            
+		});
+	}
  </script>

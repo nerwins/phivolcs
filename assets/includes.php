@@ -34,6 +34,8 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <link href="<?=base_url()?>assets/js/libraries/fileupload/dist/bootstrap.fd.css" rel="stylesheet">
 
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery-1.10.2.js"></script>
+<!--<script src="http://code.jquery.com/jquery-1.9.0.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.0.0.js"></script>-->
 <script src="<?=base_url()?>/assets/js/libraries/fullcalendar/lib/jquery.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery-ui.js" type="text/javascript"></script>
@@ -69,6 +71,8 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <script src="<?=base_url()?>/assets/js/libraries/js/tinysort.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/fileupload/src/bootstrap.fd.js"></script>
 <script src='<?=base_url()?>/assets/js/libraries/fullcalendar/fullcalendar.js'></script>
+<!--<script src='<?=base_url()?>/assets/js/libraries/jqueryPrintElement/jquery.printElement.js'></script>-->
+<script src='<?=base_url()?>/assets/js/libraries/printThis/printThis.js'></script>
 <script src="http://maps.googleapis.com/maps/api/js"></script>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="loading" data-backdrop="static" data-keyboard="false">

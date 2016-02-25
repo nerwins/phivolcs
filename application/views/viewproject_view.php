@@ -98,7 +98,8 @@ require_once($page_javascript);?>
                                 <br/><br/>
                             </div>
                             <div id="recent-activity" class="tab-pane active">
-                            	<section class="panel">
+                                <button class="btn btn-send"  onclick="print()" style="float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='print' data-toggle="collapse"><i class="icon_printer"></i> Print</button>
+                            	<section class="panel" id="divprint">
                             		<div class="bio-graph-heading3">									  
                                         <div style="margin-top: -10px; margin-bottom:10px">
                                             <h4 style="text-align:center;">Project Description:&nbsp;<button class='btn btn-success' id='section1'><i class='icon_pencil-edit'></i></button><button class='btn btn-warning' id='rev1' onclick='addComment(this, 1)' title='Revise'><i class='icon_clipboard'></i></button></h4>
@@ -262,6 +263,7 @@ require_once($page_javascript);?>
                                         </div>
                                     </div>
                                 </section>
+                                <button class="btn btn-send"  onclick="print()" style="float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='print2' data-toggle="collapse"><i class="icon_printer"></i> Print</button>
                             </div>
                             <div id="edit-profile" class="tab-pane">
                                 <button class="btn btn-success" id="backlocation"><i class="icon_compass_alt"></i>&nbsp;Back to Location</button> 

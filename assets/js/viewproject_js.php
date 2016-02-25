@@ -841,5 +841,11 @@
 	    			swal(filename, "File successfully downloaded to: C:/Downloads/","success");
 	    		});
     	}
-
+    	function print(){
+			$('#divprint').printThis({
+	      		pageTitle: "Project Details",
+	      		header: "",
+	      		loadCSS: "<?=base_url()?>assets/css/print.css",            
+			});
+		}
  </script>
