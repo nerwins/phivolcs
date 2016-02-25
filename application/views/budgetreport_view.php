@@ -20,6 +20,7 @@ require_once("assets/sidebar.php");
 							<header class="panel-heading">
                                 Budget Report
                                 <button class="btn btn-default"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='skillfilterbutton' data-toggle="collapse" data-target="#filterdiv"><i class="icon_search"></i> Filters</button>
+                                <button class="btn btn-send"  onclick="print()" style="float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='print' data-toggle="collapse"><i class="icon_printer"></i> Print</button>
                             </header>
                             <div class="container">
                                 <div id="filterdiv" class="in" style="height: auto;">
@@ -28,11 +29,11 @@ require_once("assets/sidebar.php");
                                             <div class="row">
                                             	<div class="col-md-3">
                                                     <strong>Date From:</strong>
-                                                    <input type="text" class="form-control" placeholder="Date From" id="datefrom" readonly>
+                                                    <input type="text" class="form-control" id="datefrom" placeholder="DateFrom" readonly>
                                                 </div>
                                                 <div class="col-md-3">
                                                     <strong>Date To:</strong>
-                                                    <input style="margin-bottom:20px"  type="text" class="form-control" placeholder="Date To" id="dateto" readonly>
+                                                    <input style="margin-bottom:20px"  type="text" class="form-control" id="dateto" placeholder="DateTo" readonly>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -55,7 +56,7 @@ require_once("assets/sidebar.php");
                                         </div>
                                     </section>
                                 </div>
-                                <div class="col-md-12">
+                                <div id="divprint" class="col-md-12">
                                 	<table class="table table-bordered table-hover table-striped" id="budgettable" style="display:none;">
                                         <thead>
                                             <th style="text-align:center;">id</th>

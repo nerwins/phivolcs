@@ -15,8 +15,8 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <link href="<?=base_url()?>assets/css/elegant-icons-style.css" rel="stylesheet" />
 <link href="<?=base_url()?>assets/css/style.css" rel="stylesheet">
 <link href="<?=base_url()?>assets/css/style-responsive.css" rel="stylesheet" />
-<link href='<?=base_url()?>assets/js/libraries/calendar/fullcalendar.css' rel='stylesheet' />
-<link href='<?=base_url()?>assets/js/libraries/calendar/fullcalendar.print.css' rel='stylesheet' media='print' />
+<link href='<?=base_url()?>assets/js/libraries/fullcalendar/fullcalendar.css' rel='stylesheet' />
+<link href='<?=base_url()?>assets/js/libraries/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
 <link href="<?=base_url()?>assets/css/jquery.ui.css" rel="stylesheet" type="text/css"/>
 <link href="<?=base_url()?>assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="<?=base_url()?>assets/css/bootstrap-theme.css" rel="stylesheet">
@@ -34,7 +34,8 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <link href="<?=base_url()?>assets/js/libraries/fileupload/dist/bootstrap.fd.css" rel="stylesheet">
 
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery-1.10.2.js"></script>
-<script src="<?=base_url()?>/assets/js/libraries/fullcalendar/lib/jquery.min.js"></script>
+<!--<script src="http://code.jquery.com/jquery-1.9.0.js"></script>
+<script src="http://code.jquery.com/jquery-migrate-1.0.0.js"></script>-->
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery-ui.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.form.js"></script>
@@ -42,6 +43,7 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.tooltipster.min.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/lightbox.min.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/lightbox.min.map" type="text/plain"></script>
+<!--<script src="<?=base_url()?>/assets/js/libraries/fullcalendar/fullcalendar.min.js"></script>-->
 <script src="<?=base_url()?>/assets/js/libraries/gantt/date.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/gantt/jquery.ganttView.js" type="text/javascript"></script>
 <!--<script src="<?=base_url()?>/assets/js/libraries/js/bootstrap-switch.js"></script>-->
@@ -55,7 +57,11 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <script src="<?=base_url()?>/assets/js/libraries/ckeditor/ckeditor.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/chosen/chosen.jquery.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/jquery-knob/js/jquery.knob.js"></script>	
-<script src='<?=base_url()?>/assets/js/libraries/calendar/moment.min.js'></script>
+<script src='<?=base_url()?>/assets/js/libraries/fullcalendar/lib/moment.min.js'></script>
+<!--<script src="<?=base_url()?>/assets/js/libraries/fullcalendar/lib/jquery.min.js"></script>-->
+<!--<script src="<?=base_url()?>/assets/js/libraries/fullcalendar/lib/jquery-ui.custom.min.js"></script>-->
+<script src='<?=base_url()?>/assets/js/libraries/fullcalendar/fullcalendar.min.js'></script>
+<script src='<?=base_url()?>/assets/js/libraries/fullcalendar/fullcalendar.js'></script>
 <!--<script src="<?=base_url()?>/assets/js/libraries/js/scripts.js"></script>-->
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.sparkline.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/owl.carousel.js" ></script>
@@ -68,7 +74,9 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <script src="<?=base_url()?>/assets/js/libraries/sweetalert/sweetalert.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/tinysort.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/fileupload/src/bootstrap.fd.js"></script>
-<script src='<?=base_url()?>/assets/js/libraries/fullcalendar/fullcalendar.js'></script>
+
+<!--<script src='<?=base_url()?>/assets/js/libraries/jqueryPrintElement/jquery.printElement.js'></script>-->
+<script src='<?=base_url()?>/assets/js/libraries/printThis/printThis.js'></script>
 <script src="http://maps.googleapis.com/maps/api/js"></script>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="loading" data-backdrop="static" data-keyboard="false">

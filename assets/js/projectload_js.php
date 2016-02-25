@@ -81,4 +81,10 @@
 				 $("#ploadtable").show();
 		});
 	}
+	function print(){
+		$('#ploadtable').printThis({
+      		pageTitle: "Project Load Comparison",
+      		header: "Project Load Comparison"            
+		});
+	}
 </script>
