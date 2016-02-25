@@ -10,6 +10,45 @@
     $(function() {
         $('#projectsub').attr('class', 'active');
         $('#vproject').attr('class', 'active');
+        $("#projectlevel").chosen({ width: '100%' });
+        $('#datefrom').datepicker({dateFormat: "yy-mm-dd",
+            beforeShow: function(input, inst){
+                var cal = inst.dpDiv;
+                 var top  = $(this).offset().top + $(this).outerHeight();
+                 var left = $(this).offset().left;
+                 setTimeout(function() {
+                    cal.css({
+                        'top' : top,
+                        'left': left
+                    });
+                 }, 10);
+            },
+            onClose: function (selectedDate) {
+                $("#dateto").datepicker("option", "minDate", selectedDate);
+            },
+            onSelect: function(dateText, inst) {
+                getProjectList();
+            }
+        });
+        $('#dateto').datepicker({dateFormat: "yy-mm-dd",
+            beforeShow: function(input, inst){
+                var cal = inst.dpDiv;
+                 var top  = $(this).offset().top + $(this).outerHeight();
+                 var left = $(this).offset().left;
+                 setTimeout(function() {
+                    cal.css({
+                        'top' : top,
+                        'left': left
+                    });
+                 }, 10);
+            },
+            onClose: function (selectedDate) {
+                $("#datefrom").datepicker("option", "maxDate", selectedDate);
+            },
+            onSelect: function(dateText, inst) {
+                getProjectList();
+            }
+            });
         var config = {
             '.chosen-select': {},
             '.chosen-select-deselect': {allow_single_deselect: true},
@@ -20,6 +59,8 @@
         for (var selector in config) {
             $(selector).chosen(config[selector]);
         }
+        $("#datefrom").datepicker( "setDate", -365);
+        $("#dateto").datepicker( "setDate", new Date());
         getProjectList();
         var status = "";
         if(getUrlParameter("status") != ""){
@@ -31,16 +72,35 @@
             else if(status == 3)
                 toggleAlert(4);
         }
+        activateSorting('projecttable');
     });
 
     function getProjectList(){
-        $.getJSON("<?=base_url()?>ProjectArchive/get_project_list_control", function (data) {
+        $.getJSON("<?=base_url()?>ProjectArchive/get_project_list_control",{
+                projectid: typeof $("#projectname").val() === 'undefined'?0:$("#projectname").val(),
+                location: typeof $("#projectlocation").val() === 'undefined'?0:$("#projectlocation").val(),
+                priority: $("#projectlevel").val(),
+                datefrom: $("#datefrom").val(),
+                dateto: $("#dateto").val(),
+            }, function (data) {
+            var projects = '<select data-placeholder="Select Project" id="projectname" class="chosen-select a form-control" tabindex="8">';
+            var location = '<select data-placeholder="Select Location" id="projectlocation" class="chosen-select a form-control" tabindex="8">';
+            projects += '<option value="0">All</option>';
+            location += '<option value="0">All</option>';
+            $("#projecttable > tbody").html("");
             if (data == "error")
                 toggleAlert(0);
             else{
                 var table = document.getElementById("projecttable").getElementsByTagName("tbody")[0];
+
+                var locationarray = [];
                 for (var z = 0; z < data.length; z++) {
                     var tr = document.createElement("tr");
+                    projects+="<option value='"+data[z][0]+"'>"+data[z][1]+"</option>";
+                    if(jQuery.inArray(data[z][4], locationarray) === -1){
+                        location+="<option value='"+data[z][4]+"'>"+data[z][4]+"</option>";
+                        locationarray.push(data[z][4]);
+                    }
                     for (var y = 0; y < data[z].length; y++) {
                         var td = document.createElement("td");
                         td.innerHTML = data[z][y];
@@ -59,6 +119,15 @@
                     e.stopPropagation();
                 });
             }
+            projects+='</select>';
+            location+='</select>';
+            $('#projectnamediv').html(projects);
+            $('#projectlocationdiv').html(location);
+            $("#projectname").chosen({ width: '100%' });
+            $("#projectlocation").chosen({ width: '100%' });
+            $('#projectlevel, #projectname, #projectlocation').on('change', function(evt, params) {
+                getProjectList();
+            });
         });
     }
     function showRedirect(id,redirect){

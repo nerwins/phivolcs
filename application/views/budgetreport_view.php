@@ -19,7 +19,7 @@ require_once("assets/sidebar.php");
 						<section class="panel">
 							<header class="panel-heading">
                                 Budget Report
-                                <button class="btn btn-default"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='skillfilterbutton' data-toggle="collapse" data-target="#filterdiv"><i class="icon_search"></i> Filters</button>
+                                <button class="btn btn-default"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" data-toggle="collapse" data-target="#filterdiv"><i class="icon_search"></i> Filters</button>
                             </header>
                             <div class="container">
                                 <div id="filterdiv" class="in" style="height: auto;">
