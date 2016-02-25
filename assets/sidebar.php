@@ -307,13 +307,13 @@
                 <?php }?>
                 <li id='pnature'>
                     <a class="" href="projectnature">
-                        <i class="icon_star"></i>
+                        <i class="icon_genius"></i>
                         <span>Project Nature</span>
                     </a>
                 </li>
                 <li class="sub-menu" id='reports'>
                     <a class="">
-                        <i class="icon_desktop"></i>
+                        <i class="icon_datareport"></i>
                         <span>Reports</span>
                         <span class="menu-arrow arrow_carrot-right"></span>
                     </a>

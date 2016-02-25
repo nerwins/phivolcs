@@ -19,6 +19,7 @@ require_once($page_javascript);
 						<section class="panel">
 							<header class="panel-heading">
 								Project Load Comparison
+								<button class="btn btn-send"  onclick="print()" style="float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='print' data-toggle="collapse"><i class="icon_printer"></i> Print</button>
 							</header>
 							<div class="container">
 								<div class="col-md-12">

@@ -103,4 +103,11 @@
 			getProjectBudgets();
 		});
 	}
+
+	function print(){
+		$('#divprint').printThis({
+      		pageTitle: "Budget Report",
+      		header: "Budget Report"            
+		});
+	}
 </script>>
