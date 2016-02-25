@@ -195,7 +195,7 @@ class Employee_model extends CI_Model {
             $employees = array();
             foreach ($query->result() as $row)
             {
-                $employee[0] = $row->name;
+                $employee[0] = $row->name; 
                 $employee[1] = $this->get_employee_projects_involved($row->id);
                 array_push($employees,$employee);
             }
@@ -223,6 +223,7 @@ class Employee_model extends CI_Model {
             $table = '<table style="margin-top:10px;" class="table table-bordered table-hover table-striped">';
             $table .= "<thead><tr><th>Project Name</th><th>Priority</th><th>Location</th><th>Date</th></tr></thead>";
             $table .= "<tbody>";
+            $counter = 0;
             foreach ($result->result() as $row)
             {
                 $table .="<tr>";
@@ -242,10 +243,15 @@ class Employee_model extends CI_Model {
                 $table .="<td>" .$row->locationname . "</td>";
                 $table .="<td>" .$row->date . "</td>";
                 $table .="</tr>";
+                $counter++;
             }
             $table .= "</tbody>";
             $table .= "</table>";
-            return $table;
+            $data = array(
+                'table' => $table,
+                'count' => $counter
+                );
+            return $data;
         }else
             return "N/A";
     }
