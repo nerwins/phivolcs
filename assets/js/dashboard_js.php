@@ -179,6 +179,12 @@
 	            $(element).attr("data-html", "true");
 	            $(element).tooltip({container: "body"});
 	        },
+	        eventClick: function(event) {
+		        if (event.url) {
+		            window.open(event.url);
+		            return false;
+		        }
+		    },
 	        eventLimit: true // allow "more" link when too many events
 
 	    });
@@ -209,12 +215,12 @@
 					} else {
 					    color = "red";
 					}
-					//firstdot																				
-					event.push({id: val.id, taskname: val.taskname, Description: val.projname, start: val.datefrom, end: val.datefrom, realstart: val.datefrom, realend: val.dateto});
+					//firstdot	- realstart and realend use for computation of difference start and end are for limiting event within a day																			
+					event.push({id: val.id, taskname: val.taskname, Description: val.projname, start: val.datefrom, end: val.datefrom, realstart: val.datefrom, realend: val.dateto, url:"task"});
 					//sources.push({events: event, color: color, textColor: "white"});
 					//seconddot
-					event.push({id: val.id, taskname: val.taskname, Description: val.projname, start: val.dateto, end: val.dateto, realstart: val.datefrom, realend: val.dateto});
-					sources.push({events: event, color: color, textColor: "white"});
+					event.push({id: val.id, taskname: val.taskname, Description: val.projname, start: val.dateto, end: val.dateto, realstart: val.datefrom, realend: val.dateto, url:"task"});
+					sources.push({events: event, color: color, textColor: "white", className: "eventdot"});
 			  	});  	
 			}
 			initCalendar();

@@ -1,0 +1,12 @@
+.eventdot {
+	/*border-radius: 50%;
+	width: 20px;
+	height: 20px; */
+	/* width and height can be anything, as long as they're equal */
+	width: 15px !important;
+    height: 15px !important;
+    -moz-border-radius: 7.5px !important;
+    -webkit-border-radius: 7.5px !important;
+    border-radius: 7.5px !important;
+    position: relative !important;
+}
