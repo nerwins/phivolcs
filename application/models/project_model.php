@@ -638,4 +638,173 @@ class Project_model extends CI_Model {
         }else
             return json_encode("error");
     }
+
+    function get_end_of_summary($id){
+        $query = "SELECT * FROM `endofsummary` where `projectid`= ".$id;
+        $result = $this->db->query($query);
+            if ($result->num_rows() > 0) {
+                $row = $result->row();
+                $datesubmitted = $row->date_submitted;
+                return $datesubmitted;
+            }
+            else {
+                return null;
+            }
+    }
+    function get_project_details_ganttchart(){
+        //try {
+        $projectid = $this->input->get('id');
+        $query = "SELECT p.`id`,`name`,`datefrom`,`dateto`,`priority`,`description`,`significance`,`emp_stat`,
+                        `latitude`,`empid`,`longitude`,`createdby`,`background`,`locationname`,`status`,
+                        date_format(`datefrom`,'%M %d,%Y') 'datefromformat',date_format(`dateto`,'%M %d,%Y') 'datetoformat',
+                        CONCAT(e.lastname, ', ', e.firstname, ' ', e.middleinitial) as 'fullname'
+                    FROM project p
+                    LEFT JOIN employee as e on e.`id` = empid
+                    WHERE p.`id`  =? ";
+        $result = $this->db->query($query, array($projectid));
+
+        ////////////////new
+        if ($result->num_rows() > 0) {
+            $row = $result->row();
+            if ($row->status != 7) {
+                $toreturn = array();
+                $project = array();
+                $project['id'] = $projectid;
+                $project['name'] = "Project: ".$row->name;
+
+                $disp = array();
+                $disp['name'] = "Planned";
+                $disp['color'] = "rgb(31, 26, 26)";
+                $disp['start'] = $row->datefrom;
+                $disp['end'] = $row->dateto;
+
+                $plot = array();
+                array_push($plot, $disp);
+                $project['series'] = $plot;
+                array_push($toreturn, $project);
+
+                $tasks_cnt = $this->tasks_model->get_project_tasks($projectid,$row->status, $row->empid);
+                $tasks_cnt = count($tasks_cnt);
+                $tasks = $this->tasks_model->get_project_tasks_ganttchart($projectid);
+
+                for ($x = 0; $x < $tasks_cnt; $x++) {
+                    $jss = array();
+                    $jss2 = array();
+                    $jss3 = array();
+
+                    $jss2['name'] = "Planned";
+                    $jss2['color'] = "#FFFFFF";
+                    $jss2['start'] = $tasks[$x]['datefrom'];
+                    $jss2['end'] = $tasks[$x]['dateto'];
+                    $jss2['tname'] = $tasks[$x]['name'];
+
+                    array_push($jss3, $jss2);
+                    $jss['series'] = $jss3;
+                    $jss['name'] = "Task: ".$tasks[$x]['name'];
+
+                    $jss['id'] = $tasks[$x]['id'];
+                    array_push($toreturn, $jss);
+
+                }
+                return json_encode($toreturn);
+
+            } else {
+                $toreturn = array();
+                $project = array();
+                $project['id'] = $row->id;
+                $project['name'] = "Project: ".$row->name;
+
+                $disp = array();
+                $disp['name'] = "Planned";
+                $disp['color'] = "rgb(31, 26, 26)";
+                $disp['start'] = $row->datefrom;
+                $disp['end'] = $row->dateto;
+
+                $jz4 = array();
+                $jz4['name'] = "Actual";
+                $jz4['color'] = "rgb(224, 224, 224)";
+                $jz4['start'] = $row->datefrom;
+                $endofsum = $this->project_model->get_end_of_summary($projectid);
+                if ($endofsum == null) {
+                    $jz4['end'] = $row->datefrom;
+                }
+                else {
+                    $jz4['end'] = $endofsum;
+                }
+                //die(json_encode($jz4['end']));
+                $jz3 = array();
+                array_push($jz3,$disp);
+                array_push($jz3,$jz4);
+                $project['series'] = $jz3;
+                array_push($toreturn,$project);
+
+                $tasks_cnt = $this->tasks_model->get_project_tasks($projectid,$row->status, $row->empid);
+                $tasks_cnt = count($tasks_cnt);
+                $tasks = $this->tasks_model->get_project_tasks_ganttchart($projectid);
+                //die(json_encode($tasks));
+                for ($x = 0; $x < $tasks_cnt; $x++) {
+                    $jss = array();
+                    $jss2 = array();
+                    $jss3 = array();
+
+                    $jss2['name'] = "Planned";
+                    $jss2['color'] = "#FFFFFF";
+                    $jss2['start'] = $tasks[$x]['datefrom'];
+                    $jss2['end'] = $tasks[$x]['dateto'];
+                    $jss2['tname'] = $tasks[$x]['name'];
+
+                    array_push($jss3, $jss2);
+
+                    $jss4 = array();
+
+                    $pendingtasks = $this->tasks_model->get_task_status_count($projectid,'pending');
+                    $getdate = $this->tasks_model->get_task_date($tasks[$x]['id']);
+
+                    if ($pendingtasks > 0) {
+                        if ($getdate == null) {
+                            $jss4['name'] = "Actual(Incomplete)";
+                            $jss4['color'] = "rgb(110, 110, 110)";
+                            $jss4['start'] = $tasks[$x]['datefrom'];
+                            $jss4['end'] = $tasks[$x]['datefrom'];
+                            $jss4['tname'] = $tasks[$x]['name'];
+                            array_push($jss3, $jss4);
+                        } else {
+                            $jss4['name'] = "Actual(Incomplete)";
+                            $jss4['color'] = "rgb(110, 110, 110)";
+                            $jss4['start'] = $tasks[$x]['datefrom'];
+                            $jss4['end'] = $getdate;
+                            $jss4['tname'] = $tasks[$x]['name'];
+                            array_push($jss3, $jss4);
+                        }
+                    } else {
+                        if ($getdate == null) {
+                            $jss4['name'] = "Actual(Completed)";
+                            $jss4['color'] = "rgb(110, 110, 110)";
+                            $jss4['start'] = $tasks[$x]['datefrom'];
+                            $jss4['end'] = $tasks[$x]['datefrom'];
+                            $jss4['tname'] = $tasks[$x]['name'];
+                            array_push($jss3, $jss4);
+                        } else {
+                            $jss4['name'] = "Actual(Completed)";
+                            $jss4['color'] = "rgb(110, 110, 110)";
+                            $jss4['start'] = $tasks[$x]['datefrom'];
+                            $jss4['end'] = $getdate;
+                            $jss4['tname'] = $tasks[$x]['name'];
+                            array_push($jss3, $jss4);
+                        }
+                    }
+
+                    $jss['series'] = $jss3;
+                    $jss['name'] = "Task: ".$tasks[$x]['name'];
+
+                    $jss['id'] = $tasks[$x]['id'];
+                    array_push($toreturn, $jss);
+                }
+                return json_encode($toreturn);
+                //die(json_encode($toreturn));
+            }
+        }
+       // } catch (Exception $e) {
+        //    return json_encode(null);
+    }
 }

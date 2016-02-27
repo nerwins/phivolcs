@@ -140,4 +140,33 @@ class Tasks_model extends CI_Model {
         $involvement = $status == 1? 1:2;
         return json_encode([$skillsets,$involvement]);
     }
+    function get_project_tasks_ganttchart($id){
+        $this->db->select("`id`,`name`,`datefrom`,`dateto`");
+        $this->db->where('projectid', $id); 
+        $query = $this->db->get('task');
+        if($query->num_rows() > 0){
+            $tasks = array();
+            foreach ($query->result() as $row){
+                $task['id'] = $row->id;
+                $task['name'] = $row->name;
+                $task['datefrom'] = $row->datefrom;
+                $task['dateto'] = $row->dateto;
+                array_push($tasks,$task);
+            }
+            return $tasks;
+        }else
+            return "error";
+    }
+    function get_task_date($taskid){
+        $query = "SELECT max(`date_finished`) 'date' FROM employee_has_task where `taskid`= ".$taskid." and `status`=1";
+        $result = $this->db->query($query);
+            if ($result->num_rows() > 0) {
+                $row = $result->row();
+                $returndate = $row->date;
+                return $returndate;
+            }
+            else {
+                return null;
+            }    
+    }
 }

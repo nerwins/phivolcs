@@ -9,6 +9,7 @@
 class Budget_model extends CI_Model {
 	function __construct() {
         parent::__construct();
+        $this->load->model("inventory_model");
     }
 
     function get_total_project_budget($id){
@@ -23,6 +24,9 @@ class Budget_model extends CI_Model {
         return 0;
     }
     function get_project_budgets($id){
+        if(null !== $this->input->get('id')) {
+            $id = $this->input->get('id');
+        }
         $this->db->select("id,expense,expense_type,qty,amount");
         $this->db->where('projectid', $id); 
         $query = $this->db->get('budget');
@@ -40,6 +44,27 @@ class Budget_model extends CI_Model {
             return $budgets;
         }else
             return "error";
+    }
+    function get_project_budgets_2(){
+        $id = $this->input->get('id');
+        
+        $this->db->select("id,expense,expense_type,qty,amount");
+        $this->db->where('projectid', $id); 
+        $query = $this->db->get('budget');
+        if($query->num_rows() > 0){
+            $budgets = array();
+            foreach ($query->result() as $row){
+                $budget[0] = $row->id;
+                $budget[1] = $row->expense;
+                $expenseTypes = array("General Expenses","Equipment Expenses");
+                $budget[2] = $expenseTypes[$row->expense_type - 1];
+                $budget[3] = $row->qty;
+                $budget[4] = "Php " . number_format($row->amount,1);
+                array_push($budgets,$budget);
+            }
+            return json_encode($budgets);
+        }else
+            return json_encode("error");
     }
     function delete_budget_log_details($projectid){
         $query = "DELETE FROM `budget_logdetails`
@@ -68,5 +93,37 @@ class Budget_model extends CI_Model {
             return [number_format($row->totalproposed,1),number_format($row->totalactual,1)];
         }
         return [0,0];
+    }
+    function report_expense() {
+        $id = $this->input->post('id');
+        $item = $this->input->post('item');
+        $type = $this->input->post('type');
+        $amt = $this->input->post('amt');
+        $qty = $this->input->post('qty');
+
+        $data = array(
+            'expense' => $item,
+            'reason' => '',
+            'expense_type' => $type,
+            'projectid' => $id,
+            'amount' => $amt,
+            'qty' => $qty
+        ); 
+
+        $this->db->insert('budget', $data); 
+
+        if($type == 2){
+            if($this->inventory_model->check_existing_inventory($item,0) > 0){
+                if($amt != 0)
+                    $this->inventory_model->update_inventory($qty,$item);
+                $this->inventory_model->update_inventory_in_use($qty,$item);
+            }else
+                $this->inventory_model->add_inventory($qty,$item);
+        }else{
+            if($this->inventory_model->inventory_model->check_existing_inventory($item,1) > 0)
+                $this->budget_model->add_expense($item);
+        }
+        $total = $this->budget_model->get_total_project_budget($id);
+        return $total;
     }
 }

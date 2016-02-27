@@ -318,7 +318,7 @@
                         <span class="menu-arrow arrow_carrot-right"></span>
                     </a>
                     <ul class="sub">
-                        <li id='rproj'><a class="" href="projectschedule">Project Schedule</a></li>
+                        <!--<li id='rproj'><a class="" href="projectschedule">Project Schedule</a></li>-->
                         <li id='rproj2'><a class="" href="equipmentstatus">Equipment Status</a></li>
                         <li id='rproj3'><a class="" href="projectload">Project Load</a></li>
                         <li id='rproj4'><a class="" href="personnel">Personnel Involved</a></li>
