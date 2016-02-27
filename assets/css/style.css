@@ -2289,12 +2289,12 @@ ul.inbox-pagination li {
     box-shadow: none;
 }
 
-.btn-send, .btn-send:hover {
+.btn-send, .btn-send:hover, .btn-submit, .btn-submit:hover {
     background: #00A8B3;
     color: #fff;
 }
 
-.btn-send:hover {
+.btn-send:hover, .btn-submit:hover {
     background: #009da7;
 }
 

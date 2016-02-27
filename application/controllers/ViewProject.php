@@ -16,6 +16,7 @@ class ViewProject extends CI_Controller {
         $this->load->model("tasks_model");
         $this->load->model("skillset_model");
         $this->load->model("files_model");
+        $this->load->model("budget_model");
     }
     function index(){
     	$data = array(
@@ -23,6 +24,9 @@ class ViewProject extends CI_Controller {
         );
         $this->load->view('viewproject_view', $data);
     }
+    function report_expense_control() { echo $this->budget_model->report_expense(); }
+    function get_project_budgets_control() { echo $this->budget_model->get_project_budgets_2(); }
+    function get_total_project_budget_control() { echo $this->budget_model->get_total_project_budget(); }
 
     function get_project_details_control() {  echo $this->project_model->get_project_details(); }
     function approve_project_control(){ echo $this->project_model->approve_project(); }
