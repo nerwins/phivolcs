@@ -354,6 +354,9 @@
  					}else{
  						$("#revCommentDiv").append("<div id='revcomment2'></div>");
  					}
+ 					if(data['statusnum'] >= 5){
+ 						$('#btnreportexpense').css("display","block");
+ 					}
  					if(data['statusnum'] >= 6){
  						var taskString = "<li class=''>"
                                 +"<a  id='exp' data-toggle='tab' href='#pexpenses' >"
@@ -851,24 +854,91 @@
 			});
 		}
 		function loadGantt() {
-        $.getJSON("<?=base_url()?>viewproject/get_project_details_ganttchart_control", {id:getUrlParameter("id")}, function (data) {
-            //if (data != null) {
-	            $("#ganttChart").ganttView({
-	                data: data,
-	                slideWidth: 900,
-	                behavior: {
-	                    draggable: false,
-	                    resizable: false,
-	                    onClick: function (data) {
-	                        //var msg = "You clicked on an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
-	                        //  $("#eventMessage").text(msg);
-	                        //$('#taskname').html("Details of "+data.tname);
-	                        //$('#scheduletitle').html(data.name);
-	                        //$('#taskModal').modal('show');
-	                    }
-	                }
-	            });
-        	//}
-        });
-    }
+	        $.getJSON("<?=base_url()?>viewproject/get_project_details_ganttchart_control", {id:getUrlParameter("id")}, function (data) {
+	            //if (data != null) {
+		            $("#ganttChart").ganttView({
+		                data: data,
+		                slideWidth: 900,
+		                behavior: {
+		                    draggable: false,
+		                    resizable: false,
+		                    onClick: function (data) {
+		                        //var msg = "You clicked on an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+		                        //  $("#eventMessage").text(msg);
+		                        //$('#taskname').html("Details of "+data.tname);
+		                        //$('#scheduletitle').html(data.name);
+		                        //$('#taskModal').modal('show');
+		                    }
+		                }
+		            });
+	        	//}
+	        });
+    	}
+    	function closeAlert() {
+	        $('#modalAlert').css("display","none");
+	    }
+    	function showqtyfield(){
+    		if ($('#exptype_report').val() == 2){
+    			$('#expqtygroup_report').css("display","block");
+    		} else {
+    			$('#expqtygroup_report').css("display","none");
+    			$('#expqty_report').val(0);
+    		}
+    	}
+    	function reportexpense(){
+    		$('#reportExpense').modal('show');
+    	}
+    	function saveexp_report(){
+    		var itemv = $.trim($('#expitem_report').val());
+    		var typev = $('#exptype_report').val();
+    		var qtyv = $.trim(Number($('#expqty_report').val().replace(/\,/g,"")));
+    		var amtv = $.trim(Number($('#expamount_report').val().replace(/\,/g,"")));
+    		
+    		if (itemv == "" || qtyv =="" || amtv == "") {
+    			$('#alertMessage').html("Field/s cannot be left blank!");
+            	$('#modalAlert').css("display","block")
+            	return;
+            }
+    		if (typev == 1) {
+    			qtyv = 0;
+    		}
+    		if (typev == 2 && qtyv <= 0) {
+    			$('#alertMessage').html("Qty is required for equipment expenses!");
+            	$('#modalAlert').css("display","block")
+            	return;
+    		}
+            if( !$.isNumeric(qtyv) ) {
+				$('#alertMessage').html("Qty is invalid!");
+            	$('#modalAlert').css("display","block")
+            	return;
+			}
+			if( amtv <= 0 ) {
+				$('#alertMessage').html("Amount should be greater than zero!");
+            	$('#modalAlert').css("display","block")
+            	return;
+			}
+			if( !$.isNumeric(amtv) ) {
+				$('#alertMessage').html("Amount is invalid!");
+            	$('#modalAlert').css("display","block")
+            	return;
+			}
+			$.post("<?=base_url()?>viewproject/report_expense_control", {
+	    			id: getUrlParameter("id"),
+	    			item: itemv,
+	    			type: typev,
+	    			qty: qtyv,
+	    			amt: amtv
+	    		}, function (data) {
+	    			var totalamt = data;
+	    			$.getJSON("<?=base_url()?>viewproject/get_project_budgets_control", {
+		    			id: getUrlParameter("id")
+		    		}, function (data) {
+		    			createTableBodyFrom2DJSON(data,'budgettable');
+		    			activateSorting('budgettable');
+		    			$('#budget').html("Project Budget: Php" + totalamt);
+			    		$('#totalamount').html("Php " + totalamt);
+		    		});    			
+	    		});
+			$('#reportExpense').modal('hide');
+    	}
  </script>

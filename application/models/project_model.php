@@ -637,6 +637,7 @@ class Project_model extends CI_Model {
             return json_encode($projectList);
         }else
             return json_encode("error");
+    }
 
     function get_end_of_summary($id){
         $query = "SELECT * FROM `endofsummary` where `projectid`= ".$id;
@@ -805,6 +806,5 @@ class Project_model extends CI_Model {
         }
        // } catch (Exception $e) {
         //    return json_encode(null);
-        //}   
     }
 }

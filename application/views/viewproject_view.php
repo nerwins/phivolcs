@@ -147,7 +147,8 @@ require_once($page_javascript);?>
                                     </div>
                                     <div class="span12"><hr></div>
                                     <div class="bio-graph-heading3" id="pbudget">
-                                    	<h4 style="text-align:center;">Project Budget:&nbsp;</h4>
+                                        <button class="btn btn-send"  onclick="reportexpense()" style="display:none; float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='btnreportexpense' data-toggle="collapse"><i class="icon_pencil-edit"></i> Report Expense</button>
+                                    	<h4 style="text-align:center;">Project Budget:&nbsp;</h4>    
                                     	<div class="col-lg-12" id='bsection'>
                                     		<label style='display:none' id='budgetstat'>Proposed</label>
                                     		<div id='pbchoices' style='display:none'>
@@ -984,6 +985,50 @@ require_once($page_javascript);?>
                     </tr>
                 </table>
                 <button class="btn btn-success" id="aexp">Add Expense</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="reportExpense" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                <h4 class="modal-title">Report Expense</h4>
+            </div>
+            <label class='alert alert-danger' id='modalAlert' style='display:none;text-align:center;width:100%'>
+                    <a class='close' onclick="closeAlert();">&times;</a>
+                    <span id='alertMessage'></span>
+            </label>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Expense Type:</label>
+                    <select id="exptype_report" class="form-control" onchange="showqtyfield()" >
+                        <option value="1">General Expense</option>
+                        <option value="2">Equipment</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Budget Item:</label>
+                    <input type="text" id="expitem_report" class="form-control" placeholder="Item">
+
+                </div>
+                <div class="form-group" id="expqtygroup_report" style="display:none;">
+                    <label>Qty:</label>
+                    <input type="text" id="expqty_report" class="form-control" placeholder="Qty">
+                </div>
+                <div class="form-group">
+                    <label>Amount:</label>
+                    <input type="text" id="expamount_report" class="form-control" placeholder="Amount">
+                </div>
+                <!--<div class="form-group">
+                    <label>Reason:</label>
+                    <textarea class="form-control" rows="9" cols="73" id="reason2" style="min-width: 100%;"></textarea>
+                </div>-->
+                <br>
+                <!--<form class="form-inline" role="form">-->
+                    <div align="right"><button align="right" class="btn btn-submit" id="btnexp_report" onclick="saveexp_report()">Submit</button></div>
+                <!--</form>-->
             </div>
         </div>
     </div>
