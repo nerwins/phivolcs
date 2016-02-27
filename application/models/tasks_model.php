@@ -140,4 +140,30 @@ class Tasks_model extends CI_Model {
         $involvement = $status == 1? 1:2;
         return json_encode([$skillsets,$involvement]);
     }
+    function get_project_task_count_done_vs_total($projectid){
+        $query = "SELECT 
+                    T.`id`,T.`name`,
+                    SUM(CASE WHEN THS.`date_finished` IS NOT NULL THEN 1 ELSE 0 END ) AS 'done',
+                    COUNT(THS.`id`) AS 'total'
+                FROM
+                    `task` AS T
+                LEFT JOIN `task_has_subtasks` AS THS ON THS.`taskid` = T.`id`
+                WHERE T.`projectid` = ?
+                GROUP BY T.`id`";
+        $result = $this->db->query($query, array($projectid));
+        if($result->num_rows() > 0){
+            $taskstring = "";
+            foreach ($result->result() as $row){
+                if((int)$row->done === (int)$row->total)
+                    $taskstring .="<input type='checkbox' checked disabled> ";
+                else
+                    $taskstring .="<input type='checkbox' disabled> ";
+                $taskstring .= $row->name ." (" .$row->done ."/" .$row->total .")";
+                $taskstring .="<br>";
+            }
+            return $taskstring;
+        }else{
+            return "No tasks under this project";
+        }
+    }
 }
