@@ -306,6 +306,7 @@
 		        $('#section' + (x + 1)).css('display', 'none');
 		    }
 		    getFileList();
+		    activateSorting('budgettable');
 		 });
 	 function getProjectDetails(id){
 	 	$.getJSON("<?=base_url()?>viewproject/get_project_details_control",

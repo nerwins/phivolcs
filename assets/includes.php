@@ -16,6 +16,7 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <link href="<?=base_url()?>assets/css/style.css" rel="stylesheet">
 <link href="<?=base_url()?>assets/css/style-responsive.css" rel="stylesheet" />
 <link href='<?=base_url()?>assets/js/libraries/fullcalendar/fullcalendar.css' rel='stylesheet' />
+<link href='<?=base_url()?>assets/js/libraries/fullcalendar/eventdot.css' rel='stylesheet' />
 <link href='<?=base_url()?>assets/js/libraries/fullcalendar/fullcalendar.print.css' rel='stylesheet' media='print' />
 <link href="<?=base_url()?>assets/css/jquery.ui.css" rel="stylesheet" type="text/css"/>
 <link href="<?=base_url()?>assets/css/bootstrap.min.css" rel="stylesheet">

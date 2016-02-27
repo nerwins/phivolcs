@@ -20,7 +20,23 @@ class Project_model extends CI_Model {
         $division = $_SESSION['division'];
         $position = $_SESSION['position'];
         $projArray = array();
-        $projects = $this->get_projects($position,$division,$id);
+
+
+        $projectid = $this->input->get('projectid');
+        $location = $this->input->get('location');
+        $priority = $this->input->get('priority');
+        $datefrom = $this->input->get('datefrom');
+        $dateto = $this->input->get('dateto') ." 23:59:59";
+
+        $filters = array(
+            'projectid' => $projectid,
+            'location' => $location,
+            'priority' => $priority,
+            'datefrom'=> $datefrom,
+            'dateto' => $dateto
+            );
+
+        $projects = $this->get_projects($position,$division,$id, $filters);
         if($projects == "error")
             return json_encode("error");
         else
@@ -88,7 +104,7 @@ class Project_model extends CI_Model {
         }
         return json_encode($projArray);
     }
-    function get_projects($position, $division = 0, $empid = 0){
+    function get_projects($position, $division = 0, $empid = 0, $filters){
         $whereCondition = "";
         if($position == 1){
             //director
@@ -100,6 +116,15 @@ class Project_model extends CI_Model {
             //projects head projects
             $whereCondition = " (`status`=-1 or `status`>=5) AND `empid` = " . $empid;
         }
+        if($filters['projectid'] != 0){
+            $whereCondition .= " AND `id` = '".$filters['projectid'] ."' ";
+        }if(strlen($filters['location']) > 1){
+            $whereCondition .= " AND `locationname` = '".$filters['location'] ."' ";
+        }if($filters['priority'] != 0){
+            $whereCondition .= " AND `priority` = '".$filters['priority'] ."' ";
+        }
+        $whereCondition .= " AND `datefrom` >= '".$filters['datefrom'] ."' AND `dateto` <= '" .$filters['dateto'] ."' ";
+
         $query = "SELECT 
                         `id`,`name`,`datefrom`,`dateto`,`priority`,`locationname`,`status`,
                         DATE_FORMAT(`datefrom`, '%M %d,%Y') 'datefromformat',
@@ -570,5 +595,47 @@ class Project_model extends CI_Model {
             array_push($projArray,$project);
         }
         return json_encode($projArray);
+    }
+
+    function get_projects_calendar(){
+        $empid = $_SESSION['id'];
+        $division = $_SESSION['division'];
+        $position = $_SESSION['position'];
+
+        $whereCondition = "";
+        if($position == 1){
+            //director
+            $whereCondition = "";
+        }elseif($position == 2){
+            //division chief
+            $whereCondition = " and (E.`division_id`=".$division.")";
+        }elseif($position == 3 && $division != 3){
+            //projects head projects
+            $whereCondition = " and (P.`empid`=".$empid." or ET.`empid`=".$empid.")";
+        }
+
+        $query = "SELECT distinct T.id,T.name,T.datefrom,date_add(T.dateto,interval 1 day) 'dateto',P.name 'pname',P.`priority` 
+                    FROM task T 
+                    left join employee_has_task ET on T.id=ET.taskid 
+                    left join project P on P.id=T.projectid
+                    left join employee E on E.`id`=ET.`empid`
+                    where (P.`status`!=3 and P.`status`>=5 and P.`status`!=7)  and ET.`status`= 0 ".$whereCondition;
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            $projectList = array();
+            $i = 0;
+            foreach ($result->result() as $row)
+            {
+                $projectList[$i]['id'] = $row->id;
+                $projectList[$i]['taskname'] = $row->name;
+                $projectList[$i]['datefrom'] = $row->datefrom;
+                $projectList[$i]['dateto'] = $row->dateto;
+                $projectList[$i]['projname'] = $row->pname;
+                $projectList[$i]['priority'] = $row->priority;
+                $i++;
+            }
+            return json_encode($projectList);
+        }else
+            return json_encode("error");
     }
 }
