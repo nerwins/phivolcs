@@ -27,6 +27,7 @@ class ViewProject extends CI_Controller {
     function get_project_details_control() {  echo $this->project_model->get_project_details(); }
     function approve_project_control(){ echo $this->project_model->approve_project(); }
     function decline_project_control(){ echo $this->project_model->decline_project(); }
+    function get_project_details_ganttchart_control(){ echo $this->project_model->get_project_details_ganttchart(); }
 
     function approve_revisions_control(){ echo $this->revisions_model->approve_revisions(); }
     function update_revisions_control(){ echo $this->revisions_model->update_revisions(); }

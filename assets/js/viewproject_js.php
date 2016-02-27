@@ -307,6 +307,7 @@
 		    }
 		    getFileList();
 		    activateSorting('budgettable');
+		    loadGantt();
 		 });
 	 function getProjectDetails(id){
 	 	$.getJSON("<?=base_url()?>viewproject/get_project_details_control",
@@ -849,4 +850,25 @@
 	      		loadCSS: "<?=base_url()?>assets/css/print.css",            
 			});
 		}
+		function loadGantt() {
+        $.getJSON("<?=base_url()?>viewproject/get_project_details_ganttchart_control", {id:getUrlParameter("id")}, function (data) {
+            //if (data != null) {
+	            $("#ganttChart").ganttView({
+	                data: data,
+	                slideWidth: 900,
+	                behavior: {
+	                    draggable: false,
+	                    resizable: false,
+	                    onClick: function (data) {
+	                        //var msg = "You clicked on an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+	                        //  $("#eventMessage").text(msg);
+	                        //$('#taskname').html("Details of "+data.tname);
+	                        //$('#scheduletitle').html(data.name);
+	                        //$('#taskModal').modal('show');
+	                    }
+	                }
+	            });
+        	//}
+        });
+    }
  </script>
