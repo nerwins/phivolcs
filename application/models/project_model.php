@@ -605,10 +605,11 @@ class Project_model extends CI_Model {
                 return $datesubmitted;
             }
             else {
-                return "0000-00-00 00:00:00";
+                return null;
             }
     }
     function get_project_details_ganttchart(){
+        //try {
         $projectid = $this->input->get('id');
         $query = "SELECT p.`id`,`name`,`datefrom`,`dateto`,`priority`,`description`,`significance`,`emp_stat`,
                         `latitude`,`empid`,`longitude`,`createdby`,`background`,`locationname`,`status`,
@@ -680,8 +681,14 @@ class Project_model extends CI_Model {
                 $jz4['name'] = "Actual";
                 $jz4['color'] = "rgb(224, 224, 224)";
                 $jz4['start'] = $row->datefrom;
-                $jz4['end'] = $this->project_model->get_end_of_summary($projectid);
-
+                $endofsum = $this->project_model->get_end_of_summary($projectid);
+                if ($endofsum == null) {
+                    $jz4['end'] = $row->datefrom;
+                }
+                else {
+                    $jz4['end'] = $endofsum;
+                }
+                //die(json_encode($jz4['end']));
                 $jz3 = array();
                 array_push($jz3,$disp);
                 array_push($jz3,$jz4);
@@ -691,7 +698,7 @@ class Project_model extends CI_Model {
                 $tasks_cnt = $this->tasks_model->get_project_tasks($projectid,$row->status, $row->empid);
                 $tasks_cnt = count($tasks_cnt);
                 $tasks = $this->tasks_model->get_project_tasks_ganttchart($projectid);
-
+                //die(json_encode($tasks));
                 for ($x = 0; $x < $tasks_cnt; $x++) {
                     $jss = array();
                     $jss2 = array();
@@ -709,6 +716,7 @@ class Project_model extends CI_Model {
 
                     $pendingtasks = $this->tasks_model->get_task_status_count($projectid,'pending');
                     $getdate = $this->tasks_model->get_task_date($tasks[$x]['id']);
+
                     if ($pendingtasks > 0) {
                         if ($getdate == null) {
                             $jss4['name'] = "Actual(Incomplete)";
@@ -726,12 +734,21 @@ class Project_model extends CI_Model {
                             array_push($jss3, $jss4);
                         }
                     } else {
-                        $jss4['name'] = "Actual(Completed)";
-                        $jss4['color'] = "rgb(110, 110, 110)";
-                        $jss4['start'] = $tasks[$x]['datefrom'];
-                        $jss4['end'] = $getdate;
-                        $jss4['tname'] = $tasks[$x]['name'];
-                        array_push($jss3, $jss4);
+                        if ($getdate == null) {
+                            $jss4['name'] = "Actual(Completed)";
+                            $jss4['color'] = "rgb(110, 110, 110)";
+                            $jss4['start'] = $tasks[$x]['datefrom'];
+                            $jss4['end'] = $tasks[$x]['datefrom'];
+                            $jss4['tname'] = $tasks[$x]['name'];
+                            array_push($jss3, $jss4);
+                        } else {
+                            $jss4['name'] = "Actual(Completed)";
+                            $jss4['color'] = "rgb(110, 110, 110)";
+                            $jss4['start'] = $tasks[$x]['datefrom'];
+                            $jss4['end'] = $getdate;
+                            $jss4['tname'] = $tasks[$x]['name'];
+                            array_push($jss3, $jss4);
+                        }
                     }
 
                     $jss['series'] = $jss3;
@@ -741,7 +758,11 @@ class Project_model extends CI_Model {
                     array_push($toreturn, $jss);
                 }
                 return json_encode($toreturn);
+                //die(json_encode($toreturn));
             }
         }
+       // } catch (Exception $e) {
+        //    return json_encode(null);
+        //}   
     }
 }
