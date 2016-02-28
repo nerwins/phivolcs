@@ -933,6 +933,7 @@
 	    			$.getJSON("<?=base_url()?>viewproject/get_project_budgets_control", {
 		    			id: getUrlParameter("id")
 		    		}, function (data) {
+		    			$("#budgettable tbody").html("");
 		    			createTableBodyFrom2DJSON(data,'budgettable');
 		    			activateSorting('budgettable');
 		    			$('#budget').html("Project Budget: Php" + totalamt);
