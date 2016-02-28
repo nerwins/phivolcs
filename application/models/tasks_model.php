@@ -153,14 +153,20 @@ class Tasks_model extends CI_Model {
         $result = $this->db->query($query, array($projectid));
         if($result->num_rows() > 0){
             $taskstring = "";
+            $total = 0;
+            $done = 0;
             foreach ($result->result() as $row){
                 if((int)$row->done === (int)$row->total)
                     $taskstring .="<input type='checkbox' checked disabled> ";
                 else
                     $taskstring .="<input type='checkbox' disabled> ";
-                $taskstring .= $row->name ." (" .$row->done ."/" .$row->total .")";
+                $taskstring .= $row->name;
                 $taskstring .="<br>";
+
+                $done += (int)$row->done === (int)$row->total? 1: 0;
+                $total ++;
             }
+            $taskstring .= "<br>Tasks Done: " .$done ."/" .$total;
             return $taskstring;
         }else{
             return "No tasks under this project";
