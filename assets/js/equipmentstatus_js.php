@@ -11,26 +11,11 @@
 	$(function(){
 		$('#reports').addClass("active");
 	    $('#rproj2').addClass("active");
-	    $('#datefrom').datepicker({dateFormat: "yy-mm-dd",
-	    	beforeShow: function(input, inst){
-		        var cal = inst.dpDiv;
-			     var top  = $(this).offset().top + $(this).outerHeight();
-			     var left = $(this).offset().left;
-			     setTimeout(function() {
-			        cal.css({
-			            'top' : top,
-			            'left': left
-			        });
-			     }, 10);
-		    },
-        	onClose: function (selectedDate) {
-        	    $("#dateto").datepicker("option", "minDate", selectedDate);
-    	    },
-    	    onSelect: function(dateText, inst) {
-	            getEquipmentStatus();
-	        }
-    	});
-	    $('#dateto').datepicker({dateFormat: "yy-mm-dd",
+	    $("#status").chosen({ width: '100%' });
+	    $('#status').on('change', function(e) {
+			getEquipmentStatus();
+	  	});
+	    $('#returndate').datepicker({dateFormat: "yy-mm-dd",
 	    	beforeShow: function(input, inst){
 		        var cal = inst.dpDiv;
 			     var top  = $(this).offset().top + $(this).outerHeight();
@@ -49,18 +34,19 @@
 	            getEquipmentStatus();
 	        }
 	    });
-	    $("#datefrom").datepicker( "setDate", -365);
-        $("#dateto").datepicker( "setDate", new Date());
+        $("#returndate").datepicker( "setDate", new Date());
         activateSorting('etable');
-        getEquipmentStatus();
+        getProjectList();
 	});
 	function getEquipmentStatus(){
 		$.getJSON("<?=base_url()?>equipmentstatus/get_equipment_status_control",{
-			datefrom: $("#datefrom").val(),
-			dateto: $("#dateto").val()
+			equipment: $("#equipments").val(),
+			returndate: $("#returndate").val(),
+			status: $("#status").val(),
+			project: $("#projects").val()
 		},function(data){
 			$('#etable > tbody').html("");
-			$('#rtitle').html("Equipment Statuses from " + $('#datefrom').val() + " to " + $('#dateto').val());
+			$('#rtitle').html("Equipment Statuses");
 			if(data != 'error'){
 				$("#etable").show();
 				var table = document.getElementById('etable').getElementsByTagName("tbody")[0];
@@ -77,6 +63,40 @@
 			}else{
 				$("#etable").hide();
 			}
+		});
+	}
+	function getProjectList(){
+		$.getJSON("<?=base_url()?>equipmentstatus/get_project_list_dropdown_control",{},function(data){
+			var projects = "<select id='projects'><option value='0'>All</option>";
+			if(data != "error"){
+				for(var x = 0; x < data.length; x++){
+					projects += "<option value='"+data[x][0]+"'>"+data[x][1]+"</option>";
+				}
+			}
+			projects +="</select>";
+			$("#projectdiv").html(projects);
+			$("#projects").chosen({ width: '100%' });
+			$('#projects').on('change', function(e) {
+				getEquipmentStatus();
+		  	});
+		  	getEquipmentList();
+		});
+	}
+	function getEquipmentList(){
+		$.getJSON("<?=base_url()?>equipmentstatus/get_equipment_list_dropdown_control",{},function(data){
+			var equipments = "<select id='equipments'><option value='0'>All</option>";
+			if(data != "error"){
+				for(var x = 0; x < data.length; x++){
+					equipments += "<option value='"+data[x][0]+"'>"+data[x][1]+"</option>";
+				}
+			}
+			equipments +="</select>";
+			$("#equipmentdiv").html(equipments);
+			$("#equipments").chosen({ width: '100%' });
+			$('#equipments').on('change', function(e) {
+				getEquipmentStatus();
+		  	});
+		  	getEquipmentStatus();
 		});
 	}
 </script>

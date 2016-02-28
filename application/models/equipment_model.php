@@ -11,7 +11,7 @@ class Equipment_model extends CI_Model {
         parent::__construct();
     }
 
-    function get_equipment_status(){
+    function get_equipment_status_old(){
     	$datefrom = $this->input->get('datefrom');
     	$dateto = $this->input->get('dateto') . " 23:59:59";
 
@@ -67,5 +67,62 @@ class Equipment_model extends CI_Model {
 			return json_encode($equipments);
 		}else
 			return json_encode("error");
+    }
+
+    function get_equipment_status(){
+    	$equipment = $this->input->get('equipment');
+    	$returndate = $this->input->get('returndate');
+    	$status = $this->input->get('status');
+    	$project = $this->input->get('project');
+    	$whereCondition = "";
+    	if($equipment != 0){
+    		$whereCondition .= " AND B.`id` = " .$equipment ." ";
+    	}
+    	if($project != 0){
+    		$whereCondition .= " AND T.`projectid` = " .$project ." ";
+    	}
+
+    	$query ="SELECT 
+				    B.`id`, B.`expense`,CASE WHEN THE.`taskid` IS NULL THEN 'In Stock' ELSE 'In Use' END AS 'status'
+				FROM
+				    `budget` AS B
+				LEFT JOIN `task_has_equipment` AS THE ON THE.`budgetid` = B.`id`
+				LEFT JOIN `task` AS T ON T.`id` = THE.`taskid`
+				WHERE 1=1 ".$whereCondition."
+				GROUP BY B.`id`";
+		$result = $this->db->query($query);
+		//echo $this->db->last_query();
+		if ($result->num_rows() > 0) {
+			$equipments = array();
+			foreach ($result->result() as $row){
+				if($status != 0){
+					if($status == 1){
+						if($row->status == "In Stock")
+							array_push($equipments,array($row->id,$row->expense,$row->status));
+					}elseif($status == 2){
+						if($row->status == "In Use")
+							array_push($equipments,array($row->id,$row->expense,$row->status));
+					}
+				}else
+					array_push($equipments,array($row->id,$row->expense,$row->status));
+			}
+			return json_encode($equipments);
+		}else
+			return json_encode("error");
+    }
+
+    function get_equipment_list_dropdown(){
+    	$this->db->select("`id`,CONCAT(`id`,' - ',`expense`) AS `equipment`");
+    	$query = $this->db->get('budget');
+    	if ($query->num_rows() > 0) {
+    		$equipments = array();
+    		foreach ($query->result() as $row){
+    			$equipment[0] = $row->id;
+    			$equipment[1] = $row->equipment;
+    			array_push($equipments,$equipment);
+    		}
+    		return json_encode($equipments);
+    	}else
+    		return json_encode("error");
     }
 }

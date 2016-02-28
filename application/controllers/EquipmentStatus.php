@@ -11,6 +11,7 @@ class EquipmentStatus extends CI_Controller {
         parent::__construct();
         $this->load->database();
         $this->load->model("equipment_model");
+        $this->load->model("project_model");
     }
     function index(){
         $data = array(
@@ -20,4 +21,6 @@ class EquipmentStatus extends CI_Controller {
     }
 
     function get_equipment_status_control(){ echo $this->equipment_model->get_equipment_status(); }
+    function get_project_list_dropdown_control(){ echo $this->project_model->get_project_list_dropdown(); }
+    function get_equipment_list_dropdown_control(){ echo $this->equipment_model->get_equipment_list_dropdown(); }
 }

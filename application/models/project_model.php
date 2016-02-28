@@ -596,4 +596,18 @@ class Project_model extends CI_Model {
         }
         return json_encode($projArray);
     }
+    function get_project_list_dropdown(){
+        $this->db->select("id,name");
+        $query = $this->db->get('project');
+        if ($query->num_rows() > 0) {
+            $projects = array();
+            foreach ($query->result() as $row){
+                $project[0] = $row->id;
+                $project[1] = $row->name;
+                array_push($projects,$project);
+            }
+            return json_encode($projects);
+        }else
+            return json_encode("error");
+    }
 }

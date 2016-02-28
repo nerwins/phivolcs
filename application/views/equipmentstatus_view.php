@@ -18,17 +18,41 @@ require_once("assets/sidebar.php");
 						<section class="panel">
 							<header class="panel-heading">
 								Equipment Status Report
+								<button class="btn btn-default"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='filterbutton' data-toggle="collapse" data-target="#filterdiv"><i class="icon_search"></i> Filters</button>
+
 							</header>
 							<div class="container">
-								<div class="col-md-3">
-                                    <strong>Date From:</strong>
-                                    <input id="datefrom" type="text" class="form-control" placeholder="Date From">
-                                </div>
-
-                                <div class="col-md-3">
-                                    <strong>Date To:</strong>
-                                    <input id="dateto" style="margin-bottom:20px"  type="text" class="form-control" placeholder="Date To">
-                                </div>
+								<div id="filterdiv" class="in" style="height: auto;">
+									<section class="panel">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-md-3">
+													<strong>Equipment Name:</strong>
+													<div id="equipmentdiv"></div>
+												</div>
+												<div class="col-md-3">
+													<strong>Return Date:</strong>
+													<input id="returndate" type="text" class="form-control" placeholder="Date From" readonly>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-md-3">
+													<strong>Status:</strong>
+													<select id="status">
+														<option value="0">All</option>
+														<option value="1">In Stock</option>
+														<option value="2">In Use</option>
+														<option value="3">Being Returned</option>
+													</select>
+												</div>
+												<div class="col-md-3">
+													<strong>Project Assigned To:</strong>
+													<div id="projectdiv"></div>
+												</div>
+											</div>
+										</div>
+									</section>
+								</div>
                                 <br>
                                 <table id="etable" style="margin-top:10px;display:none" class="table table-bordered table-hover table-striped">
                                     <thead>
@@ -37,12 +61,8 @@ require_once("assets/sidebar.php");
                                     	</tr>
 	                                    <tr>
 	                                        <th>Item ID</th>
-	                                        <th>Item Name</th>
-	                                        <th>Project Assigned To</th>
-	                                        <th>Project Duration</th>
-	                                        <th>Return Date</th>
-	                                        <th>Qty</th>
-	                                        <th>Signed by</th>
+	                                        <th>Equipment Name</th>
+	                                        <th>Status</th>
 	                                    </tr>
                                     </thead>
                                     <tbody></tbody>
