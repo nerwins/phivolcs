@@ -27,7 +27,7 @@
                 $("#dateto").datepicker("option", "minDate", selectedDate);
             },
             onSelect: function(dateText, inst) {
-                getProjectList();
+                //getProjectList();
             }
         });
         $('#dateto').datepicker({dateFormat: "yy-mm-dd",
@@ -46,7 +46,7 @@
                 $("#datefrom").datepicker("option", "maxDate", selectedDate);
             },
             onSelect: function(dateText, inst) {
-                getProjectList();
+                //getProjectList();
             }
             });
         var config = {
@@ -61,7 +61,6 @@
         }
         $("#datefrom").datepicker( "setDate", -365);
         $("#dateto").datepicker( "setDate", new Date());
-        getProjectList();
         var status = "";
         if(getUrlParameter("status") != ""){
             status = getUrlParameter("status");
@@ -72,7 +71,11 @@
             else if(status == 3)
                 toggleAlert(4);
         }
+        getProjectList();
         activateSorting('projecttable');
+        $("#searchButton").click(function(){
+            getProjectList();
+        });
     });
 
     function getProjectList(){
@@ -126,7 +129,7 @@
             $("#projectname").chosen({ width: '100%' });
             $("#projectlocation").chosen({ width: '100%' });
             $('#projectlevel, #projectname, #projectlocation').on('change', function(evt, params) {
-                getProjectList();
+                //getProjectList();
             });
         });
     }
