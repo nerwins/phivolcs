@@ -327,17 +327,6 @@ class Project_model extends CI_Model {
         }else
             return 0;
     }
-    function get_project_nature_list(){
-    	$this->db->select('id,name');
-        $query = $this->db->get('project_nature');
-        if ($query->num_rows() > 0) {
-        	$arr = array();
-            foreach ($query->result() as $row){
-                $arr[] = $row;  
-            }
-        }
-        return json_encode($arr);
-    }
     function get_projects_status(){
         $arr = array();
         $empid = $this->session->userdata('id');
@@ -596,7 +585,6 @@ class Project_model extends CI_Model {
         }
         return json_encode($projArray);
     }
-
     function get_projects_calendar(){
         $empid = $_SESSION['id'];
         $division = $_SESSION['division'];
@@ -804,7 +792,96 @@ class Project_model extends CI_Model {
                 //die(json_encode($toreturn));
             }
         }
-       // } catch (Exception $e) {
-        //    return json_encode(null);
+    }
+    function get_accomplished_reports_projects(){
+        $datefrom = $this->input->get('datefrom');
+        $dateto = $this->input->get('dateto') ." 23:59:59";
+        $division = $this->input->get('division');
+        $head = $this->input->get('head');
+        $name = $this->input->get('name');
+        $nature = $this->input->get('nature');
+
+        $whereCondition = "";
+        if($division != 0){
+            $whereCondition .= " AND E.`division_id` = '". $division ."'";
+        }if($head != 0){
+            $whereCondition .= " AND P.`empid` = '" . $head ."'";
+        }if($name != 0){
+            $whereCondition .= " AND P.`id` = '". $name ."'";
+        }
+        $query = "SELECT 
+                P.`id`,
+                P.`name`,
+                CONCAT(E.`lastname`,', ',E.`firstname`,' ',E.`middleinitial`) AS 'head',
+                COALESCE(PN.`name`,'N/A') as 'nature',
+                COALESCE(PN.`id`,0) AS `natureid`,
+                CASE WHEN E.`division_id` = 1 THEN 'Volcanology'
+                    WHEN E.`division_id` = 2 THEN 'Seismology'
+                    WHEN E.`division_id` = 3 THEN 'Finance and Admin'
+                    WHEN E.`division_id` = 4 THEN 'Research and Development'
+                    ELSE 'Distaster Preparedness' END AS 'division',
+                CONCAT(DATE_FORMAT(P.`datefrom`, '%M %d,%Y'),
+                        ' - ',
+                        DATE_FORMAT(P.`dateto`, '%M %d,%Y')) AS 'date'
+                FROM
+                `project` AS P
+                    LEFT JOIN
+                `employee` AS E ON E.`id` = P.`empid`
+                    LEFT JOIN
+                `employee_has_skillset` AS EHS ON EHS.`employeeid` = E.`id`
+                    LEFT JOIN
+                `skillset` AS S ON S.`id` = EHS.`skillsetid`
+                    LEFT JOIN
+                `project_nature_has_skillset` AS PNHS ON PNHS.`id_skillset` = S.`id`
+                    LEFT JOIN
+                `project_nature` AS PN ON PN.`id` = PNHS.`pid`
+                WHERE P.`datefrom` >= ? AND P.`datefrom` <= ? 
+                ".$whereCondition."
+                GROUP BY P.`id`
+                ORDER BY P.`status` ASC , P.`priority` DESC , P.`modified` DESC";
+        $result = $this->db->query($query, array($datefrom,$dateto));
+        //echo $this->db->last_query();
+        if ($result->num_rows() > 0) {
+            $projectList = array();
+            foreach ($result->result() as $row)
+            {
+                $project[0] = $row->id;
+                $project[1] = $row->name;
+                $project[2] = $row->head;
+                $project[3] = $row->nature;
+                $project[4] = $row->division;
+                $project[5] = $row->date;
+                $project[6] = $this->tasks_model->get_project_task_count_done_vs_total($row->id);
+                if($nature == 0)
+                    array_push($projectList,$project);
+                else
+                    if($row->natureid == $nature)
+                        array_push($projectList,$project);
+            }
+            return json_encode($projectList);
+        }else{
+            return json_encode("error");
+        }
+    }
+    function get_project_name_and_heads_for_dropdown(){
+        $query = "SELECT 
+                    P.`id`,P.`name`,E.`id` AS 'headid',CONCAT(E.`lastname`,', ',E.`firstname`,E.`middleinitial`) AS 'head'
+                FROM
+                    `project` AS P
+                LEFT JOIN
+                    `employee` AS E ON P.`empid` = E.`id`";
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            $projectsandheads = array();
+            $i = 0;
+            foreach ($result->result() as $row)
+            {
+                $projectsandheads[$i]['projects'] = array($row->id, $row->name);
+                $projectsandheads[$i]['heads'] = array($row->headid, $row->head);
+                $i++;
+            }
+            return json_encode($projectsandheads);
+        }else
+            return "error";
     }
 }

@@ -311,6 +311,12 @@
                         <span>Project Nature</span>
                     </a>
                 </li>
+                <li id='parchive'>
+                    <a class="" href="completedprojects">
+                        <i class="icon_archive_alt"></i>
+                        <span>Projects Archive</span>
+                    </a>
+                </li>
                 <li class="sub-menu" id='reports'>
                     <a class="">
                         <i class="icon_datareport"></i>
@@ -323,18 +329,13 @@
                         <li id='rproj3'><a class="" href="projectload">Project Load</a></li>
                         <li id='rproj4'><a class="" href="personnel">Personnel Involved</a></li>
                         <li id='rproj6' ><a class="" href="budgetreport">Budget Report</a></li>
+                        <li id='rproj7' ><a class="" href="accomplishreport">Accomplishment Report</a></li>
                     </ul>
                 </li>
                 <li id='profile'>
                     <a class="" href="widgets.html" style="display:none">
                         <i class="icon_genius"></i>
                         <span>Profile</span>
-                    </a>
-                </li>
-                <li id='parchive'>
-                    <a class="" href="completedprojects">
-                        <i class="icon_archive_alt"></i>
-                        <span>Projects Archive</span>
                     </a>
                 </li>
             </ul>
