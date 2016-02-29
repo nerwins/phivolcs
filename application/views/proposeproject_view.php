@@ -270,7 +270,7 @@ require_once($page_javascript);  ?>
 						Budget Proposal
 						<button class="btn btn-info pull-right" id="btnAddBudget"><i class="icon_plus_alt2"></i></button> 
 					</header>
-					<div class="panel-body">
+					<div id="budgetContainer" class="panel-body">
 						<table class="table table-hover" id="budgetTable" style="text-align:center">
 							<thead> 
 								<tr>
@@ -328,6 +328,49 @@ require_once($page_javascript);  ?>
             </div>
               <button type="submit" id="btnSubmitDraft" class="btn btn-success btn-block">Save Draft</button>
           </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalAddBudgetItem" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon_close"></i></button>
+        <h4 class="modal-title">Add Budget Item</h4>
+      </div>
+      <div class="modal-body">
+        <!-- <form role="form"> -->
+            <div class="form-group">
+              <label for="expenseType">Expense Type</label>
+              <!-- <input type="text" class="form-control" id="expenseType" placeholder=""> -->
+              <select class="form-control" id="expenseTypeSelect" placeholder="Expense Type">
+              	<option>General Expenses</option>
+              	<option>Equipment</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="budgetItem">Budget Item</label>
+              <input type="text" class="form-control" id="budgetItem" placeholder="">
+            </div>
+            <div class="form-group">
+              <label for="budgetQuantity">Quantity</label>
+              <input type="text" class="form-control" id="budgetQuantity" placeholder="">
+            </div>
+            <div class="form-group">
+              <label for="budgetAmount">Amount</label>
+              <input type="text" class="form-control" id="budgetAmount" placeholder="">
+            </div>
+            <div class="form-group">
+              <label for="budgetReason">Reason</label>
+              <textarea class="form-control" id="budgetReason" rows="3" placeholder="Reason..."></textarea>
+            </div>
+              <button id="btnSubmitBudgetItem" class="btn btn-success btn-block save">Submit</button>
+          <!-- </form> -->
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

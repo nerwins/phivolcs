@@ -14,16 +14,61 @@
           minDate: '+1M', // your min date
           //maxDate: '+1w', // one week will always be 5 business day - not sure if you are including current day
           beforeShowDay: $.datepicker.noWeekends // disable weekends
-        });
+      });
         $(".btnEditOutput").bind("click", editOutputTableRow);
         $(".btnDeleteOutput").bind("click", deleteOutputTableRow);
         $("#btnAddOutput").bind("click", addOutputTableRow);
         $(".btnEditBudget").bind("click", editBudgetTableRow);
         $(".btnDeleteBudget").bind("click", deleteBudgetTableRow);
-        $("#btnAddBudget").bind("click", addObjectiveTableRow);
         $(".btnEditObjective").bind("click", editObjectiveTableRow);
         $(".btnDeleteObjective").bind("click", deleteObjectiveTableRow);
         $("#btnAddObjective").bind("click", addObjectiveTableRow);
+
+        counter = 0;
+        $("#btnAddBudget").click(function(){
+            counter++;
+            $('#budgetContainer table').append(
+                  $('<tr id="'+counter+'">')
+                   .append($('<td id="bItem">').html("Budget Item"))
+                   .append($('<td id="eType">').html("General Expense"))
+                   .append($('<td id="qty">').html("0"))
+                   .append($('<td id="amt">').html("0"))
+                   .append($('<td id="total">').html("0"))
+                   .append($('<td>').html('<button id="editBudget" class="btn btn-info edit">Edit</button><button id="editBudget" class="btn btn-danger delete">Delete</button>'))
+                   );
+            $('#budgetContainer').on('click', '.edit', function(){
+                //get id, by a simple method of finding the element
+                $('#modalAddBudgetItem').modal();
+                id = $(this).parents('tr').find('td:first').text();
+                document.getElementById("budgetItem").value = document.getElementById("budgetTable").rows[counter].cells.item(0).innerHTML;
+                document.getElementById("budgetQuantity").value = document.getElementById("budgetTable").rows[counter].cells.item(2).innerHTML;
+                document.getElementById("budgetAmount").value = document.getElementById("budgetTable").rows[counter].cells.item(3).innerHTML;
+            });
+
+            $('#budgetContainer').on('click', '.delete', function(){
+                //get id, by a simple method of finding the element
+                var par = $(this).parent().parent(); 
+                par.remove();   
+            });
+
+            $('#modalAddBudgetItem').on('click', '.save', function(){
+                //get id, by a simple method of finding the element
+                // event.preventDefault();
+                console.log("this works");
+            });
+
+            //change text
+            // $('.change').live('click',function(){
+            //    //get id via button value
+            //     id = $(this).val();
+            //     //get the closest input text
+            //     new_text = $(this).siblings('input[type="text"]').val();
+                
+            //     //find the specific tr that has an id of.. and look for the corresponding td to change, please read about eq() in jquery
+            //     $('#budgetContainer table').find('tr#' +id).find('td').eq('1').text(new_text);
+                
+            // });
+        });
         totalExpenseTable();
         initProjectTypes();
         // initMapCanvas();
@@ -71,6 +116,10 @@
         prepareProjectObject();
         // var json = JSON.stringify(project);
         // console.log(json);
+    }
+    function addBudget(){
+        // $("#modalAddBudgetItem").modal();
+        
     }
     function saveAsDraft(){
         $("#modalSaveAsDraft").modal();
@@ -150,10 +199,6 @@
         console.log(outputs);
         console.log(objectives);
     }
-
-
-
-
 
     function addObjectiveTableRow(){
         $("#objectiveTable tbody").append( "<tr>"+ "<td><input type='text' class='form-control'/></td>" + 
@@ -264,7 +309,7 @@
         par.remove();   
     }
     function totalExpenseTable(){
-        
+
     }
     function initProjectTypes(){
         //get project types and populate projectTypeSelect
@@ -277,76 +322,104 @@
             $("#projectTypeSelect").html(items); 
         });
     }
+
+    var map;
+    var markers = [];
     function initializeMap(){
+
       var mapProp = {
         center:new google.maps.LatLng(13.624633438236152, 122.49755859375),
         zoom:12,
         mapTypeId:google.maps.MapTypeId.ROADMAP
-      };
+    };
 
-      var map=new google.maps.Map(document.getElementById("map-canvas"),mapProp);
+    map = new google.maps.Map(document.getElementById("map-canvas"),mapProp);
+    google.maps.event.addListener(map, 'click', function(event) {
+        placeMarker(event.latLng);
+    });
 
-      var infoWindow = new google.maps.InfoWindow({map: map});
+    var infoWindow = new google.maps.InfoWindow({map: map});
 
-      if (navigator.geolocation) {
+    if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
           var pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
-          };
+        };
 
-          infoWindow.setPosition(pos);
-          infoWindow.setContent('You are located here.');
-          map.setCenter(pos);
-        }, function() {
-          handleLocationError(true, infoWindow, map.getCenter());
-        });
-      } else {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent('You are located here.');
+        map.setCenter(pos);
+    }, function() {
+      handleLocationError(true, infoWindow, map.getCenter());
+  });
+    } else {
         // Browser doesn't support Geolocation
         handleLocationError(false, infoWindow, map.getCenter());
-      }
+    }
 
-      var geocoder = new google.maps.Geocoder();
-      document.getElementById('map-search').addEventListener('click', function() {
+    var geocoder = new google.maps.Geocoder();
+    document.getElementById('map-search').addEventListener('click', function() {
         geocodeAddress(geocoder, map);
-      });
-      document.getElementById('map-reset').addEventListener('click', function() {
+    });
+    document.getElementById('map-reset').addEventListener('click', function() {
         initializeMap();
         document.getElementById('map-address').value = "";
         document.getElementById('map-latitude').value = "";
         document.getElementById('map-longitude').value = "";
         document.getElementById('map-address').readOnly = false;
-      });
-      document.getElementById('map-submit').addEventListener('click', function() {
+    });
+    document.getElementById('map-submit').addEventListener('click', function() {
         document.getElementById('map-address').readOnly = true;
         project.latitude = document.getElementById('map-latitude').value;
         project.longitude = document.getElementById('map-longitude').value;
-      });
+        document.getElementById('map-search').disabled = true;
+    });
+}
+function placeMarker(location) {
+    var marker = new google.maps.Marker({
+        position: location,
+        map: map,
+    });
+    markers.push(marker);
+
+    var infowindow = new google.maps.InfoWindow({
+        content: 'Latitude: ' + location.lat() + '<br>Longitude: ' + location.lng()
+    });
+    infowindow.open(map,marker);
+    document.getElementById('map-latitude').value = location.lat();
+    document.getElementById('map-longitude').value = location.lng();
+}
+function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+}
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(browserHasGeolocation ?
+    'Error: The Geolocation service failed.' :
+    'Error: Your browser doesn\'t support geolocation.');
+}
+function geocodeAddress(geocoder, resultsMap) {
+  var address = document.getElementById('map-address').value;
+  geocoder.geocode({'address': address}, function(results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      resultsMap.setCenter(results[0].geometry.location);
+      var marker = new google.maps.Marker({
+        map: resultsMap,
+        position: results[0].geometry.location
+    });
+      var location = resultsMap.getCenter();
+      document.getElementById('map-latitude').value = location.lat();
+      document.getElementById('map-longitude').value = location.lng();
+      console.log(location.lat());
+      console.log(location.lng());
+  } else {
+      alert('Geocode was not successful for the following reason: ' + status);
   }
-  function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-      infoWindow.setPosition(pos);
-      infoWindow.setContent(browserHasGeolocation ?
-                            'Error: The Geolocation service failed.' :
-                            'Error: Your browser doesn\'t support geolocation.');
-  }
-  function geocodeAddress(geocoder, resultsMap) {
-      var address = document.getElementById('map-address').value;
-      geocoder.geocode({'address': address}, function(results, status) {
-        if (status === google.maps.GeocoderStatus.OK) {
-          resultsMap.setCenter(results[0].geometry.location);
-          var marker = new google.maps.Marker({
-            map: resultsMap,
-            position: results[0].geometry.location
-          });
-          var location = resultsMap.getCenter();
-          document.getElementById('map-latitude').value = location.lat();
-          document.getElementById('map-longitude').value = location.lng();
-          console.log(location.lat());
-          console.log(location.lng());
-        } else {
-          alert('Geocode was not successful for the following reason: ' + status);
-        }
-      });
-  }
+});
+}
+google.maps.event.addDomListener(window, 'load', initializeMap);
 
 </script>

@@ -572,6 +572,6 @@ class Project_model extends CI_Model {
         $this->db->set('projectid', $projectid); 
         $this->db->insert('objectives'); 
 
-        var_dump($this->db->last_query());
+        // var_dump($this->db->last_query());
     }
 }
