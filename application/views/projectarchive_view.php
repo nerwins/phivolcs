@@ -62,6 +62,11 @@ require_once("assets/sidebar.php");
                                             <input style="margin-bottom:20px"  type="text" class="form-control" placeholder="Date To" id="dateto" readonly>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button class="btn btn-info form-control" id="searchButton">Search</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </section>
                         </div>
