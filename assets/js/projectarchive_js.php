@@ -27,7 +27,7 @@
                 $("#dateto").datepicker("option", "minDate", selectedDate);
             },
             onSelect: function(dateText, inst) {
-                getProjectList();
+                //getProjectList();
             }
         });
         $('#dateto').datepicker({dateFormat: "yy-mm-dd",
@@ -46,7 +46,7 @@
                 $("#datefrom").datepicker("option", "maxDate", selectedDate);
             },
             onSelect: function(dateText, inst) {
-                getProjectList();
+                //getProjectList();
             }
             });
         var config = {
@@ -61,7 +61,6 @@
         }
         $("#datefrom").datepicker( "setDate", -365);
         $("#dateto").datepicker( "setDate", new Date());
-        getProjectList();
         var status = "";
         if(getUrlParameter("status") != ""){
             status = getUrlParameter("status");
@@ -72,16 +71,21 @@
             else if(status == 3)
                 toggleAlert(4);
         }
+        getProjectList();
         activateSorting('projecttable');
+        $("#searchButton").click(function(){
+            getProjectList(1);
+        });
     });
 
-    function getProjectList(){
+    function getProjectList(init){
         $.getJSON("<?=base_url()?>ProjectArchive/get_project_list_control",{
                 projectid: typeof $("#projectname").val() === 'undefined'?0:$("#projectname").val(),
                 location: typeof $("#projectlocation").val() === 'undefined'?0:$("#projectlocation").val(),
                 priority: $("#projectlevel").val(),
                 datefrom: $("#datefrom").val(),
                 dateto: $("#dateto").val(),
+                init: typeof init === 'undefined'?0:init
             }, function (data) {
             var projects = '<select data-placeholder="Select Project" id="projectname" class="chosen-select a form-control" tabindex="8">';
             var location = '<select data-placeholder="Select Location" id="projectlocation" class="chosen-select a form-control" tabindex="8">';
@@ -126,7 +130,7 @@
             $("#projectname").chosen({ width: '100%' });
             $("#projectlocation").chosen({ width: '100%' });
             $('#projectlevel, #projectname, #projectlocation').on('change', function(evt, params) {
-                getProjectList();
+                //getProjectList();
             });
         });
     }
