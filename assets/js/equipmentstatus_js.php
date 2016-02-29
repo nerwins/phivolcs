@@ -87,7 +87,7 @@
 			var equipments = "<select id='equipments'><option value='0'>All</option>";
 			if(data != "error"){
 				for(var x = 0; x < data.length; x++){
-					equipments += "<option value='"+data[x][0]+"'>"+data[x][1]+"</option>";
+					equipments += "<option value='"+data[x][0]+"'>"+data[x][0]+"</option>";
 				}
 			}
 			equipments +="</select>";

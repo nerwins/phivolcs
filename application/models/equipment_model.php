@@ -75,8 +75,8 @@ class Equipment_model extends CI_Model {
     	$status = $this->input->get('status');
     	$project = $this->input->get('project');
     	$whereCondition = "";
-    	if($equipment != 0){
-    		$whereCondition .= " AND B.`id` = " .$equipment ." ";
+    	if(strlen($equipment) > 1){
+    		$whereCondition .= " AND B.`expense` = '" .$equipment ."' ";
     	}
     	if($project != 0){
     		$whereCondition .= " AND T.`projectid` = " .$project ." ";
@@ -88,7 +88,7 @@ class Equipment_model extends CI_Model {
 				    `budget` AS B
 				LEFT JOIN `task_has_equipment` AS THE ON THE.`budgetid` = B.`id`
 				LEFT JOIN `task` AS T ON T.`id` = THE.`taskid`
-				WHERE 1=1 ".$whereCondition."
+				WHERE 1=1 AND B.`expense_type` = 2 ".$whereCondition."
 				GROUP BY B.`id`";
 		$result = $this->db->query($query);
 		//echo $this->db->last_query();
@@ -112,13 +112,14 @@ class Equipment_model extends CI_Model {
     }
 
     function get_equipment_list_dropdown(){
-    	$this->db->select("`id`,CONCAT(`id`,' - ',`expense`) AS `equipment`");
+    	$this->db->select("`expense` AS `equipment`");
+    	$this->db->group_by("expense"); 
+    	$this->db->where('expense_type', 2);
     	$query = $this->db->get('budget');
     	if ($query->num_rows() > 0) {
     		$equipments = array();
     		foreach ($query->result() as $row){
-    			$equipment[0] = $row->id;
-    			$equipment[1] = $row->equipment;
+    			$equipment[0] = $row->equipment;
     			array_push($equipments,$equipment);
     		}
     		return json_encode($equipments);
