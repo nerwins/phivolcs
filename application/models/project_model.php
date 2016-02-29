@@ -585,6 +585,7 @@ class Project_model extends CI_Model {
         }
         return json_encode($projArray);
     }
+
     function get_projects_calendar(){
         $empid = $_SESSION['id'];
         $division = $_SESSION['division'];

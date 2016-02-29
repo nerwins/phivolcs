@@ -140,6 +140,7 @@ class Tasks_model extends CI_Model {
         $involvement = $status == 1? 1:2;
         return json_encode([$skillsets,$involvement]);
     }
+
     function get_project_tasks_ganttchart($id){
         $this->db->select("`id`,`name`,`datefrom`,`dateto`");
         $this->db->where('projectid', $id); 
@@ -169,6 +170,7 @@ class Tasks_model extends CI_Model {
                 return null;
             }    
     }
+
     function get_project_task_count_done_vs_total($projectid){
         $query = "SELECT 
                     T.`id`,T.`name`,
