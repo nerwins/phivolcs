@@ -99,4 +99,11 @@
 		  	getEquipmentStatus();
 		});
 	}
+	function print(){
+		$('#etable').printThis({
+      		pageTitle: "Equipment Status Report",
+      		header: ""            
+		});
+	}
+
 </script>
