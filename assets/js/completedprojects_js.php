@@ -31,6 +31,7 @@
             else if(status == 3)
                 toggleAlert(4);
         }
+        activateSorting("projecttable");
     });
 
     function getProjectList(){

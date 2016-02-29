@@ -48,13 +48,17 @@ function ReplaceNumberWithCommas(yourNumber) {
     //Combines the two sections
     return n.join(".");
 }
-function createTableBodyFrom2DJSON(JSON,tableid){
+function createTableBodyFrom2DJSON(JSON,tableid,align){
+    if(typeof align === "undefined")
+        align = "text-align:center";
+    else
+        align = "text-align:left";
     var table = document.getElementById(tableid).getElementsByTagName("tbody")[0];
     for (var z = 0; z < JSON.length; z++) {
         var tr = document.createElement("tr");
         for (var y = 0; y < JSON[z].length; y++) {
             var td = document.createElement("td");
-            td.setAttribute("style","word-break: break-all;text-align:center");
+            td.setAttribute("style","word-break: break-all;"+align);
             td.innerHTML = JSON[z][y];
             tr.appendChild(td);
         }

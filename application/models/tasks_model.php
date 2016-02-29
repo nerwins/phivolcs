@@ -140,6 +140,7 @@ class Tasks_model extends CI_Model {
         $involvement = $status == 1? 1:2;
         return json_encode([$skillsets,$involvement]);
     }
+
     function get_project_tasks_ganttchart($id){
         $this->db->select("`id`,`name`,`datefrom`,`dateto`");
         $this->db->where('projectid', $id); 
@@ -167,6 +168,38 @@ class Tasks_model extends CI_Model {
             }
             else {
                 return null;
-            }    
+            }
+    }    
+    function get_project_task_count_done_vs_total($projectid){
+        $query = "SELECT 
+                    T.`id`,T.`name`,
+                    SUM(CASE WHEN THS.`date_finished` IS NOT NULL THEN 1 ELSE 0 END ) AS 'done',
+                    COUNT(THS.`id`) AS 'total'
+                FROM
+                    `task` AS T
+                LEFT JOIN `task_has_subtasks` AS THS ON THS.`taskid` = T.`id`
+                WHERE T.`projectid` = ?
+                GROUP BY T.`id`";
+        $result = $this->db->query($query, array($projectid));
+        if($result->num_rows() > 0){
+            $taskstring = "";
+            $total = 0;
+            $done = 0;
+            foreach ($result->result() as $row){
+                if((int)$row->done === (int)$row->total)
+                    $taskstring .="<input type='checkbox' checked disabled> ";
+                else
+                    $taskstring .="<input type='checkbox' disabled> ";
+                $taskstring .= $row->name;
+                $taskstring .="<br>";
+
+                $done += (int)$row->done === (int)$row->total? 1: 0;
+                $total ++;
+            }
+            $taskstring .= "<br>Tasks Done: " .$done ."/" .$total;
+            return $taskstring;
+        }else{
+            return "No tasks under this project";
+        }
     }
 }
