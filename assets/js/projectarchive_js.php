@@ -74,17 +74,18 @@
         getProjectList();
         activateSorting('projecttable');
         $("#searchButton").click(function(){
-            getProjectList();
+            getProjectList(1);
         });
     });
 
-    function getProjectList(){
+    function getProjectList(init){
         $.getJSON("<?=base_url()?>ProjectArchive/get_project_list_control",{
                 projectid: typeof $("#projectname").val() === 'undefined'?0:$("#projectname").val(),
                 location: typeof $("#projectlocation").val() === 'undefined'?0:$("#projectlocation").val(),
                 priority: $("#projectlevel").val(),
                 datefrom: $("#datefrom").val(),
                 dateto: $("#dateto").val(),
+                init: typeof init === 'undefined'?0:init
             }, function (data) {
             var projects = '<select data-placeholder="Select Project" id="projectname" class="chosen-select a form-control" tabindex="8">';
             var location = '<select data-placeholder="Select Location" id="projectlocation" class="chosen-select a form-control" tabindex="8">';

@@ -27,13 +27,15 @@ class Project_model extends CI_Model {
         $priority = $this->input->get('priority');
         $datefrom = $this->input->get('datefrom');
         $dateto = $this->input->get('dateto') ." 23:59:59";
+        $init = $this->input->get('init');
 
         $filters = array(
             'projectid' => $projectid,
             'location' => $location,
             'priority' => $priority,
             'datefrom'=> $datefrom,
-            'dateto' => $dateto
+            'dateto' => $dateto,
+            'init' => $init
             );
 
         $projects = $this->get_projects($position,$division,$id, $filters);
@@ -123,7 +125,8 @@ class Project_model extends CI_Model {
         }if($filters['priority'] != 0){
             $whereCondition .= " AND `priority` = '".$filters['priority'] ."' ";
         }
-        $whereCondition .= " AND `datefrom` >= '".$filters['datefrom'] ."' AND `dateto` <= '" .$filters['dateto'] ."' ";
+        if($filters['init'] != 0)
+            $whereCondition .= " AND `datefrom` >= '".$filters['datefrom'] ."' AND `dateto` <= '" .$filters['dateto'] ."' ";
 
         $query = "SELECT 
                         `id`,`name`,`datefrom`,`dateto`,`priority`,`locationname`,`status`,
