@@ -19,6 +19,7 @@ require_once("assets/sidebar.php");
 							<header class="panel-heading">
 								Accomplishment Report
 								<button class="btn btn-default"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" data-toggle="collapse" data-target="#filterdiv"><i class="icon_search"></i> Filters</button>
+								<button class="btn btn-send"  onclick="print()" style="float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='print' data-toggle="collapse"><i class="icon_printer"></i> Print</button>
 							</header>
 							<div class="container">
 								<div id="filterdiv" class="in" style="height: auto;">
@@ -64,7 +65,7 @@ require_once("assets/sidebar.php");
 										</div>
 									</section>
 								</div>
-								<div class="col-md-12">
+								<div class="col-md-12" id="divprint">
 									<table class="table table-bordered table-hover table-striped" id="accomplishtable" style="display:none;">
 										<thead>
 											<th style="text-align:center;">id</th>

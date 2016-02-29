@@ -119,4 +119,10 @@
             getProjectNatures();
 		});
 	}
+	function print(){
+		$('#divprint').printThis({
+      		pageTitle: "Accomplishment Report",
+      		header: "Accomplishment Report"            
+		});
+	}
 </script>
