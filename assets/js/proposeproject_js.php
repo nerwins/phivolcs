@@ -33,8 +33,21 @@
         $("#btnSaveAsDraft").bind("click", saveAsDraft);
         $("#btnLoadDraft").bind("click", loadDraft);
         $("#btnResetForm").bind("click", resetForm);
-
+        getProjectHeads();
     });
+    function getProjectHeads(){
+        projectheads = [];
+        $.getJSON("<?=base_url()?>proposeproject/get_project_heads_control",  function(data) {
+            if(data == "error") {
+
+            }
+            projectheads = data;
+            console.log(projectheads);
+            $( "#projectHead" ).autocomplete({
+              source: projectheads
+            });
+        });
+    }
     function initProjectObject(){
         project =  {
             project_name:"",

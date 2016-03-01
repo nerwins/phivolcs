@@ -24,6 +24,7 @@ class ProposeProject extends CI_Controller {
 
     function get_project_nature_list_control(){ echo $this->project_model->get_project_nature_list(); }
     function add_project_draft_control(){ echo $this->project_model->add_project_draft(); }
+    function get_project_heads_control(){ echo $this->project_model->get_project_heads(); }
 
 
 }

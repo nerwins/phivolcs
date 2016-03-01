@@ -574,4 +574,15 @@ class Project_model extends CI_Model {
 
         // var_dump($this->db->last_query());
     }
+    function get_project_heads(){
+        $query = 'SELECT CONCAT_WS(", ", `lastname`, `firstname`) AS `emp_name` FROM phivolcs.employee WHERE `division_id` != 0;';
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            $arr = array();
+            foreach ($result->result() as $row){
+                $arr[] = $row->emp_name;  
+            }
+        }
+        return json_encode($arr);
+    }
 }

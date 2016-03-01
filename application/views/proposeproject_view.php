@@ -92,18 +92,6 @@ require_once($page_javascript);  ?>
 							        	<select class="form-control" id="projectTypeSelect" placeholder="Project Type"> <!-- code for project types --> </select>
 							      	</div>
 						   		</div>
-						   		<!-- <div class="form-group">
-							      	<label for="projectObjective" class="col-md-2 control-label">Objective/s</label>
-							      	<div class="col-md-8">
-							      		<div class="col-md-10" id="divObj">
-							      			<input class="form-control" id="asd" rows="3" placeholder="This project aims to...">
-							      		</div>
-							      		<div id="btnObjPlus" class="col-md-2">
-							      			<button class="btn btn-info" id="btnAddObjective"><i class="icon_plus_alt2"></i></button> 
-							      		</div>
-							      	</div>
-							      	
-						   		</div> -->
 						   		<div class="form-group">
 						   			<label for="projectDuration" class="col-md-2 control-label">Duration</label>
 						   			<div class="col-md-8" id="projectDuration">
@@ -337,12 +325,12 @@ require_once($page_javascript);  ?>
   </div>
 </div>
 
-<div id="modalAddBudgetItem" class="modal fade">
+<div id="modalRecommendation" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon_close"></i></button>
-        <h4 class="modal-title">Add Budget Item</h4>
+        <h4 class="modal-title">Recommendations</h4>
       </div>
       <div class="modal-body">
         <!-- <form role="form"> -->
