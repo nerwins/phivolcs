@@ -143,7 +143,7 @@ require_once($page_javascript);  ?>
 												<input type="text" class="form-control" id="projectHead" placeholder="Last Name, First Name">
 							        		</div>
 							        		<div class="col-md-2">
-							        			<button class="btn btn-primary">Recommendation</button>
+							        			<button class="btn btn-primary" id="btnRecommendation" type="button">Recommendation</button>
 							        		</div>
 							        		<div class="col-md-2">
 							        			<button class="btn btn-success pull-right">Search</button>
@@ -333,33 +333,30 @@ require_once($page_javascript);  ?>
         <h4 class="modal-title">Recommendations</h4>
       </div>
       <div class="modal-body">
-        <!-- <form role="form"> -->
-            <div class="form-group">
-              <label for="expenseType">Expense Type</label>
-              <!-- <input type="text" class="form-control" id="expenseType" placeholder=""> -->
-              <select class="form-control" id="expenseTypeSelect" placeholder="Expense Type">
-              	<option>General Expenses</option>
-              	<option>Equipment</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="budgetItem">Budget Item</label>
-              <input type="text" class="form-control" id="budgetItem" placeholder="">
-            </div>
-            <div class="form-group">
-              <label for="budgetQuantity">Quantity</label>
-              <input type="text" class="form-control" id="budgetQuantity" placeholder="">
-            </div>
-            <div class="form-group">
-              <label for="budgetAmount">Amount</label>
-              <input type="text" class="form-control" id="budgetAmount" placeholder="">
-            </div>
-            <div class="form-group">
-              <label for="budgetReason">Reason</label>
-              <textarea class="form-control" id="budgetReason" rows="3" placeholder="Reason..."></textarea>
-            </div>
-              <button id="btnSubmitBudgetItem" class="btn btn-success btn-block save">Submit</button>
-          <!-- </form> -->
+      <table class="table table-hover" id="recommendationTable" style="text-align:center">
+			<thead> 
+				<tr> 
+					<th style="text-align:center">Name</th> 
+					<th style="text-align:center">Division</th>
+					<th style="text-align:center">Date Started</th>
+					<th style="text-align:center">Skillset</th>
+					<th style="text-align:center">Projects Involved</th>
+					<th style="text-align:center">Projects Handled</th>
+					<th></th> 
+				</tr> 
+			</thead> 
+			<tbody> 
+				<tr>
+					<!-- <td>Jonas</td>
+					<td>Volcanology</td>
+					<td>10/29/2015</td>
+					<td>Volcanoes</td>
+					<td data-original-title="666" data-container="body" data-toggle="tooltip" data-placement="bottom" title="">1</td>
+					<td>2</td> -->
+				</tr>
+			</tbody>
+		</table>
+      	<button id="btnSubmitRecommendation" class="btn btn-success btn-block save">Submit</button>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

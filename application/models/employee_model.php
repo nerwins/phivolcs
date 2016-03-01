@@ -336,4 +336,24 @@ class Employee_model extends CI_Model {
         $this->db->insert('employee_has_task', $data); 
         return;
     }
+    function get_recommendations(){
+        $projectType = $this->input->get('projectType');
+        $query = 'SELECT employee_has_skillset.employeeid, employee_has_skillset.skillsetid, skillset.name, CONCAT_WS(", ", employee.lastname, employee.firstname) as `fullname`, employee.date_started, employee.division_id 
+            FROM employee_has_skillset
+            INNER JOIN skillset
+            ON skillsetid = skillset.id
+            INNER JOIN employee
+            ON employeeid = employee.id
+            INNER JOIN project_nature_has_skillset
+            ON id_skillset = skillset.id
+            WHERE pid = ?';
+        $result = $this->db->query($query, array($projectType)); 
+        if ($result->num_rows() > 0) {
+            $arr = array();
+            foreach ($result->result() as $row){
+                $arr[] = $row;  
+            }
+        }
+        return json_encode($arr);
+    }
 }

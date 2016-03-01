@@ -28,6 +28,6 @@ class ProposeProject extends CI_Controller {
     function get_general_expenses_control(){ echo $this->budget_model->get_general_expenses(); }
     function get_equipment_expenses_control(){ echo $this->budget_model->get_equipment_expenses(); }
     function search_equipment_price_control(){ echo $this->budget_model->search_equipment_price(); }
-
+    function get_recommendations_control(){ echo $this->employee_model->get_recommendations(); }
 
 }

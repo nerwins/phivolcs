@@ -27,12 +27,49 @@
         initProjectTypes();
         initializeMap();
         initProjectObject();
+        $("#btnRecommendation").bind("click", getRecommendations);
         $("#btnProceed").bind("click", proceedToWorkPlan);
         $("#btnSaveAsDraft").bind("click", saveAsDraft);
         $("#btnLoadDraft").bind("click", loadDraft);
         $("#btnResetForm").bind("click", resetForm);
         getProjectHeads();
     });
+    function getRecommendations(){
+        $("#modalRecommendation").modal();
+        $.getJSON("<?=base_url()?>proposeproject/get_recommendations_control", {projectType: $("#projectTypeSelect :selected").val()} , function(data) {
+            if(data == "error") {
+
+            }
+            drawTable(data);
+        });
+    }
+    function drawTable(data) {
+        for (var i = 0; i < data.length; i++) {
+            drawRow(data[i]);
+        }
+    }
+    function drawRow(rowData) {
+        var row = $("<tr />")
+        $("#recommendationTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+        row.append($("<td>" + rowData.fullname + "</td>"));
+        row.append($("<td>" + getDepartmentName(rowData.division_id) + "</td>"));
+        row.append($("<td>" + rowData.date_started + "</td>"));
+        row.append($("<td>" + rowData.name + "</td>"));
+    }
+    function getDepartmentName(division_id){
+        switch(division_id){
+            case 1: return "Volcanology Division";
+            break;
+            case 2: return "Seismology Division";
+            break;
+            case 3: return "Finance and Administration Division";
+            break;
+            case 4: return "Research and Development Division";
+            break;
+            case 5: return "Disaster Preparedness Division";
+            break;
+        }
+    }
     function getGeneralExpenses(){
         budgetItems = [];
         $.getJSON("<?=base_url()?>proposeproject/get_general_expenses_control",  function(data) {
