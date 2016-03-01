@@ -262,11 +262,11 @@ require_once($page_javascript);  ?>
 						<table class="table table-hover" id="budgetTable" style="text-align:center">
 							<thead> 
 								<tr>
-									<th style="text-align:center">Budget Item</th>
 									<th style="text-align:center">Expense Type</th>
+									<th style="text-align:center">Budget Item</th>
 									<th style="text-align:center">Reason</th>
 									<th style="text-align:center">Quantity</th>
-									<th style="text-align:center">Amount</th>
+									<th style="text-align:center" id="expenseHeader">Amount</th>
 									<th style="text-align:center">Total</th>
 									<th></th> 
 								</tr>

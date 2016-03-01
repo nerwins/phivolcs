@@ -24,9 +24,7 @@
         $(".btnDeleteObjective").bind("click", deleteObjectiveTableRow);
         $("#btnAddObjective").bind("click", addObjectiveTableRow);
         $("#btnAddBudget").bind("click", addBudgetTableRow);
-        totalExpenseTable();
         initProjectTypes();
-        // initMapCanvas();
         initializeMap();
         initProjectObject();
         $("#btnProceed").bind("click", proceedToWorkPlan);
@@ -35,6 +33,31 @@
         $("#btnResetForm").bind("click", resetForm);
         getProjectHeads();
     });
+    function getGeneralExpenses(){
+        budgetItems = [];
+        $.getJSON("<?=base_url()?>proposeproject/get_general_expenses_control",  function(data) {
+            if(data == "error") {
+
+            }
+            budgetItems = data;
+            $( "#bItem" ).autocomplete({
+              source: budgetItems
+            });
+        });
+    }
+    function getEquipmentExpenses(){
+        budgetItems = [];
+        $.getJSON("<?=base_url()?>proposeproject/get_equipment_expenses_control",  function(data) {
+            if(data == "error") {
+
+            }
+            budgetItems = data;
+            console.log("budgets: "+budgetItems);
+            $( "#bItem" ).autocomplete({
+              source: budgetItems
+            });
+        });
+    }
     function getProjectHeads(){
         projectheads = [];
         $.getJSON("<?=base_url()?>proposeproject/get_project_heads_control",  function(data) {
@@ -42,7 +65,6 @@
 
             }
             projectheads = data;
-            console.log(projectheads);
             $( "#projectHead" ).autocomplete({
               source: projectheads
             });
@@ -230,26 +252,50 @@
         par.remove();   
     }
     function addBudgetTableRow(){
+        getGeneralExpenses();
          $("#budgetContainer table").append(
             $('<tr>')
-                .append($('<td id="bItem">').html('<input type="text" class="form-control" placeholder="">'))
-                .append($('<td id="eType">').html("<select class='form-control' id='expenseTypeSelect'> <option value='1'>General Expense</option> <option value='2'>Equipment</option> </select>"))
+                .append($('<td id="eType">').html("<select class='form-control' id='expenseTypeSelect' onchange='changeAutoComplete()'> <option value='1'>General Expense</option> <option value='2'>Equipment</option> </select>"))
+                .append($('<td>').html('<input id="bItem" type="text" class="form-control" placeholder="" onchange="searchEquipmentPrice()">'))
                 .append($('<td id="eType">').html('<textarea class="form-control" id="budgetReason" rows="3" placeholder="Reason..."></textarea>'))
-                .append($('<td id="qty">').html('<input class="form-control" style = "width:70px;" type="number" name="quantity" min="1" max="99">'))
-                .append($('<td id="amt">').html('<input class="form-control"  type="number" name="quantity" min="1" step="any">'))
+                .append($('<td>').html('<input class="form-control" id="bQty" style = "width:70px;" type="number" name="quantity" min="1" max="99">'))
+                .append($('<td>').html('<input class="form-control" id="bAmt" type="number" name="quantity" min="1" step="any">'))
                 .append($('<td id="total">').html("0"))
                 .append($('<td>').html('<button id="btnSave" class="btn btn-info btnSave">Save</button><button id="btnDeleteBudget" class="btn btn-danger btnDeleteBudget">Delete</button>'))
             );
+         document.getElementById("bQty").defaultValue = "1";
+         document.getElementById("bQty").readOnly = true;
         $(".btnSave").bind("click", saveBudgetTableRow); 
         $(".btnDeleteBudget").bind("click", deleteBudgetTableRow);
+    }
+    function searchEquipmentPrice(){
+        // console.log("working");
+        price = "";
+         $.getJSON("<?=base_url()?>proposeproject/search_equipment_price_control",{equipment:$("#bItem").val()}, function(data){
+                price = data;
+                document.getElementById("bAmt").value = price;
+        });
+    }
+    function changeAutoComplete() {
+        var x = document.getElementById("expenseTypeSelect");
+        if(x.value == 1){
+            getGeneralExpenses();
+            document.getElementById("bQty").defaultValue = "1";
+            document.getElementById("expenseHeader").innerHTML = "Amount";
+            document.getElementById("bQty").readOnly = true;
+        } else if(x.value == 2) {
+            getEquipmentExpenses();
+            document.getElementById("expenseHeader").innerHTML = "Unit Price";
+            document.getElementById("bQty").readOnly = false;
+        }
     }
 
     totalBudget = new Array();
     function saveBudgetTableRow(){ 
         var par = $(this).parent().parent(); 
         var sel = document.getElementById("expenseTypeSelect");
-        var tdBudgetItem = par.children("td:nth-child(1)"); 
-        var tdExpenseType = par.children("td:nth-child(2)");
+        var tdExpenseType = par.children("td:nth-child(1)");
+        var tdBudgetItem = par.children("td:nth-child(2)"); 
         var tdReason = par.children("td:nth-child(3)");
         var tdQuantity = par.children("td:nth-child(4)"); 
         var tdAmount = par.children("td:nth-child(5)");
@@ -294,9 +340,6 @@
         totalBudget = [];
         document.getElementById("totalamount").innerHTML = 0;
     }
-    function totalExpenseTable(){
-
-    }
     function initProjectTypes(){
         //get project types and populate projectTypeSelect
         $.getJSON("<?=base_url()?>proposeproject/get_project_nature_list_control", function(data){
@@ -304,7 +347,6 @@
             $.each(data,function(key,value) {
                 items+="<option value='"+value.id+"'>"+value.name+"</option>";
             });
-
             $("#projectTypeSelect").html(items); 
         });
     }

@@ -58,4 +58,38 @@ class Budget_model extends CI_Model {
         $this->db->insert('general_expenses', $data); 
         return;
     }
+    function get_general_expenses(){
+        $query = 'SELECT `expense` FROM general_expenses';
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            $arr = array();
+            foreach ($result->result() as $row){
+                $arr[] = $row->expense;  
+            }
+        }
+        return json_encode($arr);
+    }
+    function get_equipment_expenses(){
+        $query = 'SELECT `name` FROM inventory';
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            $arr = array();
+            foreach ($result->result() as $row){
+                $arr[] = $row->name;  
+            }
+        }
+        return json_encode($arr);
+    }
+    function search_equipment_price(){
+        $equipment = $this->input->get('equipment');
+        $arr = array();
+        $query = "SELECT `average_price` FROM inventory WHERE `name` = ?";
+        $result = $this->db->query($query, array($equipment));
+         if ($result->num_rows() > 0) {
+            foreach ($result->result() as $row){
+                $arr[] = $row->average_price;  
+            }
+        }
+        return json_encode($arr);
+    }
 }

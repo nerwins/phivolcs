@@ -25,6 +25,9 @@ class ProposeProject extends CI_Controller {
     function get_project_nature_list_control(){ echo $this->project_model->get_project_nature_list(); }
     function add_project_draft_control(){ echo $this->project_model->add_project_draft(); }
     function get_project_heads_control(){ echo $this->project_model->get_project_heads(); }
+    function get_general_expenses_control(){ echo $this->budget_model->get_general_expenses(); }
+    function get_equipment_expenses_control(){ echo $this->budget_model->get_equipment_expenses(); }
+    function search_equipment_price_control(){ echo $this->budget_model->search_equipment_price(); }
 
 
 }
