@@ -351,7 +351,7 @@ class Employee_model extends CI_Model {
         if ($result->num_rows() > 0) {
             $arr = array();
             foreach ($result->result() as $row){
-                $arr[] = $row;  
+                $arr[] = $row;
             }
         }
         return json_encode($arr);

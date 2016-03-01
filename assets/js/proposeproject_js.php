@@ -41,6 +41,14 @@
 
             }
             drawTable(data);
+            $("#recommendationTable tr").click(function(){
+               $(this).addClass('selected').siblings().removeClass('selected');    
+               var value=$(this).find('td:first').html();
+               $("#btnSubmitRecommendation").click(function(){
+                    document.getElementById('projectHead').value = value; 
+                    $("#modalRecommendation").modal('hide');
+               }); 
+            });
         });
     }
     function drawTable(data) {
@@ -49,24 +57,24 @@
         }
     }
     function drawRow(rowData) {
-        var row = $("<tr />")
+        var row = $("<tr  />")
         $("#recommendationTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
         row.append($("<td>" + rowData.fullname + "</td>"));
-        row.append($("<td>" + getDepartmentName(rowData.division_id) + "</td>"));
+        row.append($("<td id='dept'>" + getDepartmentName(rowData.division_id) + "</td>"));
         row.append($("<td>" + rowData.date_started + "</td>"));
         row.append($("<td>" + rowData.name + "</td>"));
     }
     function getDepartmentName(division_id){
         switch(division_id){
-            case 1: return "Volcanology Division";
+            case '1': return "Volcanology Division";
             break;
-            case 2: return "Seismology Division";
+            case '2': return "Seismology Division";
             break;
-            case 3: return "Finance and Administration Division";
+            case '3': return "Finance and Administration Division";
             break;
-            case 4: return "Research and Development Division";
+            case '4': return "Research and Development Division";
             break;
-            case 5: return "Disaster Preparedness Division";
+            case '5': return "Disaster Preparedness Division";
             break;
         }
     }

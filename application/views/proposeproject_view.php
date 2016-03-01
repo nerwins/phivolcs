@@ -63,6 +63,10 @@ require_once($page_javascript);  ?>
 	  line-height: 30px;
 	  padding-left: 10px;
 	}
+	.selected {
+    background-color: gray;
+    color: #FFF;
+	}
 
 </style>
 
@@ -302,7 +306,7 @@ require_once($page_javascript);  ?>
 	</section>
 </section>
 
-<div id="modalSaveAsDraft" class="modal fade">
+<div id="modalSaveAsDraft" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -326,7 +330,7 @@ require_once($page_javascript);  ?>
 </div>
 
 <div id="modalRecommendation" class="modal fade">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="width: 50%;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon_close"></i></button>
@@ -347,12 +351,6 @@ require_once($page_javascript);  ?>
 			</thead> 
 			<tbody> 
 				<tr>
-					<!-- <td>Jonas</td>
-					<td>Volcanology</td>
-					<td>10/29/2015</td>
-					<td>Volcanoes</td>
-					<td data-original-title="666" data-container="body" data-toggle="tooltip" data-placement="bottom" title="">1</td>
-					<td>2</td> -->
 				</tr>
 			</tbody>
 		</table>
