@@ -23,52 +23,7 @@
         $(".btnEditObjective").bind("click", editObjectiveTableRow);
         $(".btnDeleteObjective").bind("click", deleteObjectiveTableRow);
         $("#btnAddObjective").bind("click", addObjectiveTableRow);
-
-        counter = 0;
-        $("#btnAddBudget").click(function(){
-            counter++;
-            $('#budgetContainer table').append(
-                  $('<tr id="'+counter+'">')
-                   .append($('<td id="bItem">').html("Budget Item"))
-                   .append($('<td id="eType">').html("General Expense"))
-                   .append($('<td id="qty">').html("0"))
-                   .append($('<td id="amt">').html("0"))
-                   .append($('<td id="total">').html("0"))
-                   .append($('<td>').html('<button id="editBudget" class="btn btn-info edit">Edit</button><button id="editBudget" class="btn btn-danger delete">Delete</button>'))
-                   );
-            $('#budgetContainer').on('click', '.edit', function(){
-                //get id, by a simple method of finding the element
-                $('#modalAddBudgetItem').modal();
-                id = $(this).parents('tr').find('td:first').text();
-                document.getElementById("budgetItem").value = document.getElementById("budgetTable").rows[counter].cells.item(0).innerHTML;
-                document.getElementById("budgetQuantity").value = document.getElementById("budgetTable").rows[counter].cells.item(2).innerHTML;
-                document.getElementById("budgetAmount").value = document.getElementById("budgetTable").rows[counter].cells.item(3).innerHTML;
-            });
-
-            $('#budgetContainer').on('click', '.delete', function(){
-                //get id, by a simple method of finding the element
-                var par = $(this).parent().parent(); 
-                par.remove();   
-            });
-
-            $('#modalAddBudgetItem').on('click', '.save', function(){
-                //get id, by a simple method of finding the element
-                // event.preventDefault();
-                console.log("this works");
-            });
-
-            //change text
-            // $('.change').live('click',function(){
-            //    //get id via button value
-            //     id = $(this).val();
-            //     //get the closest input text
-            //     new_text = $(this).siblings('input[type="text"]').val();
-                
-            //     //find the specific tr that has an id of.. and look for the corresponding td to change, please read about eq() in jquery
-            //     $('#budgetContainer table').find('tr#' +id).find('td').eq('1').text(new_text);
-                
-            // });
-        });
+        $("#btnAddBudget").bind("click", addBudgetTableRow);
         totalExpenseTable();
         initProjectTypes();
         // initMapCanvas();
@@ -117,9 +72,10 @@
         // var json = JSON.stringify(project);
         // console.log(json);
     }
-    function addBudget(){
+    function changeBudgetModalView(){
         // $("#modalAddBudgetItem").modal();
-        
+        var selected = document.getElementById("expenseTypeSelect").value;
+        console.log("changed to: " + document.getElementById("expenseTypeSelect").value);
     }
     function saveAsDraft(){
         $("#modalSaveAsDraft").modal();
@@ -261,31 +217,46 @@
         par.remove();   
     }
     function addBudgetTableRow(){
-        var stringSelect = "<select class='form-control' id='expenseTypeSelect'> <option value='1'>General Expense</option> <option value='2'>Equipment</option> </select>";
-        $("#budgetTable tbody").append( "<tr>"+ "<td><input type='text' class='form-control'/></td>"+ "<td>"+ stringSelect +"</td>"+ 
-            "<td><input type='text' class='form-control'/></td>" + "<td><input type='text' class='form-control'/></td>" + "<td></td>" +
-            "<td><button class='btn btn-info btnSave' id='btnSave'>Save</button> <button class='btn btn-danger btnDeleteOutput' id='btnDeleteOutput'>Delete</button></td>"+ "</tr>"); 
+         $("#budgetContainer table").append(
+            $('<tr>')
+                .append($('<td id="bItem">').html('<input type="text" class="form-control" placeholder="">'))
+                .append($('<td id="eType">').html("<select class='form-control' id='expenseTypeSelect'> <option value='1'>General Expense</option> <option value='2'>Equipment</option> </select>"))
+                .append($('<td id="eType">').html('<textarea class="form-control" id="budgetReason" rows="3" placeholder="Reason..."></textarea>'))
+                .append($('<td id="qty">').html('<input class="form-control" style = "width:70px;" type="number" name="quantity" min="1" max="99">'))
+                .append($('<td id="amt">').html('<input class="form-control"  type="number" name="quantity" min="1" step="any">'))
+                .append($('<td id="total">').html("0"))
+                .append($('<td>').html('<button id="btnSave" class="btn btn-info btnSave">Save</button><button id="btnDeleteBudget" class="btn btn-danger btnDeleteBudget">Delete</button>'))
+            );
         $(".btnSave").bind("click", saveBudgetTableRow); 
-        $(".btnDeleteOutput").bind("click", deleteBudgetTableRow);
+        $(".btnDeleteBudget").bind("click", deleteBudgetTableRow);
     }
+
+    totalBudget = new Array();
     function saveBudgetTableRow(){ 
         var par = $(this).parent().parent(); 
+        var sel = document.getElementById("expenseTypeSelect");
         var tdBudgetItem = par.children("td:nth-child(1)"); 
         var tdExpenseType = par.children("td:nth-child(2)");
-        var tdQuantity = par.children("td:nth-child(3)"); 
-        var tdAmount = par.children("td:nth-child(4)");
-        var tdTotal = par.children("td:nth-child(5)"); 
-        var tdButtons = par.children("td:nth-child(6)"); 
+        var tdReason = par.children("td:nth-child(3)");
+        var tdQuantity = par.children("td:nth-child(4)"); 
+        var tdAmount = par.children("td:nth-child(5)");
+        var tdTotal = par.children("td:nth-child(6)"); 
+        var tdButtons = par.children("td:nth-child(7)"); 
         tdBudgetItem.html(tdBudgetItem.children("input[type=text]").val()); 
-        tdExpenseType.html(tdExpenseType.children(document.getElementById("expenseTypeSelect").selectedIndex).text());
-        var qty = tdQuantity.html(tdQuantity.children("input[type=text]").val()); 
-        var amt = tdAmount.html(tdAmount.children("input[type=text]").val());
+        tdExpenseType.html(sel.options[sel.selectedIndex].text);
+        tdReason.html(tdReason.children("textarea").val());
+        var qty = tdQuantity.html(tdQuantity.children("input[type=number]").val()); 
+        var amt = tdAmount.html(tdAmount.children("input[type=number]").val());
         var sum = qty.text() * amt.text();
         tdTotal.html(sum);
-        tdButtons.html("<button class='btn btn-info btnEditBudget' id='btnEditBudget'>Edit</button> <button class='btn btn-danger btnDeleteBudget' id='btnDeleteBudget'>Delete</button>"); 
+        tdButtons.html("<button class='btn btn-danger btnDeleteBudget' id='btnDeleteBudget'>Delete</button>"); 
         $(".btnEditBudget").bind("click", editBudgetTableRow); 
         $(".btnDeleteBudget").bind("click", deleteBudgetTableRow); 
-        document.getElementById("totalamount").html(tdTotal.val()); 
+        totalBudget.push(sum);
+        var total = totalBudget.reduce(function(a, b) { 
+            return a + b; 
+        }, 0);
+        document.getElementById("totalamount").innerHTML = total;
     }
     function editBudgetTableRow(){ var par = $(this).parent().parent(); 
         var stringSelect = "<select class='form-control' id='expenseTypeSelect'> <option value='1'>General Expense</option> <option value='2'>Equipment</option> </select>";
@@ -306,7 +277,9 @@
     }
     function deleteBudgetTableRow(){ 
         var par = $(this).parent().parent(); 
-        par.remove();   
+        par.remove();
+        totalBudget = [];
+        document.getElementById("totalamount").innerHTML = 0;
     }
     function totalExpenseTable(){
 

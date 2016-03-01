@@ -276,6 +276,7 @@ require_once($page_javascript);  ?>
 								<tr>
 									<th style="text-align:center">Budget Item</th>
 									<th style="text-align:center">Expense Type</th>
+									<th style="text-align:center">Reason</th>
 									<th style="text-align:center">Quantity</th>
 									<th style="text-align:center">Amount</th>
 									<th style="text-align:center">Total</th>
@@ -287,7 +288,7 @@ require_once($page_javascript);  ?>
 							</tbody>
 							<tfoot>
 	                            <tr>
-	                                <th style="text-align:right" colspan="3">Grand Total :</th>
+	                                <th style="text-align:right" colspan="5">Grand Total :</th>
 	                                <td id="totalamount"></td>
 	                            </tr>
 	                        </tfoot>
