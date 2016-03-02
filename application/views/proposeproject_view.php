@@ -11,6 +11,88 @@ require_once("assets/sidebar.php");
 require_once($page_javascript);  ?>
 <style>
 /*for testing purposes only*/
+	.task-list {
+	  width: 300px;
+	  float: left;
+	  margin: 0 5px;
+	  background-color: #e3e3e3;
+	  min-height: 240px;
+	  border-radius: 10px;
+	  padding-bottom: 15px;
+	}
+	.task-container {
+	 margin: auto;
+	 width: 60%;
+	 padding: 10px;
+	}
+	/*.add-task {
+	  background-color: #374a5d;
+	}*/
+
+	.btnAddTask {
+	  text-align: center;
+	}
+	.task-list input, .task-list textarea, .task-list select {
+	  width: 290px;
+	  margin: 1px 5px;
+	}
+
+	.task-list input, .task-list select {
+	  height: 30px;
+	}
+	.task-list label {
+		margin-left: 5px;
+		margin-top: 10px;
+	}
+
+	.todo-task {
+	  border-radius: 5px;
+	  background-color: #fff;
+	  width: 290px;
+	  margin: 5px;
+	  padding: 5px;
+	}
+
+	.task-list input[type="button"] {
+	  width: 200px;
+	  margin: 5px;
+	}
+
+	.todo-task > .task-header {
+	  font-weight: bold;
+	}
+
+	.todo-task > .task-date {
+	  font-size: small;
+	  font-style: italic;
+	}
+
+	.todo-task > .task-description {
+	  font-size: smaller;
+	}
+
+	h3 {
+	  text-align: center;
+	}
+
+	#eqName{
+		width: 200px;
+		margin-left: -10px;
+	}
+
+	#eqQty {
+		width: 80px;
+		margin-left: 210px;
+	}
+
+	#delete-div {
+	  background-color: #fff;
+	  border: 3px dotted #000;
+	  margin: 10px;
+	  height: 75px;
+	  line-height: 75px;
+	  text-align: center;
+	}
     #main-content {
         margin-top: 5%;
     }
@@ -143,17 +225,17 @@ require_once($page_javascript);  ?>
 						   			<label for="projectHead" class="col-md-2 control-label">Project Head</label>
 						   			<div class="col-md-8">
 						   				<div class="form-group">
-											<div class="col-md-8">
+											<div class="col-md-10">
 												<input type="text" class="form-control" id="projectHead" placeholder="Last Name, First Name">
 							        		</div>
 							        		<div class="col-md-2">
-							        			<button class="btn btn-primary" id="btnRecommendation" type="button">Recommendation</button>
+							        			<button class="btn btn-primary" id="btnRecommendation" type="button">Recommendations</button>
 							        		</div>
-							        		<div class="col-md-2">
+							        		<!-- <div class="col-md-2">
 							        			<button class="btn btn-success pull-right">Search</button>
-							        		</div>
+							        		</div> -->
 							        		<div class="col-md-8">
-							        			<span class="help-block">Choose from a list of recommended employees, use the advanced search, or simply type your desired employee name</span>
+							        			<span class="help-block">Choose from a list of recommended employees or simply type your desired employee name</span>
 							        		</div>
 						   				</div>
 							      	</div>
@@ -289,11 +371,100 @@ require_once($page_javascript);  ?>
 				</section>
 				<section class="panel">
 					<header class="panel-heading"> 
+						Tasks
+						<button class="btn btn-info pull-right" id=""><i class="icon_plus_alt2"></i></button> 
+					</header>
+					<div id="" class="panel-body">
+						<div class="task-container">
+							<div class="task-list" id="pending">
+						  <h3>Tasks List</h3>
+						  <!-- Sample task added manually to check look -->
+						  <div class="todo-task">
+						    <div class="task-header">Sample Header</div>
+						    <div class="task-date">25/06/1992</div>
+						    <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
+						  </div>
+						  <div class="todo-task">
+						    <div class="task-header">Sample Header</div>
+						    <div class="task-date">25/06/1992</div>
+						    <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
+						  </div>
+						  <div class="todo-task">
+						    <div class="task-header">Sample Header</div>
+						    <div class="task-date">25/06/1992</div>
+						    <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
+						  </div>
+						</div>
+
+						<!-- <div class="task-list" id="inProgress">
+						  <h3>In Progress</h3>
+						</div>
+
+						<div class="task-list" id="completed">
+						  <h3>Completed</h3>
+						</div> -->
+
+						<div class="task-list add-task">
+						  <h3>Add a task</h3>
+						  <form id="todo-form">
+						    <input type="text" placeholder="Task Name" class="form-control" />
+						    <select class="form-control" id="taskPriorityLevel" placeholder="Priority Level">
+								<option value='1'>Low</option>
+	                            <option value='2'>Medium</option>
+	                            <option value='3'>High</option>
+	                            <option value='4'>Emergency</option>
+							</select>
+						    <input type="text" placeholder="Skillsets" class="form-control" />
+						    <textarea placeholder="Milestone Indicator" class="form-control"></textarea>
+						    <textarea placeholder="Output" class="form-control"></textarea>
+						    <input type="text" placeholder="Due Date (dd/mm/yyyy)" class="form-control" />
+				   			<label for="" class="control-label">Assigned to</label>
+							<input type="text" placeholder="" class="form-control" />
+							<div class="btnAddTask">
+						    	<input type="button" class="btn btn-success" id="btnViewRec" value="View Recommendations" />
+						    </div>
+							<label for="" class="control-label">Equipment</label>
+							<div>
+								<div class="col-md-8">
+									<input type="text" placeholder="Name" class="form-control" id="eqName" />
+								</div class="col-md-4">
+								<input type="number" placeholder="Qty" class="form-control" id="eqQty"/>
+							</div>
+							<div class="btnAddTask">
+						    	<input type="button" class="btn btn-success" id="btnAddEquipment" value="Add" />
+						    </div>
+							<table class="table table-hover" id="recommendationTable" style="text-align:center">
+								<thead> 
+									<tr> 
+										<th style="text-align:center">Name</th> 
+										<th style="text-align:center">Quantity</th>
+										<th></th> 
+									</tr> 
+								</thead> 
+								<tbody> 
+									<tr>
+									</tr>
+								</tbody>
+							</table>
+						    <div class="btnAddTask">
+						    	<input type="button" class="btn btn-primary" id="btnAddTask" value="Add Task" />
+						    </div>
+						  </form>
+
+						  <!-- <input type="button" class="btn btn-primary" value="Clear Data" /> -->
+
+						  <div id="delete-div">Drag Here to Delete</div>
+						</div>
+						</div>
+					</div>
+				</section>
+				<section class="panel">
+					<header class="panel-heading"> 
 						 
 					</header>
 					<div class="panel-body ">
 						<div style="text-align:center">
-							<button class="btn btn-success" id="btnProceed">Proceed to Work Plan</button>
+							<button class="btn btn-success" id="btnProceed">Proceed</button>
 						</div>
 						<div style="text-align:center; padding-top: 10px;">
 							<button class="btn btn-warning" id="btnResetForm">Reset</button>
