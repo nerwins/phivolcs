@@ -37,6 +37,7 @@ $ci->config->set_item('base_url',"http://".$_SERVER["SERVER_NAME"].":".$_SERVER[
 <script src="<?=base_url()?>/assets/js/libraries/fullcalendar/lib/jquery.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.js" type="text/javascript"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery-ui.js" type="text/javascript"></script>
+<!-- <script src="<?=base_url()?>/assets/js/libraries/js/jquery.ui.min.js" type="text/javascript"></script> -->
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.form.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.minicolors.min.js"></script>
 <script src="<?=base_url()?>/assets/js/libraries/js/jquery.tooltipster.min.js" type="text/javascript"></script>

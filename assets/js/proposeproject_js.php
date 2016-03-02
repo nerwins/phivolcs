@@ -9,12 +9,35 @@
 
 <script>
     $(function(){
-        $("#projectDurationFrom, #projectDurationTo").datepicker({
+        $("#projectDurationFrom").datepicker({
           dateFormat: "MM dd, yy",
           minDate: '+1M', // your min date
           //maxDate: '+1w', // one week will always be 5 business day - not sure if you are including current day
-          beforeShowDay: $.datepicker.noWeekends // disable weekends
-      });
+          beforeShowDay: $.datepicker.noWeekends, // disable weekends
+          onSelect: function (date) {
+                var date1 = $('#projectDurationFrom').datepicker('getDate');
+                var date2 = $('#projectDurationFrom').datepicker('getDate');
+                date2.setDate(date2.getDate() + 1);
+                $('#projectDurationTo').datepicker('setDate', date2);
+                //sets minDate to dt1 date + 1
+                $('#projectDurationTo').datepicker('option', 'minDate', date2);
+                $('#duedate').datepicker('option', 'minDate', date1);
+            }
+        });
+        $('#projectDurationTo').datepicker({
+            dateFormat: "MM dd, yy  ",
+            beforeShowDay: $.datepicker.noWeekends,
+            onClose: function () {
+                var dt1 = $('#projectDurationFrom').datepicker('getDate');
+                var dt2 = $('#projectDurationTo').datepicker('getDate');
+                if (dt2 <= dt1) {
+                    var minDate = $('#projectDurationTo').datepicker('option', 'minDate');
+                    $('#projectDurationTo').datepicker('setDate', minDate);
+                }
+                var date1 = $('#projectDurationTo').datepicker('getDate');
+                $('#duedate').datepicker('option', 'maxDate', date1);
+            }
+        });
         $(".btnEditOutput").bind("click", editOutputTableRow);
         $(".btnDeleteOutput").bind("click", deleteOutputTableRow);
         $("#btnAddOutput").bind("click", addOutputTableRow);
@@ -32,8 +55,62 @@
         $("#btnSaveAsDraft").bind("click", saveAsDraft);
         $("#btnLoadDraft").bind("click", loadDraft);
         $("#btnResetForm").bind("click", resetForm);
+        $("#btnViewRec").bind("click", getRecommendedTaskEmployee);
+        $("#btnAddEquipment").bind("click", addEquipmentToTask);
+        $("#btnAddTask").bind("click", addTask);
         getProjectHeads();
+        getSkillsets();
+        getEquipmentExpenses();
+        $( "#duedate" ).datepicker({
+            dateFormat: "MM dd, yy",
+            beforeShowDay: $.datepicker.noWeekends
+        });
+        $(".task-container").droppable();
+        $(".todo-task").draggable({ revert: "valid", revertDuration:200 });
+        // todo.init();
     });
+    function addTask(){
+        // TableData = new Array();
+        tasks.task_name = document.getElementById("task_name").value;
+        tasks.task_priority = document.getElementById("taskPriorityLevel").value;
+        tasks.task_skillsets = $('#taskSkillset').chosen().val();
+        tasks.task_milestone = document.getElementById("taskMilestone").value;
+        tasks.task_output = document.getElementById("taskOutput").value;
+        tasks.task_due_date = document.getElementById("duedate").value;
+        var TableData1 = new Array();
+        $('#assignedEmployees tr').has('td').each(function() {
+            // var arrayItem = {};
+            $('td', $(this)).each(function(index, item) {
+                TableData1.push($(item).html())
+            });
+            tasks.task_employees = TableData1;
+        });
+        var TableData2 = new Array();
+        $('#taskEquipment tr').has('td').each(function() {
+            // var arrayItem = {};
+            $('td', $(this)).each(function(index, item) {
+                TableData2.push($(item).html())
+            });
+            tasks.task_equipment = TableData2;
+        });
+        console.log(tasks);
+        // task_name:"",
+        //     task_priority:"",
+        //     task_skillsets:[],
+        //     task_milestone:"",
+        //     task_output:"",
+        //     task_due_date:"",
+        //     task_employees:[],
+        //     task_equipment:[]
+    }
+    function addEquipmentToTask(){
+        getEquipmentExpenses();
+        var row = $("<tr  />")
+        $("#taskEquipment").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+        row.append($("<td>" + document.getElementById("eqName").value + "</td>"));
+        row.append($("<td>" + document.getElementById("eqQty").value + "</td>"));
+        document.getElementById("eqName").value = "";
+    }
     function getRecommendations(){
         $("#modalRecommendation").modal();
         $.getJSON("<?=base_url()?>proposeproject/get_recommendations_control", {projectType: $("#projectTypeSelect :selected").val()} , function(data) {
@@ -67,6 +144,32 @@
         row.append($("<td>" + rowData[6]+ "</td>"));
         row.append($("<td>" + rowData[7]+ "</td>"));
     }
+    function getRecommendedTaskEmployee(){
+        $("#modalRecommendation").modal();
+        $.getJSON("<?=base_url()?>proposeproject/get_recommendations_control", {projectType: $("#projectTypeSelect :selected").val()} , function(data) {
+            if(data == "error") {
+
+            }
+            $("#recommendationTable tbody").empty();
+            drawTable(data);
+            value = "";
+            $("#recommendationTable tr").click(function(){
+               $(this).addClass('selected').siblings().removeClass('selected');    
+               value=$(this).find('td:first').html();
+            });
+            $("#btnSubmitRecommendation").click(function(){
+                if(value != ""){
+                    $("#assignedEmployees tbody:eq(0)").append(
+                    $('<tr>')
+                        .append($('<td>').html(value))
+                    );
+                 value = "";
+                }
+                $("#modalRecommendation").modal('hide');
+           }); 
+        });
+    }
+
     function getDepartmentName(division_id){
         switch(division_id){
             case '1': return "Volcanology Division";
@@ -100,8 +203,11 @@
 
             }
             budgetItems = data;
-            console.log("budgets: "+budgetItems);
+            // console.log("budgets: "+budgetItems);
             $( "#bItem" ).autocomplete({
+              source: budgetItems
+            });
+            $( "#eqName" ).autocomplete({
               source: budgetItems
             });
         });
@@ -116,6 +222,34 @@
             $( "#projectHead" ).autocomplete({
               source: projectheads
             });
+             $( "#assignedEmployee" ).autocomplete({
+              source: projectheads
+            });
+        });
+    }
+    function getSkillsets(){
+        skillsets = [];
+        $.getJSON("<?=base_url()?>proposeproject/get_skillsets_control",  function(data) {
+            if(data == "error") {
+
+            }
+            var items = "";
+            $.each(data,function(key,value) {
+                items+="<option>"+value+"</option>";
+            });
+            $("#taskSkillset").html(items); 
+            $(".chosen-select").chosen({
+                width: "290px",
+                enable_search_threshold: 10
+            }).change(function(event)
+            {
+                if(event.target == this)
+                {
+                    var value = $(this).val();
+                    $("#result").text(value);
+                }
+            });
+            // console.log(items);
         });
     }
     function initProjectObject(){
@@ -140,11 +274,21 @@
         outputs = [];
         objectives = [];
 
-        // workplan = {};
+        tasks = {
+            task_name:"",
+            task_priority:"",
+            task_skillsets:[],
+            task_milestone:"",
+            task_output:"",
+            task_due_date:"",
+            task_employees:[],
+            task_equipment:[]
+        };
 
         console.log(budget);
         console.log(outputs);
         console.log(objectives);
+        console.log(tasks)
         console.log(project);
     }
     function resetForm(){
@@ -492,5 +636,7 @@ function geocodeAddress(geocoder, resultsMap) {
 });
 }
 google.maps.event.addDomListener(window, 'load', initializeMap);
+
+
 
 </script>

@@ -25,6 +25,10 @@ require_once($page_javascript);  ?>
 	 width: 60%;
 	 padding: 10px;
 	}
+
+	.chosen-container {
+		left: 5px;
+	}
 	/*.add-task {
 	  background-color: #374a5d;
 	}*/
@@ -78,6 +82,10 @@ require_once($page_javascript);  ?>
 	#eqName{
 		width: 200px;
 		margin-left: -10px;
+	}
+
+	.chosen-select {
+		width: 100px;
 	}
 
 	#eqQty {
@@ -384,16 +392,6 @@ require_once($page_javascript);  ?>
 						    <div class="task-date">25/06/1992</div>
 						    <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
 						  </div>
-						  <div class="todo-task">
-						    <div class="task-header">Sample Header</div>
-						    <div class="task-date">25/06/1992</div>
-						    <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
-						  </div>
-						  <div class="todo-task">
-						    <div class="task-header">Sample Header</div>
-						    <div class="task-date">25/06/1992</div>
-						    <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
-						  </div>
 						</div>
 
 						<!-- <div class="task-list" id="inProgress">
@@ -404,36 +402,49 @@ require_once($page_javascript);  ?>
 						  <h3>Completed</h3>
 						</div> -->
 
-						<div class="task-list add-task">
+						<div class="task-list add-task" id="add-task-container">
 						  <h3>Add a task</h3>
 						  <form id="todo-form">
-						    <input type="text" placeholder="Task Name" class="form-control" />
+						    <input type="text" placeholder="Task Name" class="form-control" id="task_name"/>
 						    <select class="form-control" id="taskPriorityLevel" placeholder="Priority Level">
 								<option value='1'>Low</option>
 	                            <option value='2'>Medium</option>
 	                            <option value='3'>High</option>
 	                            <option value='4'>Emergency</option>
 							</select>
-						    <input type="text" placeholder="Skillsets" class="form-control" />
-						    <textarea placeholder="Milestone Indicator" class="form-control"></textarea>
-						    <textarea placeholder="Output" class="form-control"></textarea>
-						    <input type="text" placeholder="Due Date (dd/mm/yyyy)" class="form-control" />
+							<select data-placeholder="Skillsets" class="chosen-select" multiple tabindex="6" id=taskSkillset>
+							</select>
+						    <!-- <input type="text" id="taskSkillset" placeholder="Skillsets" class="form-control" /> -->
+						    <textarea placeholder="Milestone Indicator" class="form-control" id="taskMilestone"></textarea>
+						    <textarea placeholder="Output" class="form-control" id="taskOutput"></textarea>
+						    <input type="text" id="duedate" placeholder="Due Date (dd/mm/yyyy)" class="form-control" />
 				   			<label for="" class="control-label">Assigned to</label>
-							<input type="text" placeholder="" class="form-control" />
+							<!-- <input type="text" placeholder="" class="form-control" id="assignedEmployee" /> -->
 							<div class="btnAddTask">
-						    	<input type="button" class="btn btn-success" id="btnViewRec" value="View Recommendations" />
+						    	<input type="button" class="btn btn-success" id="btnViewRec" value="View Employees" />
 						    </div>
+						    <table class="table table-hover" id="assignedEmployees" style="text-align:center">
+								<thead> 				
+									<tr> 
+										<th style="text-align:center">Name</th> 
+									</tr> 
+								</thead> 
+								<tbody> 
+									<tr>
+									</tr>
+								</tbody>
+							</table>
 							<label for="" class="control-label">Equipment</label>
 							<div>
 								<div class="col-md-8">
 									<input type="text" placeholder="Name" class="form-control" id="eqName" />
 								</div class="col-md-4">
-								<input type="number" placeholder="Qty" class="form-control" id="eqQty"/>
+								<input class="form-control" id="eqQty" placeholder="Qty" type="number" min="1" max="99" value=1>
 							</div>
 							<div class="btnAddTask">
 						    	<input type="button" class="btn btn-success" id="btnAddEquipment" value="Add" />
 						    </div>
-							<table class="table table-hover" id="" style="text-align:center">
+							<table class="table table-hover" id="taskEquipment" style="text-align:center">
 								<thead> 
 									<tr> 
 										<th style="text-align:center">Name</th> 
