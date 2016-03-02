@@ -349,11 +349,35 @@ class Employee_model extends CI_Model {
             WHERE pid = ?';
         $result = $this->db->query($query, array($projectType)); 
         if ($result->num_rows() > 0) {
-            $arr = array();
+            $recommendations = array();
             foreach ($result->result() as $row){
-                $arr[] = $row;
+                $handled = $this->employee_model->get_recommendations_projects_handled($row->employeeid);
+                $involved = $this->employee_model->get_recommendations_projects_involved($row->employeeid);
+                $arr[0] = $row->employeeid;
+                $arr[1] = $row->skillsetid;
+                $arr[2] = $row->name;
+                $arr[3] = $row->fullname;
+                $arr[4] = $row->date_started;
+                $arr[5] = $row->division_id;
+                $arr[6] = $involved;
+                $arr[7] = $handled;
+                array_push($recommendations, $arr);
             }
         }
-        return json_encode($arr);
+        return json_encode($recommendations);
+    }
+    function get_recommendations_projects_handled($employeeid){
+        $query = "SELECT COUNT(project.id) AS 'count_handled' FROM project WHERE project.empid = ? AND project.status > 0 AND project.status != 7";
+        $result = $this->db->query($query, array($employeeid));
+        foreach ($result->result() as $row){
+            return $row->count_handled;
+        }
+    }
+    function get_recommendations_projects_involved($employeeid){
+        $query = "SELECT COUNT(id) AS 'count_involved' FROM  phivolcs.employee_has_task WHERE empid = ? AND status != 1";
+        $result = $this->db->query($query, array($employeeid));
+        foreach ($result->result() as $row){
+            return $row->count_involved;
+        }
     }
 }

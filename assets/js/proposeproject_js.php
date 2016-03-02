@@ -60,10 +60,12 @@
     function drawRow(rowData) {
         var row = $("<tr  />")
         $("#recommendationTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
-        row.append($("<td>" + rowData.fullname + "</td>"));
-        row.append($("<td id='dept'>" + getDepartmentName(rowData.division_id) + "</td>"));
-        row.append($("<td>" + rowData.date_started + "</td>"));
-        row.append($("<td>" + rowData.name + "</td>"));
+        row.append($("<td>" + rowData[3] + "</td>"));
+        row.append($("<td id='dept'>" + getDepartmentName(rowData[5]) + "</td>"));
+        row.append($("<td>" + rowData[4] + "</td>"));
+        row.append($("<td>" + rowData[2]+ "</td>"));
+        row.append($("<td>" + rowData[6]+ "</td>"));
+        row.append($("<td>" + rowData[7]+ "</td>"));
     }
     function getDepartmentName(division_id){
         switch(division_id){
@@ -152,11 +154,6 @@
         prepareProjectObject();
         // var json = JSON.stringify(project);
         // console.log(json);
-    }
-    function changeBudgetModalView(){
-        // $("#modalAddBudgetItem").modal();
-        var selected = document.getElementById("expenseTypeSelect").value;
-        console.log("changed to: " + document.getElementById("expenseTypeSelect").value);
     }
     function saveAsDraft(){
         $("#modalSaveAsDraft").modal();
@@ -495,7 +492,5 @@ function geocodeAddress(geocoder, resultsMap) {
 });
 }
 google.maps.event.addDomListener(window, 'load', initializeMap);
-
-
 
 </script>

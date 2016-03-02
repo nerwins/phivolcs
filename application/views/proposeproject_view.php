@@ -433,7 +433,7 @@ require_once($page_javascript);  ?>
 							<div class="btnAddTask">
 						    	<input type="button" class="btn btn-success" id="btnAddEquipment" value="Add" />
 						    </div>
-							<table class="table table-hover" id="recommendationTable" style="text-align:center">
+							<table class="table table-hover" id="" style="text-align:center">
 								<thead> 
 									<tr> 
 										<th style="text-align:center">Name</th> 
