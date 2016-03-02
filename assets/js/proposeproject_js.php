@@ -40,6 +40,7 @@
             if(data == "error") {
 
             }
+            $("#recommendationTable tbody").empty();
             drawTable(data);
             $("#recommendationTable tr").click(function(){
                $(this).addClass('selected').siblings().removeClass('selected');    
