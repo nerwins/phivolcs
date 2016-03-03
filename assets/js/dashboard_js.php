@@ -18,6 +18,8 @@
         // initProjectsInDue();
         // initTasksInProgress();
         // initInventory();
+        getProjectList();
+        activateSorting('inventorytable');
     });
     function initDateTime() {
     	setInterval(function() {
@@ -76,57 +78,6 @@
 
 		var month =new Array();
 		month[0]= monthSource;
-
-		// $('#calendar').fullCalendar({
-		//             header: {
-		//                 left: 'prev,next',
-		//                 center: 'title',
-		//                 // right: 'month,agendaWeek,agendaDay'
-		//                 right: 'today'
-		//             },
-		//             columnFormat: {
-		//                 month: 'ddd',
-		//                 week: 'ddd d/M',
-		//                 day: 'dddd d/M'
-		//             },          
-		//             defaultView: 'month',     
-
-		//         viewDisplay: function(view) {
-		//             if (lastView == undefined) { lastView = 'firstRun';  }
-
-		//             if (view.name != lastView ) {
-
-		//             if (view.name == 'agendaWeek') { 
-		//                 $('#calendar').fullCalendar( 'addEventSource', month ); 
-		//                 $('#calendar').fullCalendar( 'removeEventSource', day ); 
-		//                 $('#calendar').fullCalendar( 'removeEventSource', day ); 
-		//                 $('#calendar').fullCalendar('renderEvents');
-		//             }
-		//             if (view.name == 'agendaDay') { 
-		//                 $('#calendar').fullCalendar( 'addEventSource', day ); 
-		//                 $('#calendar').fullCalendar( 'removeEventSource', month ); 
-		//                 $('#calendar').fullCalendar( 'removeEventSource', month ); 
-		//                 $('#calendar').fullCalendar('renderEvents');
-		//             }
-
-		//             if (view.name == 'month') { 
-		//                 $('#calendar').fullCalendar( 'addEventSource', month ); 
-		//                 $('#calendar').fullCalendar( 'removeEventSource', day ); 
-		//                 $('#calendar').fullCalendar( 'removeEventSource', day );
-		//                 $('#calendar').fullCalendar('renderEvents'); 
-		//             }
-		//             lastView = view.name;
-		//             }
-		//         },
-
-		//         timeFormat: { // for event elements
-		//             agendaDay: '',
-		//             agendaWeek: '',
-		//             month: '',
-		//             '': 'h(:mm)t' // default
-		//         },          
-
-		//     });
 		$('#calendar').fullCalendar({
 	        header: {
 	            left: 'prev,next', //today
@@ -143,19 +94,6 @@
 	        selectable: true,
 	        selectHelper: true,
 	        select: function (start, end) {
-
-	            // var m = $.fullCalendar.moment(start);
-	            // var m2 = $.fullCalendar.moment(end);
-	            // m.stripTime();
-	            // m2.stripTime();
-	            // var startdate = m.format();
-	            // var enddate = new Date(m2.format());
-	            // enddate.setDate(enddate.getDate() - 1);
-
-	            // var mfinal = $.fullCalendar.moment(enddate);
-	            // mfinal.stripTime();
-	            // var finalenddate = mfinal.format();
-
 	            $('#calendar').fullCalendar('unselect');
 	        },
 	        editable: false,
@@ -173,7 +111,6 @@
 	            var timeDiff2 = Math.abs(date2.getTime() - date.getTime());
 	            var diffDays2 = Math.ceil(timeDiff2 / (1000 * 3600 * 24));
 	            var date = "<strong>Task Name:</strong>&nbsp;" + event.taskname + "<br><strong>Project Name:</strong>&nbsp; " + tooltip + "<br><label class='label label-danger'><i class='icon_clock_alt'></i>&nbsp;" + diffDays2 + " days from now</label>";
-	            //var date = "<strong>Task Name:</strong>&nbsp;" + event.title + "<br><strong>Project Name:</strong>&nbsp; " + tooltip + "<br><strong>Duration:</strong>&nbsp;" + diffDays + " days<br><label class='label label-danger'><i class='icon_clock_alt'></i>&nbsp;" + diffDays2 + " days from now</label>";
 	            $(element).attr("data-original-title", date);
 	            $(element).attr("data-placement", "bottom");
 	            $(element).attr("data-html", "true");
@@ -186,7 +123,6 @@
 		        }
 		    },
 	        eventLimit: true // allow "more" link when too many events
-
 	    });
     }
     function getProjects(){
@@ -262,7 +198,6 @@
     		document.getElementById("membertasksCountList").style.display = "none";
     		document.getElementById("membertasksTitle").style.display = "none";
     	}
-
     	$.getJSON("<?=base_url()?>dashboard/get_member_tasks_status_control",  function(data) {
     		if(data == "error") {
 
@@ -277,7 +212,53 @@
             }
     	});
     }
-	
-
-
+    function getProjectInventory(){
+    	var division = <?php echo $_SESSION['division']; ?>;
+    	if(division == 3){
+    		$("#inventory").show();
+    		$("#tasks").hide();
+    		$.getJSON("<?=base_url()?>dashboard/get_project_inventory_control",{
+				project: $("#projects").val(),
+				equipment: $("#equipments").val()
+			},  function(data) {
+    			$("#inventorytable > tbody").html("");
+    			createTableBodyFrom2DJSON(data,'inventorytable');
+    		});
+    	}
+    }
+    function getProjectList(){
+		$.getJSON("<?=base_url()?>dashboard/get_project_list_dropdown_control",{},function(data){
+			var projects = "<select id='projects'><option value='0'>All</option>";
+			if(data != "error"){
+				for(var x = 0; x < data.length; x++){
+					projects += "<option value='"+data[x][0]+"'>"+data[x][1]+"</option>";
+				}
+			}
+			projects +="</select>";
+			$("#projectdiv").html(projects);
+			$("#projects").chosen({ width: '100%' });
+			$('#projects').on('change', function(e) {
+				getProjectInventory();
+		  	});
+		  	getEquipmentList();
+		});
+	}
+	function getEquipmentList(){
+		$.getJSON("<?=base_url()?>dashboard/get_inventory_list_dropdown_control",{},function(data){
+			var equipments = "<select id='equipments'><option value='0'>All</option>";
+			if(data != "error"){
+				for(var x = 0; x < data.length; x++){
+					equipments += "<option value='"+data[x][1]+"'>"+data[x][1]+"</option>";
+				}
+			}
+			equipments +="</select>";
+			$("#equipmentdiv").html(equipments);
+			$("#equipments").chosen({ width: '100%' });
+			$('#equipments').on('change', function(e) {
+				getProjectInventory();
+		  	});
+		  	getProjectInventory();
+		});
+		
+	}
 </script>

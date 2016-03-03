@@ -12,6 +12,7 @@ class Dashboard extends CI_Controller {
         $this->load->database();
         $this->load->model("employee_model");
         $this->load->model("project_model");
+        $this->load->model("inventory_model");
     }
     function index(){
         $data = array(
@@ -25,4 +26,7 @@ class Dashboard extends CI_Controller {
     function get_tasks_status_control(){ echo $this->project_model->get_tasks_status(); }
     function get_member_tasks_status_control(){ echo $this->project_model->get_member_tasks_status(); }
     function get_projects_calendar_control(){ echo $this->project_model->get_projects_calendar(); }
+    function get_project_inventory_control(){ echo $this->inventory_model->get_project_inventory(); }
+    function get_project_list_dropdown_control(){ echo $this->project_model->get_project_list_dropdown(); }
+    function get_inventory_list_dropdown_control(){ echo $this->inventory_model->get_inventory_list_dropdown(); }
 }
