@@ -70,16 +70,15 @@
         // todo.init();
     });
     function addTask(){
-        // TableData = new Array();
         tasks.task_name = document.getElementById("task_name").value;
         tasks.task_priority = document.getElementById("taskPriorityLevel").value;
+        tasks.task_priority_text = document.getElementById('taskPriorityLevel').options[document.getElementById('taskPriorityLevel').selectedIndex].text;
         tasks.task_skillsets = $('#taskSkillset').chosen().val();
         tasks.task_milestone = document.getElementById("taskMilestone").value;
         tasks.task_output = document.getElementById("taskOutput").value;
         tasks.task_due_date = document.getElementById("duedate").value;
         var TableData1 = new Array();
         $('#assignedEmployees tr').has('td').each(function() {
-            // var arrayItem = {};
             $('td', $(this)).each(function(index, item) {
                 TableData1.push($(item).html())
             });
@@ -87,28 +86,55 @@
         });
         var TableData2 = new Array();
         $('#taskEquipment tr').has('td').each(function() {
-            // var arrayItem = {};
             $('td', $(this)).each(function(index, item) {
                 TableData2.push($(item).html())
             });
             tasks.task_equipment = TableData2;
         });
+
+        tasksList.push(tasks);
         console.log(tasks);
-        // task_name:"",
-        //     task_priority:"",
-        //     task_skillsets:[],
-        //     task_milestone:"",
-        //     task_output:"",
-        //     task_due_date:"",
-        //     task_employees:[],
-        //     task_equipment:[]
+        console.log(tasksList);
+
+        var par = $("#pending");
+        var wrapper = $("<div />", {
+            "class" : "todo-task"
+        }).appendTo(par);
+
+        $("<div />", {
+            "class" : "task-header",
+            "text": tasks.task_name
+        }).appendTo(wrapper);
+
+        $("<div />", {
+            "class" : "task-date",
+            "text": "Due Date: "+tasks.task_due_date
+        }).appendTo(wrapper);
+
+        $("<div />", {
+            "class" : "task-description",
+            "text": "Assigned to: "+tasks.task_employees
+        }).appendTo(wrapper);
+
+        $("<div />", {
+            "class" : "task-description",
+            "text": "Priority: "+tasks.task_priority_text
+        }).appendTo(wrapper);
+
+    }
+    function deleteTaskEquipment(){ 
+        var par = $(this).parent().parent(); 
+        par.remove();
     }
     function addEquipmentToTask(){
         getEquipmentExpenses();
+        // document.getElementById("equipmentInputs").style.display = "inline";
         var row = $("<tr  />")
-        $("#taskEquipment").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+        $("#taskEquipment").append(row); 
         row.append($("<td>" + document.getElementById("eqName").value + "</td>"));
         row.append($("<td>" + document.getElementById("eqQty").value + "</td>"));
+        row.append("<td><button class='btn btn-danger' id='btnDeleteTaskEquipment'>Delete</button></td>");
+        $("#btnDeleteTaskEquipment").bind("click", deleteTaskEquipment);
         document.getElementById("eqName").value = "";
     }
     function getRecommendations(){
@@ -277,6 +303,7 @@
         tasks = {
             task_name:"",
             task_priority:"",
+            task_priority_text:"",
             task_skillsets:[],
             task_milestone:"",
             task_output:"",
@@ -284,6 +311,8 @@
             task_employees:[],
             task_equipment:[]
         };
+
+        tasksList = [];
 
         console.log(budget);
         console.log(outputs);

@@ -26,6 +26,9 @@ require_once($page_javascript);  ?>
 	 padding: 10px;
 	}
 
+	#add-task-container {
+		width: 100%;
+	}
 	.chosen-container {
 		left: 5px;
 	}
@@ -34,7 +37,12 @@ require_once($page_javascript);  ?>
 	}*/
 
 	.btnAddTask {
-	  text-align: center;
+		text-align: center;
+	}
+
+	.btnAddEquip {
+		text-align: center;
+		margin-bottom: 30px;
 	}
 	.task-list input, .task-list textarea, .task-list select {
 	  width: 290px;
@@ -90,7 +98,7 @@ require_once($page_javascript);  ?>
 
 	#eqQty {
 		width: 80px;
-		margin-left: 210px;
+		/*margin-left: 210px;*/
 	}
 
 	#delete-div {
@@ -383,89 +391,90 @@ require_once($page_javascript);  ?>
 						<button class="btn btn-info pull-right" id=""><i class="icon_plus_alt2"></i></button> 
 					</header>
 					<div id="" class="panel-body">
-						<div class="task-container">
+					<div class="col-md-12">
+						<div class="col-md-4">
 							<div class="task-list" id="pending">
-						  <h3>Tasks List</h3>
-						  <!-- Sample task added manually to check look -->
-						  <div class="todo-task">
-						    <div class="task-header">Sample Header</div>
-						    <div class="task-date">25/06/1992</div>
-						    <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
+							  <h3>Tasks List</h3>
+							  <!-- Sample task added manually to check look -->
+							  <!-- <div class="todo-task">
+								  <div class="task-header">Sample Header</div>
+								  <div class="task-date">25/06/1992</div>
+								  <div class="task-description">Lorem Ipsum Dolor Sit Amet</div>
+							  </div> -->
 						  </div>
 						</div>
-
-						<!-- <div class="task-list" id="inProgress">
-						  <h3>In Progress</h3>
-						</div>
-
-						<div class="task-list" id="completed">
-						  <h3>Completed</h3>
-						</div> -->
-
-						<div class="task-list add-task" id="add-task-container">
-						  <h3>Add a task</h3>
-						  <form id="todo-form">
-						    <input type="text" placeholder="Task Name" class="form-control" id="task_name"/>
-						    <select class="form-control" id="taskPriorityLevel" placeholder="Priority Level">
-								<option value='1'>Low</option>
-	                            <option value='2'>Medium</option>
-	                            <option value='3'>High</option>
-	                            <option value='4'>Emergency</option>
-							</select>
-							<select data-placeholder="Skillsets" class="chosen-select" multiple tabindex="6" id=taskSkillset>
-							</select>
-						    <!-- <input type="text" id="taskSkillset" placeholder="Skillsets" class="form-control" /> -->
-						    <textarea placeholder="Milestone Indicator" class="form-control" id="taskMilestone"></textarea>
-						    <textarea placeholder="Output" class="form-control" id="taskOutput"></textarea>
-						    <input type="text" id="duedate" placeholder="Due Date (dd/mm/yyyy)" class="form-control" />
-				   			<label for="" class="control-label">Assigned to</label>
-							<!-- <input type="text" placeholder="" class="form-control" id="assignedEmployee" /> -->
-							<div class="btnAddTask">
-						    	<input type="button" class="btn btn-success" id="btnViewRec" value="View Employees" />
-						    </div>
-						    <table class="table table-hover" id="assignedEmployees" style="text-align:center">
-								<thead> 				
-									<tr> 
-										<th style="text-align:center">Name</th> 
-									</tr> 
-								</thead> 
-								<tbody> 
-									<tr>
-									</tr>
-								</tbody>
-							</table>
-							<label for="" class="control-label">Equipment</label>
-							<div>
-								<div class="col-md-8">
-									<input type="text" placeholder="Name" class="form-control" id="eqName" />
-								</div class="col-md-4">
-								<input class="form-control" id="eqQty" placeholder="Qty" type="number" min="1" max="99" value=1>
+						<div class="col-md-8">
+							<div class="task-list add-task" id="add-task-container">
+							  <h3>Add a task</h3>
+								  <div class="col-md-6">
+								  	<input type="text" placeholder="Task Name" class="form-control" id="task_name"/>
+								    <select class="form-control" id="taskPriorityLevel" placeholder="Priority Level">
+										<option value='1'>Low</option>
+			                            <option value='2'>Medium</option>
+			                            <option value='3'>High</option>
+			                            <option value='4'>Emergency</option>
+									</select>
+									<select data-placeholder="Skillsets" class="chosen-select" multiple tabindex="6" id=taskSkillset>
+									</select>
+								    <!-- <input type="text" id="taskSkillset" placeholder="Skillsets" class="form-control" /> -->
+								    <textarea placeholder="Milestone Indicator" class="form-control" id="taskMilestone"></textarea>
+								    <textarea placeholder="Output" class="form-control" id="taskOutput"></textarea>
+								    <input type="text" id="duedate" placeholder="Due Date (dd/mm/yyyy)" class="form-control" />
+							  </div>
+							  <div class="col-md-6">
+							  	<div class="">
+							  		<label for="" class="control-label">Assigned to</label>
+							  		<button type="button" class="btn btn-success" id="btnViewRec" > 
+							  			 <i class="icon_plus_alt2"></i>
+							  		</button>
+						    		<!-- <input type="button"  value="Add" /> -->
+						    	</div>
+						    	<table class="table table-hover" id="assignedEmployees" style="text-align:center">
+									<thead> 				
+									</thead> 
+									<tbody> 
+										<tr>
+										</tr>
+									</tbody>
+								</table>
+								<div>
+									<label for="" class="control-label">Equipment</label>
+									<!-- <input  value="Add" /> -->
+								</div>
+								<div id="equipmentInputs" class="col-md-12">
+									<div class="col-md-8">
+										<input type="text" placeholder="Name" class="form-control" id="eqName" />
+									</div>
+									<div class="col-md-4">
+										<input class="form-control" id="eqQty" placeholder="Qty" type="number" min="1" max="99" value=1>
+									</div>
+								</div>
+								<table class="table table-hover" id="taskEquipment" style="text-align:center">
+									<thead> 
+										<tr> 
+										</tr> 
+									</thead> 
+									<tbody> 
+										<tr>
+										</tr>
+									</tbody>
+								</table>
+								<div class="btnAddEquip">
+								<button type="button" class="btn btn-success" id="btnAddEquipment">Add</button>
 							</div>
-							<div class="btnAddTask">
-						    	<input type="button" class="btn btn-success" id="btnAddEquipment" value="Add" />
-						    </div>
-							<table class="table table-hover" id="taskEquipment" style="text-align:center">
-								<thead> 
-									<tr> 
-										<th style="text-align:center">Name</th> 
-										<th style="text-align:center">Quantity</th>
-										<th></th> 
-									</tr> 
-								</thead> 
-								<tbody> 
-									<tr>
-									</tr>
-								</tbody>
-							</table>
 						    <div class="btnAddTask">
 						    	<input type="button" class="btn btn-primary" id="btnAddTask" value="Add Task" />
 						    </div>
-						  </form>
+							  </div>
+							<!-- <input type="text" placeholder="" class="form-control" id="assignedEmployee" /> -->
 
-						  <!-- <input type="button" class="btn btn-primary" value="Clear Data" /> -->
-
-						  <div id="delete-div">Drag Here to Delete</div>
+						  <div id="delete-div" style="display:none;">Drag Here to Delete</div>
 						</div>
+						</div>
+					</div>
+						<div class="task-container">
+
+						
 						</div>
 					</div>
 				</section>
