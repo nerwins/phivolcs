@@ -175,6 +175,17 @@ require_once($page_javascript);  ?>
     background-color: gray;
     color: #FFF;
 	}
+	.errorDiv {
+		margin-top: -10px;
+		width: 100%;
+	}
+	.errorLabel {
+		text-align: center;
+		display: none;
+		font-size: small;
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
 
 </style>
 
@@ -189,6 +200,11 @@ require_once($page_javascript);  ?>
 				<div class="col-md-12">
 					<section class="panel">
 					<header class="panel-heading">Project Overview</header>
+					<div class="errorDiv alert-danger">
+						<label class="errorLabel" id="errorProjectName">Please supply a project name</label>
+						<label class="errorLabel" id="errorDurationFrom">Invalid Date:From</label>
+						<label class="errorLabel" id="errorDurationTo">Invalid Date:To</label>
+					</div>
 					<div class="panel-body">
 						<form class="form-horizontal">
 							<fieldset>
@@ -228,13 +244,14 @@ require_once($page_javascript);  ?>
 						Project Objectives
 						<button class="btn btn-info pull-right" id="btnAddObjective"><i class="icon_plus_alt2"></i></button> 
 					</header>
+					<div class="errorDiv alert-danger">
+						<label class="errorLabel" id="errorObjective">Please supply a valid project objective</label>
+					</div>
 					<div class="panel-body">
 						<table class="table table-hover" id="objectiveTable" style="text-align:center">
 							<thead> 
-								<tr> 
-									<th style="text-align:center">Objective</th> 
-									<th></th> 
-								</tr> 
+								<th style="text-align:center">Objective</th> 
+								<th></th> 
 							</thead> 
 							<tbody> 
 
@@ -244,6 +261,13 @@ require_once($page_javascript);  ?>
 				</section>
 				<section class="panel">
 					<header class="panel-heading"> Project Specifics</header>
+					<div class="errorDiv alert-danger">
+						<label class="errorLabel" id="errorProjectHead">Project Head does not exist</label>
+						<label class="errorLabel" id="errorDescription">Please provide a valid description</label>
+						<label class="errorLabel" id="errorBackground">Please provide a valid project background</label>
+						<label class="errorLabel" id="errorLocation">Invalid location, please make sure all fields are filled out</label>
+						<label class="errorLabel" id="errorSignificance">Please provide a valid entry in the 'Significance of the Project' section</label>
+					</div>
 					<div class="panel-body">
 						<form class="form-horizontal">
 							<fieldset>
@@ -350,6 +374,9 @@ require_once($page_javascript);  ?>
 						Project Output
 						<button class="btn btn-info pull-right" id="btnAddOutput"><i class="icon_plus_alt2"></i></button> 
 					</header>
+					<div class="errorDiv alert-danger">
+						<label class="errorLabel" id="errorOutput">Please provide a valid project output</label>
+					</div>
 					<div class="panel-body">
 						<table class="table table-hover" id="outputTable" style="text-align:center">
 							<thead> 
@@ -370,6 +397,9 @@ require_once($page_javascript);  ?>
 						Budget Proposal
 						<button class="btn btn-info pull-right" id="btnAddBudget"><i class="icon_plus_alt2"></i></button> 
 					</header>
+					<div class="errorDiv alert-danger">
+						<label class="errorLabel" id="errorBudget">Please provide a valid proposed budget item</label>
+					</div>
 					<div id="budgetContainer" class="panel-body">
 						<table class="table table-hover" id="budgetTable" style="text-align:center">
 							<thead> 
@@ -400,6 +430,9 @@ require_once($page_javascript);  ?>
 						Tasks
 						<button class="btn btn-info pull-right" id=""><i class="icon_plus_alt2"></i></button> 
 					</header>
+					<div class="errorDiv alert-danger">
+						<label class="errorLabel" id="errorTasks">Tasks List cannot be empty</label>
+					</div>
 					<div id="" class="panel-body">
 					<div class="col-md-12">
 						<div class="col-md-4">

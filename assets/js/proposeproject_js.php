@@ -201,6 +201,9 @@
         // }
         // console.log(tasks);
         initTaskClickEvent();
+        $('#add-task-container input[type="text"]').val('');
+        $("#assignedEmployees tr").remove();
+        $("#taskEquipment tr").remove();
     }
     function deleteTaskEquipment(){ 
         var par = $(this).parent().parent(); 
@@ -389,10 +392,109 @@
         console.log(project);
     }
     function resetForm(){
+        $('#main-content input').val('');
+        $('#main-content textarea').val('');
+        $("#objectiveTable tr").remove();
+        $("#outputTable tr").remove();
+        $("#budgetTable tr").remove();
+        $('#add-task-container input[type="text"]').val('');
+        $("#assignedEmployees tr").remove();
+        $("#taskEquipment tr").remove();
         window.location.reload();
     }
-    function proceedProposal(){ 
-        prepareProjectObject();
+    function proceedProposal(){
+        $(".errorLabel").css("display","none");
+
+        var hasError = true;   
+        if (hasError) {
+            if( !$("#projectName").val() ) {
+            hasError;
+            $("#errorProjectName").css("display", "block");
+            }
+
+            if( !$("#projectDurationFrom").val() ) {
+                hasError;
+                $("#errorDurationFrom").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#projectDurationTo").val() ) {
+                hasError;
+                $("#errorDurationTo").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( $("#objectiveTable >tbody >tr").length < 1 ) {
+                hasError;
+                $("#errorObjective").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#projectHead").val() ) {
+                hasError;
+                $("#errorProjectHead").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#projectDescription").val() ) {
+                hasError;
+                $("#errorDescription").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#projectBackground").val() ) {
+                hasError;
+                $("#errorBackground").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#map-address").val() || !$("#map-latitude").val() || !$("#map-longitude").val() ) {
+                hasError;
+                $("#errorLocation").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#projectSignificance").val() ) {
+                hasError;
+                $("#errorSignificance").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( $("#outputTable >tbody >tr").length < 1 ) {
+                hasError;
+                $("#errorOutput").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( $("#budgetTable >tbody >tr").length < 1 ) {
+                hasError;
+                $("#errorBudget").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( $("#pending").children().length <= 1 ) {
+                hasError;
+                $("#errorTasks").css("display", "block");
+            } else {
+                hasError = false;
+            }
+        } else {
+            hasError = false;
+        }
+        if(hasError == false){
+            prepareProjectObject();
+        }
+
         // var json = JSON.stringify(project);
         // console.log(json);
     }
