@@ -449,6 +449,14 @@ require_once($page_javascript);  ?>
 						<div class="col-md-8">
 							<div class="task-list add-task" id="add-task-container">
 							  <h3>Add a task</h3>
+							  <div class="errorDiv alert-danger">
+							  	<label class="errorLabel" id="errorTaskName">Task Name cannot be empty</label>
+							  	<label class="errorLabel" id="errorTaskSkillset">Skillset cannot be empty</label>
+							  	<label class="errorLabel" id="errorTaskMilestone">Milestone Indicator cannot be empty</label>
+							  	<label class="errorLabel" id="errorTaskOutput">Output cannot be empty</label>
+							  	<label class="errorLabel" id="errorTaskDueDate">Due Date cannot be empty</label>
+							  	<label class="errorLabel" id="errorTaskEmployee">Please assign this task to a valid employee</label>
+							  </div>
 								  <div class="col-md-6">
 								  	<input type="text" placeholder="Task Name" class="form-control" id="task_name"/>
 								    <select class="form-control" id="taskPriorityLevel" placeholder="Priority Level">

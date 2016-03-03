@@ -115,95 +115,145 @@
         return arr;
     }
     function addTask(){
-        tasks = {
-            task_name:"",
-            task_priority:"",
-            task_priority_text:"",
-            task_skillsets:[],
-            task_milestone:"",
-            task_output:"",
-            task_due_date:"",
-            task_employees:[],
-            task_equipment:[],
-            task_id:""
-        };
-        tasks.task_name = document.getElementById("task_name").value;
-        tasks.task_priority = document.getElementById("taskPriorityLevel").value;
-        tasks.task_priority_text = document.getElementById('taskPriorityLevel').options[document.getElementById('taskPriorityLevel').selectedIndex].text;
-        tasks.task_skillsets = $('#taskSkillset').chosen().val();
-        tasks.task_milestone = document.getElementById("taskMilestone").value;
-        tasks.task_output = document.getElementById("taskOutput").value;
-        tasks.task_due_date = document.getElementById("duedate").value;
-        var TableData1 = new Array();
-        $('#assignedEmployees tr').has('td').each(function() {
-            $('td', $(this)).each(function(index, item) {
-                TableData1.push($(item).html())
+        $(".errorLabel").css("display","none");
+        var hasError = true;   
+        console.log($("#task_name").val());
+        if (hasError == true) {
+            if( !$("#task_name").val() ) {
+                hasError = true; 
+                $("#errorTaskName").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#taskSkillset").chosen().val() ) {
+                hasError = true; 
+                $("#errorTaskSkillset").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#taskMilestone").val() ) {
+                hasError = true; 
+                $("#errorTaskMilestone").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#taskOutput").val() ) {
+                hasError = true; 
+                $("#errorTaskOutput").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( !$("#duedate").val() ) {
+                hasError = true; 
+                $("#errorTaskDueDate").css("display", "block");
+            } else {
+                hasError = false;
+            }
+
+            if( $("#assignedEmployees >tbody >tr").length <= 1 ) {
+                hasError = true; 
+                $("#errorTaskEmployee").css("display", "block");
+            } else {
+                hasError = false;
+            }
+            console.log("errors");
+        } else {
+            console.log("triggered");
+            hasError = false;
+        }
+        if(hasError == false){
+            console.log("no errors");
+                tasks = {
+                task_name:"",
+                task_priority:"",
+                task_priority_text:"",
+                task_skillsets:[],
+                task_milestone:"",
+                task_output:"",
+                task_due_date:"",
+                task_employees:[],
+                task_equipment:[],
+                task_id:""
+            };
+
+            tasks.task_name = document.getElementById("task_name").value;
+            tasks.task_priority = document.getElementById("taskPriorityLevel").value;
+            tasks.task_priority_text = document.getElementById('taskPriorityLevel').options[document.getElementById('taskPriorityLevel').selectedIndex].text;
+            tasks.task_skillsets = $('#taskSkillset').chosen().val();
+            tasks.task_milestone = document.getElementById("taskMilestone").value;
+            tasks.task_output = document.getElementById("taskOutput").value;
+            tasks.task_due_date = document.getElementById("duedate").value;
+            var TableData1 = new Array();
+            $('#assignedEmployees tr').has('td').each(function() {
+                $('td', $(this)).each(function(index, item) {
+                    TableData1.push($(item).html())
+                });
+                tasks.task_employees = TableData1;
             });
-            tasks.task_employees = TableData1;
-        });
-        var TableData2 = new Array();
-        $('#taskEquipment tr').has('td').each(function() {
-            $('td', $(this)).each(function(index, item) {
-                TableData2.push($(item).html())
+            var TableData2 = new Array();
+            $('#taskEquipment tr').has('td').each(function() {
+                $('td', $(this)).each(function(index, item) {
+                    TableData2.push($(item).html())
+                });
+                tasks.task_equipment = TableData2;
             });
-            tasks.task_equipment = TableData2;
-        });
 
-        var t = "task"+taskCounter;
+            var t = "task"+taskCounter;
 
-        tasks.task_id = "task"+taskCounter;
+            tasks.task_id = "task"+taskCounter;
 
-        var par = $("#pending");
-        var wrapper = $("<div />", {
-            "class" : "todo-task",
-            "id" : tasks.task_id
-        }).appendTo(par);
+            var par = $("#pending");
+            var wrapper = $("<div />", {
+                "class" : "todo-task",
+                "id" : tasks.task_id
+            }).appendTo(par);
 
-        taskCounter ++;
-        $("<div />", {
-            "class" : "task-header",
-            "text": tasks.task_name
-        }).appendTo(wrapper);
+            taskCounter ++;
+            $("<div />", {
+                "class" : "task-header",
+                "text": tasks.task_name
+            }).appendTo(wrapper);
 
-        $("<div />", {
-            "class" : "task-date",
-            "text": "Due Date: "+tasks.task_due_date
-        }).appendTo(wrapper);
+            $("<div />", {
+                "class" : "task-date",
+                "text": "Due Date: "+tasks.task_due_date
+            }).appendTo(wrapper);
 
-        $("<div />", {
-            "class" : "task-description",
-            "text": "Assigned to: "+tasks.task_employees
-        }).appendTo(wrapper);
+            $("<div />", {
+                "class" : "task-description",
+                "text": "Assigned to: "+tasks.task_employees
+            }).appendTo(wrapper);
 
-        $("<div />", {
-            "class" : "task-description",
-            "text": "Priority: "+tasks.task_priority_text
-        }).appendTo(wrapper);
+            $("<div />", {
+                "class" : "task-description",
+                "text": "Priority: "+tasks.task_priority_text
+            }).appendTo(wrapper);
 
-        // $("<div />", {
-        //     "id" : "viewTask",
-        //     "class" : "task-view",
-        //     "text": "View"
-        // }).appendTo(wrapper);
+            // $("<div />", {
+            //     "id" : "viewTask",
+            //     "class" : "task-view",
+            //     "text": "View"
+            // }).appendTo(wrapper);
 
-        $("<div />", {
-            "id" : "deleteTask",
-            "class" : "task-view",
-            "text": "Delete"
-        }).appendTo(wrapper);
-        console.log(taskCounter);
+            $("<div />", {
+                "id" : "deleteTask",
+                "class" : "task-view",
+                "text": "Delete"
+            }).appendTo(wrapper);
+            console.log(taskCounter);
 
-        tasksList.push(tasks);
-        
-        console.log(tasksList);
-        // if(!tasksList[t][tasks]){
-        //     tasksList[t][tasks];
-        // }
-        // console.log(tasks);
-        initTaskClickEvent();
-        $('#add-task-container input[type="text"]').val('');
-        $("#assignedEmployees tr").remove();
-        $("#taskEquipment tr").remove();
+            tasksList.push(tasks);
+            
+            console.log(tasksList);
+            initTaskClickEvent();
+            $('#add-task-container input[type="text"]').val('');
+            $("#assignedEmployees tr").remove();
+            $("#taskEquipment tr").remove();
+        }
     }
     function deleteTaskEquipment(){ 
         var par = $(this).parent().parent(); 
@@ -408,82 +458,82 @@
         var hasError = true;   
         if (hasError) {
             if( !$("#projectName").val() ) {
-            hasError;
+            hasError = true; 
             $("#errorProjectName").css("display", "block");
             }
 
             if( !$("#projectDurationFrom").val() ) {
-                hasError;
+                hasError = true; 
                 $("#errorDurationFrom").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( !$("#projectDurationTo").val() ) {
-                hasError;
+                hasError = true; 
                 $("#errorDurationTo").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( $("#objectiveTable >tbody >tr").length < 1 ) {
-                hasError;
+                hasError = true; 
                 $("#errorObjective").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( !$("#projectHead").val() ) {
-                hasError;
+                hasError = true; 
                 $("#errorProjectHead").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( !$("#projectDescription").val() ) {
-                hasError;
+                hasError = true; 
                 $("#errorDescription").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( !$("#projectBackground").val() ) {
-                hasError;
+                hasError = true; 
                 $("#errorBackground").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( !$("#map-address").val() || !$("#map-latitude").val() || !$("#map-longitude").val() ) {
-                hasError;
+                hasError = true; 
                 $("#errorLocation").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( !$("#projectSignificance").val() ) {
-                hasError;
+                hasError = true; 
                 $("#errorSignificance").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( $("#outputTable >tbody >tr").length < 1 ) {
-                hasError;
+                hasError = true; 
                 $("#errorOutput").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( $("#budgetTable >tbody >tr").length < 1 ) {
-                hasError;
+                hasError = true; 
                 $("#errorBudget").css("display", "block");
             } else {
                 hasError = false;
             }
 
             if( $("#pending").children().length <= 1 ) {
-                hasError;
+                hasError = true; 
                 $("#errorTasks").css("display", "block");
             } else {
                 hasError = false;
