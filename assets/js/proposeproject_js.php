@@ -9,6 +9,7 @@
 
 <script>
     $(function(){
+        taskCounter = 0;
         $("#projectDurationFrom").datepicker({
           dateFormat: "MM dd, yy",
           minDate: '+1M', // your min date
@@ -51,7 +52,7 @@
         initializeMap();
         initProjectObject();
         $("#btnRecommendation").bind("click", getRecommendations);
-        $("#btnProceed").bind("click", proceedToWorkPlan);
+        $("#btnProceed").bind("click", proceedProposal);
         $("#btnSaveAsDraft").bind("click", saveAsDraft);
         $("#btnLoadDraft").bind("click", loadDraft);
         $("#btnResetForm").bind("click", resetForm);
@@ -69,7 +70,63 @@
         $(".todo-task").draggable({ revert: "valid", revertDuration:200 });
         // todo.init();
     });
+    function initTaskClickEvent(){
+        var par = document.getElementById("pending");
+        par.addEventListener("click", showTaskModal, false);
+    }
+    function showTaskModal(e){
+        if (e.target !== e.currentTarget) {
+            if(e.target.id === "deleteTask") {
+                // var clickedItem = e.target.parent();
+                var clickedItem = $(e.target).parent();
+                console.log(clickedItem);
+                // $("#modalViewTask").modal();
+                clickedItem.remove();
+                console.log(clickedItem.attr("id"));
+                // removeByAttr(tasksList, clickedItem.attr("id") , clickedItem.id);
+
+                for(var i=0 ; i<tasksList.length; i++)
+                {   
+                    var temp = tasksList[i];
+                    // console.log(tasksList[i].task_id);
+                    if(tasksList[i].task_id == clickedItem.attr("id"))
+                        tasksList.splice(i);
+                }
+                console.log(tasksList);
+            }
+        }
+        e.stopPropagation();
+    }
+    // function removeTask(clickedItem) {
+    //     $("."+clickedItem).remove();
+    // }
+
+    function removeByAttr  (arr, attr, value){
+        var i = arr.length;
+        while(i--){
+           if( arr[i] 
+               && arr[i].hasOwnProperty(attr) 
+               && (arguments.length > 2 && arr[i][attr] === value ) ){ 
+
+               arr.splice(i,1);
+
+           }
+        }
+        return arr;
+    }
     function addTask(){
+        tasks = {
+            task_name:"",
+            task_priority:"",
+            task_priority_text:"",
+            task_skillsets:[],
+            task_milestone:"",
+            task_output:"",
+            task_due_date:"",
+            task_employees:[],
+            task_equipment:[],
+            task_id:""
+        };
         tasks.task_name = document.getElementById("task_name").value;
         tasks.task_priority = document.getElementById("taskPriorityLevel").value;
         tasks.task_priority_text = document.getElementById('taskPriorityLevel').options[document.getElementById('taskPriorityLevel').selectedIndex].text;
@@ -92,15 +149,17 @@
             tasks.task_equipment = TableData2;
         });
 
-        tasksList.push(tasks);
-        console.log(tasks);
-        console.log(tasksList);
+        var t = "task"+taskCounter;
+
+        tasks.task_id = "task"+taskCounter;
 
         var par = $("#pending");
         var wrapper = $("<div />", {
-            "class" : "todo-task"
+            "class" : "todo-task",
+            "id" : tasks.task_id
         }).appendTo(par);
 
+        taskCounter ++;
         $("<div />", {
             "class" : "task-header",
             "text": tasks.task_name
@@ -121,6 +180,27 @@
             "text": "Priority: "+tasks.task_priority_text
         }).appendTo(wrapper);
 
+        // $("<div />", {
+        //     "id" : "viewTask",
+        //     "class" : "task-view",
+        //     "text": "View"
+        // }).appendTo(wrapper);
+
+        $("<div />", {
+            "id" : "deleteTask",
+            "class" : "task-view",
+            "text": "Delete"
+        }).appendTo(wrapper);
+        console.log(taskCounter);
+
+        tasksList.push(tasks);
+        
+        console.log(tasksList);
+        // if(!tasksList[t][tasks]){
+        //     tasksList[t][tasks];
+        // }
+        // console.log(tasks);
+        initTaskClickEvent();
     }
     function deleteTaskEquipment(){ 
         var par = $(this).parent().parent(); 
@@ -300,30 +380,18 @@
         outputs = [];
         objectives = [];
 
-        tasks = {
-            task_name:"",
-            task_priority:"",
-            task_priority_text:"",
-            task_skillsets:[],
-            task_milestone:"",
-            task_output:"",
-            task_due_date:"",
-            task_employees:[],
-            task_equipment:[]
-        };
-
         tasksList = [];
 
         console.log(budget);
         console.log(outputs);
         console.log(objectives);
-        console.log(tasks)
+        // console.log(tasks)
         console.log(project);
     }
     function resetForm(){
         window.location.reload();
     }
-    function proceedToWorkPlan(){ 
+    function proceedProposal(){ 
         prepareProjectObject();
         // var json = JSON.stringify(project);
         // console.log(json);

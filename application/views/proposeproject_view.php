@@ -83,6 +83,16 @@ require_once($page_javascript);  ?>
 	  font-size: smaller;
 	}
 
+	.todo-task > .task-view {
+	  text-align: right;
+	  color: blue;
+	}
+	.todo-task > .task-view:hover {
+	  color:cyan; 
+	  background-color:transparent; 
+	  text-decoration:underline
+	}
+
 	h3 {
 	  text-align: center;
 	}
@@ -546,6 +556,23 @@ require_once($page_javascript);  ?>
 			</tbody>
 		</table>
       	<button id="btnSubmitRecommendation" class="btn btn-success btn-block save">Submit</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modalViewTask" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="icon_close"></i></button>
+        <h4 class="modal-title">Task</h4>
+      </div>
+      <div class="modal-body">
+      	<button id="" class="btn btn-success btn-block save">Submit</button>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
