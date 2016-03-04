@@ -58,7 +58,7 @@ function createTableBodyFrom2DJSON(JSON,tableid,align){
         var tr = document.createElement("tr");
         for (var y = 0; y < JSON[z].length; y++) {
             var td = document.createElement("td");
-            td.setAttribute("style","word-break: break-all;"+align);
+            td.setAttribute("style",align);
             td.innerHTML = JSON[z][y];
             tr.appendChild(td);
         }

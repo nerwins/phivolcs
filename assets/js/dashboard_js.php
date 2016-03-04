@@ -20,6 +20,11 @@
         // initInventory();
         getProjectList();
         activateSorting('inventorytable');
+        activateSorting('equipmenttable');
+        $("#status").chosen({ width: '100%' });
+        $('#status').on('change', function(e) {
+			getEquipmentTracking();
+	  	});
     });
     function initDateTime() {
     	setInterval(function() {
@@ -218,7 +223,6 @@
     		$("#inventory").show();
     		$("#tasks").hide();
     		$.getJSON("<?=base_url()?>dashboard/get_project_inventory_control",{
-				project: $("#projects").val(),
 				equipment: $("#equipments").val()
 			},  function(data) {
     			$("#inventorytable > tbody").html("");
@@ -229,16 +233,23 @@
     function getProjectList(){
 		$.getJSON("<?=base_url()?>dashboard/get_project_list_dropdown_control",{},function(data){
 			var projects = "<select id='projects'><option value='0'>All</option>";
+			var locations = "<select id='locations'><option value='0'>All</option>";
 			if(data != "error"){
 				for(var x = 0; x < data.length; x++){
 					projects += "<option value='"+data[x][0]+"'>"+data[x][1]+"</option>";
+					locations += "<option value='"+data[x][2]+"'>"+data[x][2]+"</option>";
 				}
 			}
 			projects +="</select>";
+			locations +="</select>";
 			$("#projectdiv").html(projects);
-			$("#projects").chosen({ width: '100%' });
+			$("#locationdiv").html(locations);
+			$("#projects,#locations").chosen({ width: '100%' });
 			$('#projects').on('change', function(e) {
 				getProjectInventory();
+		  	});
+		  	$('#locations').on('change', function(e) {
+				getEquipmentTracking();
 		  	});
 		  	getEquipmentList();
 		});
@@ -246,19 +257,36 @@
 	function getEquipmentList(){
 		$.getJSON("<?=base_url()?>dashboard/get_inventory_list_dropdown_control",{},function(data){
 			var equipments = "<select id='equipments'><option value='0'>All</option>";
+			var equipments2 = "<select id='equipments2'><option value='0'>All</option>";
 			if(data != "error"){
 				for(var x = 0; x < data.length; x++){
 					equipments += "<option value='"+data[x][1]+"'>"+data[x][1]+"</option>";
+					equipments2 += "<option value='"+data[x][1]+"'>"+data[x][1]+"</option>";
 				}
 			}
 			equipments +="</select>";
+			equipments2 +="</select>";
 			$("#equipmentdiv").html(equipments);
-			$("#equipments").chosen({ width: '100%' });
+			$("#equipmentdiv2").html(equipments2);
+			$("#equipments,#equipments2").chosen({ width: '100%' });
 			$('#equipments').on('change', function(e) {
 				getProjectInventory();
 		  	});
+		  	$('#equipments2').on('change', function(e) {
+				getEquipmentTracking();
+		  	});
 		  	getProjectInventory();
+		  	getEquipmentTracking();
 		});
-		
+	}
+	function getEquipmentTracking(){
+		$.getJSON("<?=base_url()?>dashboard/get_equipment_tracking_list_control",{
+			equipment: $("#equipments2").val(),
+			location: $("#locations").val(),
+			status: $("#status").val()
+		},function(data){
+			$("#equipmenttable > tbody").html("");
+    		createTableBodyFrom2DJSON(data,'equipmenttable');
+		});
 	}
 </script>

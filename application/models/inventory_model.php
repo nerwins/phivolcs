@@ -48,32 +48,26 @@ class Inventory_model extends CI_Model {
         return;
     }
     function get_project_inventory(){
-        $project = $this->input->get('project');
         $equipment = $this->input->get('equipment');
         $whereCondition = "";
-        if($project != 0)
-            $whereCondition .= " AND P.`id` = " .$project ." ";
         if(strlen($equipment) > 1)
             $whereCondition .= " AND I.`name` LIKE '%" .$equipment ."%' ";
 
         $query = "SELECT 
-                    I.`id`,P.`name`,I.`name` AS 'inv',I.`qty`,I.`qtyinuse`,(I.`qty` + I.`qtyinuse`) AS 'totalqty',I.`average_price`
+                    I.`id`,I.`name` AS 'inv',I.`qty`,I.`qtyinuse`,(I.`qty` + I.`qtyinuse`) AS 'totalqty',I.`average_price`
                 FROM
                     `inventory` AS I
-                LEFT JOIN `project` AS P ON P.`id` = I.`projectid`
                 WHERE 1=1 ".$whereCondition;
         $result = $this->db->query($query);
         if ($result->num_rows() > 0) {
             $inventories = array();
             foreach ($result->result() as $row){
                 $inventory[0] = $row->id;
-                $inventory[1] = $row->id;
-                $inventory[2] = $row->name;
-                $inventory[3] = $row->inv;
-                $inventory[4] = $row->qty;
-                $inventory[5] = $row->qtyinuse;
-                $inventory[6] = $row->totalqty;
-                $inventory[7] = number_format($row->average_price,1);
+                $inventory[1] = $row->inv;
+                $inventory[2] = $row->qty;
+                $inventory[3] = $row->qtyinuse;
+                $inventory[4] = $row->totalqty;
+                $inventory[5] = number_format($row->average_price,1);
                 array_push($inventories,$inventory);
             }
             return json_encode($inventories);

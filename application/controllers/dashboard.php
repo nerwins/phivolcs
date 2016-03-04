@@ -13,6 +13,7 @@ class Dashboard extends CI_Controller {
         $this->load->model("employee_model");
         $this->load->model("project_model");
         $this->load->model("inventory_model");
+        $this->load->model("equipment_model");
     }
     function index(){
         $data = array(
@@ -29,4 +30,5 @@ class Dashboard extends CI_Controller {
     function get_project_inventory_control(){ echo $this->inventory_model->get_project_inventory(); }
     function get_project_list_dropdown_control(){ echo $this->project_model->get_project_list_dropdown(); }
     function get_inventory_list_dropdown_control(){ echo $this->inventory_model->get_inventory_list_dropdown(); }
+    function get_equipment_tracking_list_control(){ echo $this->equipment_model->get_equipment_tracking_list(); }
 }

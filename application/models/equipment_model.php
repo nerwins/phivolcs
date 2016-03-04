@@ -126,4 +126,58 @@ class Equipment_model extends CI_Model {
     	}else
     		return json_encode("error");
     }
+
+    function get_equipment_tracking_list(){
+    	$equipment = $this->input->get('equipment');
+    	$location = $this->input->get('location');
+    	$status = $this->input->get('status');
+    	
+        $whereCondition = "";
+        if(strlen($equipment) > 1)
+            $whereCondition .= " AND B.`expense` = '" .$equipment ."' ";
+        if(strlen($location) > 1)
+        	$whereCondition .= " AND P.`locationname` = '".$location."' ";
+
+    	$query = "SELECT 
+				    B.`id`,
+				    B.`expense` AS 'equipment',
+				    COALESCE(P.`name`,'N/A') AS 'project',
+				    COALESCE(P.`locationname`,'N/A') AS 'location',
+				    CASE
+				        WHEN THE.`taskid` IS NULL THEN 'In Stock'
+				        ELSE 'In Use'
+				    END AS 'status'
+				FROM `budget` AS B
+				LEFT JOIN `task_has_equipment` AS THE ON THE.`budgetid` = B.`id`
+				LEFT JOIN `task` AS T ON T.`id` = THE.`taskid`
+				LEFT JOIN `project` AS P ON P.`id` = T.`projectid`
+				WHERE 1 = 1 AND B.`expense_type` = 2 ".$whereCondition." 
+				GROUP BY B.`id`";
+		$result = $this->db->query($query);
+		if ($result->num_rows() > 0) {
+			$equipments = array();
+			foreach ($result->result() as $row){
+				$equipment = array(
+					$row->id,
+					$row->id,
+					$row->equipment,
+					$row->project,
+					$row->location,
+					$row->status
+					);
+				if($status != 0){
+					if($status == 1){
+						if($row->status == "In Stock")
+							array_push($equipments,$equipment);
+					}elseif($status == 2){
+						if($row->status == "In Use")
+							array_push($equipments,$equipment);
+					}
+				}else
+					array_push($equipments,$equipment);
+			}
+			return json_encode($equipments);
+		}else
+			return json_encode("error");
+    }
 }

@@ -149,45 +149,95 @@ require_once($page_javascript);  ?>
 
                         <div id='calendar'></div>
                     </section>
-                    <section class='panel' id="inventory" style="display: none;">
-                        <div class="panel-body project-team">
-                            <div class="task-progress">
-                                <h1>Inventory</h1>&nbsp;
-                            </div>
-                            <button class="btn btn-default"  style="margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" data-toggle="collapse" data-target="#filterdiv"><i class="icon_search"></i> Filters</button>
-                        </div>
-                        <div id="filterdiv" class="in" style="height: auto;">
-                            <section class="panel">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            Project Name:
-                                            <div id="projectdiv"></div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            Equipment Name:
-                                            <div id="equipmentdiv"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-                        </div>
-                        <table class="table table-hover personal-task" id="inventorytable">
-                            <thead>
-                            <th style="text-align: center"></th>
-                            <th style="text-align: center">ID</th>
-                            <th style="text-align: center">Project Name</th>
-                            <th style="text-align: center">Equipment Name</th>
-                            <th style="text-align: center">Qty</th>
-                            <th style="text-align: center">Qty in use</th>
-                            <th style="text-align: center">Total Qty</th>
-                            <th style="text-align: center">Average Price</th>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </section>
                 </div>
             </div>
         </div>
+        <section class='panel' id="inventory" style="display: none;">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <section class='panel'>
+                            <div class="panel-body project-team">
+                                <div class="task-progress">
+                                    <h1>Inventory</h1>&nbsp;
+                                </div>
+                            </div>
+                            <div id="filterdiv" class="in" style="height: auto;">
+                                <section class="panel">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <!--<div class="col-md-6">
+                                                Project Name:
+                                                <div id="projectdiv"></div>
+                                            </div>-->
+                                            <div class="col-md-6">
+                                                Equipment Name:
+                                                <div id="equipmentdiv"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <table class="table table-hover personal-task" id="inventorytable">
+                                <thead>
+                                <th style="text-align: center"></th>
+                                <th style="text-align: center">Equipment Name</th>
+                                <th style="text-align: center">Qty</th>
+                                <th style="text-align: center">Qty in use</th>
+                                <th style="text-align: center">Total Qty</th>
+                                <th style="text-align: center">Average Price</th>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </section>
+                    </div>
+                    <div class="col-md-6">
+                        <section class='panel'>
+                            <div class="panel-body project-team">
+                                <div class="task-progress">
+                                    <h1>Equipment Tracking</h1>&nbsp;
+                                </div>
+                            </div>
+                            <div id="filterdiv2" class="in" style="height: auto;">
+                                <section class="panel">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                Equipment Name:
+                                                <div id="equipmentdiv2"></div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                Status:
+                                                <select id="status">
+                                                    <option value="0">All</option>
+                                                    <option value="1">In Stock</option>
+                                                    <option value="2">In Use</option>
+                                                    <option value="3">Being Returned</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                Project Location:
+                                                <div id="locationdiv"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <table class="table table-hover personal-task" id="equipmenttable">
+                                <thead>
+                                <th style="text-align: center"></th>
+                                <th style="text-align: center">ID</th>
+                                <th style="text-align: center">Equipment Name</th>
+                                <th style="text-align: center">Project Name</th>
+                                <th style="text-align: center">Project Location</th>
+                                <th style="text-align: center">Status</th>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </section>
     </section>
 </section>

@@ -888,13 +888,14 @@ class Project_model extends CI_Model {
             return "error";
     }
     function get_project_list_dropdown(){
-        $this->db->select("id,name");
+        $this->db->select("id,name,locationname");
         $query = $this->db->get('project');
         if ($query->num_rows() > 0) {
             $projects = array();
             foreach ($query->result() as $row){
                 $project[0] = $row->id;
                 $project[1] = $row->name;
+                $project[2] = $row->locationname;
                 array_push($projects,$project);
             }
             return json_encode($projects);
