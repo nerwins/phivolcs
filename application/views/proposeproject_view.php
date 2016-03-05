@@ -484,8 +484,6 @@ require_once($page_javascript);  ?>
 									<thead> 				
 									</thead> 
 									<tbody> 
-										<tr>
-										</tr>
 									</tbody>
 								</table>
 								<div>

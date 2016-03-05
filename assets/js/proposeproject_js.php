@@ -154,7 +154,7 @@
                 hasError = false;
             }
 
-            if( $("#assignedEmployees >tbody >tr").length <= 1 ) {
+            if( $("#assignedEmployees >tbody >tr").length < 1 ) {
                 hasError = true; 
                 $("#errorTaskEmployee").css("display", "block");
             } else {
@@ -250,7 +250,9 @@
             
             console.log(tasksList);
             initTaskClickEvent();
+
             $('#add-task-container input[type="text"]').val('');
+            $('#add-task-container textarea').val('');
             $("#assignedEmployees tr").remove();
             $("#taskEquipment tr").remove();
         }
@@ -262,13 +264,15 @@
     function addEquipmentToTask(){
         getEquipmentExpenses();
         // document.getElementById("equipmentInputs").style.display = "inline";
-        var row = $("<tr  />")
-        $("#taskEquipment").append(row); 
-        row.append($("<td>" + document.getElementById("eqName").value + "</td>"));
-        row.append($("<td>" + document.getElementById("eqQty").value + "</td>"));
-        row.append("<td><button class='btn btn-danger' id='btnDeleteTaskEquipment'>Delete</button></td>");
-        $("#btnDeleteTaskEquipment").bind("click", deleteTaskEquipment);
-        document.getElementById("eqName").value = "";
+        if( $("#eqName").val() ) {
+                var row = $("<tr  />")
+                $("#taskEquipment").append(row); 
+                row.append($("<td>" + document.getElementById("eqName").value + "</td>"));
+                row.append($("<td>" + document.getElementById("eqQty").value + "</td>"));
+                row.append("<td><button class='btn btn-danger' id='btnDeleteTaskEquipment'>Delete</button></td>");
+                $("#btnDeleteTaskEquipment").bind("click", deleteTaskEquipment);
+                document.getElementById("eqName").value = "";
+            }
     }
     function getRecommendations(){
         $("#modalRecommendation").modal();
