@@ -259,7 +259,7 @@
     }
     function deleteTaskEquipment(){ 
         var par = $(this).parent().parent(); 
-        par.remove();
+        par.remove(); 
     }
     function addEquipmentToTask(){
         getEquipmentExpenses();
@@ -269,8 +269,8 @@
                 $("#taskEquipment").append(row); 
                 row.append($("<td>" + document.getElementById("eqName").value + "</td>"));
                 row.append($("<td>" + document.getElementById("eqQty").value + "</td>"));
-                row.append("<td><button class='btn btn-danger' id='btnDeleteTaskEquipment'>Delete</button></td>");
-                $("#btnDeleteTaskEquipment").bind("click", deleteTaskEquipment);
+                row.append("<td><button class='btn btn-danger btnDeleteTaskEquipment' id='btnDeleteTaskEquipment'>Delete</button></td>");
+                $(".btnDeleteTaskEquipment").bind("click", deleteTaskEquipment);
                 document.getElementById("eqName").value = "";
             }
     }
@@ -549,8 +549,6 @@
             prepareProjectObject();
         }
 
-        // var json = JSON.stringify(project);
-        // console.log(json);
     }
     function saveAsDraft(){
         $("#modalSaveAsDraft").modal();
