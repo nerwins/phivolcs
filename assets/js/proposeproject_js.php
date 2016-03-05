@@ -10,6 +10,7 @@
 <script>
     $(function(){
         taskCounter = 0;
+        budgetCounter = 0;
         $("#projectDurationFrom").datepicker({
           dateFormat: "MM dd, yy",
           minDate: '+1M', // your min date
@@ -433,15 +434,15 @@
             createdby:""
         };
 
-        budget = [];
+        budgetList = [];
         outputs = [];
         objectives = [];
 
         tasksList = [];
 
-        console.log(budget);
-        console.log(outputs);
-        console.log(objectives);
+        // console.log(budget);
+        // console.log(outputs);
+        // console.log(objectives);
         // console.log(tasks)
         console.log(project);
     }
@@ -549,6 +550,26 @@
             prepareProjectObject();
         }
 
+        // $.post("<?=base_url()?>records/update_skillset_detail_control",
+        // {
+        //     skillID: skillID,
+        //     skillName : skillName,
+        //     skillDesc : skillDesc
+        // }, function(data){
+        //     data = data.replace(/\"/g, "");
+        //     if(data == 'error')
+        //         toggleAlert(4);
+        //     else{
+        //         toggleAlert(5);
+        //         $('#skillsModal').modal('hide');
+        //         if(id == 0)
+        //             toggleAlert(8);
+        //         else
+        //             toggleAlert(9);
+        //         getSkillSetList();
+        //     }
+        // });
+
     }
     function saveAsDraft(){
         $("#modalSaveAsDraft").modal();
@@ -613,16 +634,20 @@
                 expected : $(tr).find('td:eq(0)').text(), 
                 pindicator :$(tr).find('td:eq(1)').text()
             }
-            outputs = TableData1;
         });
+
+        TableData1.shift();
+        outputs = TableData1;
 
         var TableData2 = new Array();
         $('#objectiveTable tr').each(function(row, tr){
             TableData2[row]={
                 objective : $(tr).find('td:eq(0)').text()
             }
-            objectives = TableData2;
         });
+
+        TableData2.shift();
+        objectives = TableData2;
 
         console.log(project);
         console.log(outputs);
@@ -644,7 +669,8 @@
         $(".btnEditObjective").bind("click", editObjectiveTableRow); 
         $(".btnDeleteObjective").bind("click", deleteObjectiveTableRow); 
     }
-    function editObjectiveTableRow(){ var par = $(this).parent().parent(); 
+    function editObjectiveTableRow(){ 
+        var par = $(this).parent().parent(); 
         var tdObjective = par.children("td:nth-child(1)"); 
         var tdButtons = par.children("td:nth-child(2)"); 
         tdObjective.html("<input type='text' id='txtName' value='"+tdObjective.html()+"'/>"); 
@@ -674,7 +700,8 @@
         $(".btnEditOutput").bind("click", editOutputTableRow); 
         $(".btnDeleteOutput").bind("click", deleteOutputTableRow); 
     }
-    function editOutputTableRow(){ var par = $(this).parent().parent(); 
+    function editOutputTableRow(){ 
+        var par = $(this).parent().parent(); 
         var tdExpectedOutput = par.children("td:nth-child(1)"); 
         var tdPerformanceIndicator = par.children("td:nth-child(2)"); 
         var tdButtons = par.children("td:nth-child(3)"); 
@@ -688,23 +715,6 @@
     function deleteOutputTableRow(){ 
         var par = $(this).parent().parent(); 
         par.remove();   
-    }
-    function addBudgetTableRow(){
-        getGeneralExpenses();
-         $("#budgetContainer table").append(
-            $('<tr>')
-                .append($('<td id="eType">').html("<select class='form-control' id='expenseTypeSelect' onchange='changeAutoComplete()'> <option value='1'>General Expense</option> <option value='2'>Equipment</option> </select>"))
-                .append($('<td>').html('<input id="bItem" type="text" class="form-control" placeholder="" onchange="searchEquipmentPrice()">'))
-                .append($('<td id="eType">').html('<textarea class="form-control" id="budgetReason" rows="3" placeholder="Reason..."></textarea>'))
-                .append($('<td>').html('<input class="form-control" id="bQty" style = "width:70px;" type="number" name="quantity" min="1" max="99">'))
-                .append($('<td>').html('<input class="form-control" id="bAmt" type="number" name="quantity" min="1" step="any">'))
-                .append($('<td id="total">').html("0"))
-                .append($('<td>').html('<button id="btnSave" class="btn btn-info btnSave">Save</button><button id="btnDeleteBudget" class="btn btn-danger btnDeleteBudget">Delete</button>'))
-            );
-         document.getElementById("bQty").defaultValue = "1";
-         document.getElementById("bQty").readOnly = true;
-        $(".btnSave").bind("click", saveBudgetTableRow); 
-        $(".btnDeleteBudget").bind("click", deleteBudgetTableRow);
     }
     function searchEquipmentPrice(){
         // console.log("working");
@@ -727,11 +737,51 @@
             document.getElementById("bQty").readOnly = false;
         }
     }
+     function addBudgetTableRow(){
+        getGeneralExpenses();
+         $("#budgetContainer table").append(
+            $('<tr>')
+                .append($('<td id="eType">').html("<select class='form-control' id='expenseTypeSelect' onchange='changeAutoComplete()'> <option value='1'>General Expense</option> <option value='2'>Equipment</option> </select>"))
+                .append($('<td>').html('<input id="bItem" type="text" class="form-control" placeholder="" onchange="searchEquipmentPrice()">'))
+                .append($('<td>').html('<textarea class="form-control" id="budgetReason" rows="3" placeholder="Reason..."></textarea>'))
+                .append($('<td>').html('<input class="form-control" id="bQty" style = "width:70px;" type="number" name="quantity" min="1" max="99">'))
+                .append($('<td>').html('<input class="form-control" id="bAmt" type="number" name="quantity" min="1" step="any">'))
+                .append($('<td id="total">').html("0"))
+                .append($('<td>').html('<button id="btnSave" class="btn btn-info btnSave">Save</button><button id="btnDeleteBudget" class="btn btn-danger btnDeleteBudget">Delete</button>'))
+            );
+         document.getElementById("bQty").defaultValue = "1";
+         document.getElementById("bQty").readOnly = true;
+        $(".btnSave").bind("click", saveBudgetTableRow); 
+        $(".btnDeleteBudget").bind("click", deleteBudgetTableRow);
+    }
 
-    totalBudget = new Array();
+    function getTotalBudget() {
+        var total = 0;
+        for (var i = 0; i < budgetList.length; i++) {
+            total = total + budgetList[i].total;
+        }   
+        return total;
+    }
+
     function saveBudgetTableRow(){ 
+        budget = {
+            id: "",
+            item:"",
+            type:"",
+            reason:"",
+            amount:"",
+            qty:"",
+            total:""
+        };
+
         var par = $(this).parent().parent(); 
         var sel = document.getElementById("expenseTypeSelect");
+        var bitem = document.getElementById("bItem").value;
+        var breason = document.getElementById("budgetReason").value;
+        var bqty = document.getElementById("bQty").value;
+        var bamt = document.getElementById("bAmt").value;
+        var btype = sel.options[sel.selectedIndex].text;
+
         var tdExpenseType = par.children("td:nth-child(1)");
         var tdBudgetItem = par.children("td:nth-child(2)"); 
         var tdReason = par.children("td:nth-child(3)");
@@ -749,13 +799,30 @@
         tdButtons.html("<button class='btn btn-danger btnDeleteBudget' id='btnDeleteBudget'>Delete</button>"); 
         $(".btnEditBudget").bind("click", editBudgetTableRow); 
         $(".btnDeleteBudget").bind("click", deleteBudgetTableRow); 
-        totalBudget.push(sum);
-        var total = totalBudget.reduce(function(a, b) { 
-            return a + b; 
-        }, 0);
-        document.getElementById("totalamount").innerHTML = total;
+
+        par.attr("id", "budget"+budgetCounter);
+
+        budget.id = par.attr('id');
+        budget.item = bitem;
+        budget.type = btype;
+        budget.reason = breason;
+        budget.amount = bamt;
+        budget.qty = bqty;
+        budget.total = bamt * bqty;
+        console.log(budget);
+        budgetList.push(budget);
+        console.log(budgetList);
+
+        budgetCounter++;
+        console.log(budgetCounter);
+        // totalBudget.push(sum);
+        // var total = totalBudget.reduce(function(a, b) { 
+        //     return a + b; 
+        // }, 0);
+        document.getElementById("totalamount").innerHTML = getTotalBudget();
     }
-    function editBudgetTableRow(){ var par = $(this).parent().parent(); 
+    function editBudgetTableRow(){ 
+        var par = $(this).parent().parent(); 
         var stringSelect = "<select class='form-control' id='expenseTypeSelect'> <option value='1'>General Expense</option> <option value='2'>Equipment</option> </select>";
         var tdBudgetItem = par.children("td:nth-child(1)"); 
         var tdExpenseType = par.children("td:nth-child(2)");
@@ -775,8 +842,22 @@
     function deleteBudgetTableRow(){ 
         var par = $(this).parent().parent(); 
         par.remove();
-        totalBudget = [];
-        document.getElementById("totalamount").innerHTML = 0;
+        var total = 0;
+
+        for(var i=0 ; i<budgetList.length; i++)
+        {   
+            var temp = budgetList[i];
+            // console.log(tasksList[i].task_id);
+            if(budgetList[i].id == par.attr("id"))
+                budgetList.splice(i);
+            total = getTotalBudget();
+        }
+
+        document.getElementById("totalamount").innerHTML = total;
+        console.log(budgetList);
+        // totalBudget = [];
+        // document.getElementById("totalamount").innerHTML = 0;
+
     }
     function initProjectTypes(){
         //get project types and populate projectTypeSelect

@@ -383,7 +383,6 @@ require_once($page_javascript);  ?>
 								<tr> 
 									<th style="text-align:center">Expected Output</th>
 									<th style="text-align:center">Performance Indicator</th> 
-									<th></th> 
 								</tr> 
 							</thead> 
 							<tbody> 
@@ -428,7 +427,6 @@ require_once($page_javascript);  ?>
 				<section class="panel">
 					<header class="panel-heading"> 
 						Tasks
-						<button class="btn btn-info pull-right" id=""><i class="icon_plus_alt2"></i></button> 
 					</header>
 					<div class="errorDiv alert-danger">
 						<label class="errorLabel" id="errorTasks">Tasks List cannot be empty</label>
