@@ -93,4 +93,21 @@ class Skillset_model extends CI_Model {
         }
         return json_encode($employeeString);
     }
+
+    //for autocomplete for propose
+    function get_skillsets(){
+        
+        $query = "SELECT `name` FROM `skillset`";
+        //print_r($query);
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            $skillSetList = array();
+            foreach ($result->result() as $row)
+            {
+                $skillSetList[] = $row->name;
+            }
+            return json_encode($skillSetList);
+        }else
+            return json_encode("error");
+    }
 }

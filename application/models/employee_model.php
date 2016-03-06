@@ -342,4 +342,48 @@ class Employee_model extends CI_Model {
         $this->db->insert('employee_has_task', $data); 
         return;
     }
+    function get_recommendations(){
+        $projectType = $this->input->get('projectType');
+        $query = 'SELECT employee_has_skillset.employeeid, employee_has_skillset.skillsetid, skillset.name, CONCAT_WS(", ", employee.lastname, employee.firstname) as `fullname`, employee.date_started, employee.division_id 
+            FROM employee_has_skillset
+            INNER JOIN skillset
+            ON skillsetid = skillset.id
+            INNER JOIN employee
+            ON employeeid = employee.id
+            INNER JOIN project_nature_has_skillset
+            ON id_skillset = skillset.id
+            WHERE pid = ?';
+        $result = $this->db->query($query, array($projectType)); 
+        if ($result->num_rows() > 0) {
+            $recommendations = array();
+            foreach ($result->result() as $row){
+                $handled = $this->employee_model->get_recommendations_projects_handled($row->employeeid);
+                $involved = $this->employee_model->get_recommendations_projects_involved($row->employeeid);
+                $arr[0] = $row->employeeid;
+                $arr[1] = $row->skillsetid;
+                $arr[2] = $row->name;
+                $arr[3] = $row->fullname;
+                $arr[4] = $row->date_started;
+                $arr[5] = $row->division_id;
+                $arr[6] = $involved;
+                $arr[7] = $handled;
+                array_push($recommendations, $arr);
+            }
+        }
+        return json_encode($recommendations);
+    }
+    function get_recommendations_projects_handled($employeeid){
+        $query = "SELECT COUNT(project.id) AS 'count_handled' FROM project WHERE project.empid = ? AND project.status > 0 AND project.status != 7";
+        $result = $this->db->query($query, array($employeeid));
+        foreach ($result->result() as $row){
+            return $row->count_handled;
+        }
+    }
+    function get_recommendations_projects_involved($employeeid){
+        $query = "SELECT COUNT(id) AS 'count_involved' FROM  phivolcs.employee_has_task WHERE empid = ? AND status != 1";
+        $result = $this->db->query($query, array($employeeid));
+        foreach ($result->result() as $row){
+            return $row->count_involved;
+        }
+    }
 }

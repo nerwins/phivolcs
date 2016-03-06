@@ -9,11 +9,13 @@
 class Project_model extends CI_Model {
     function __construct() {
         parent::__construct();
+
         $this->load->model("inventory_model");
         $this->load->model("budget_model");
         $this->load->model("revisions_model");
         $this->load->model("tasks_model");
         $this->load->model("outputs_model");
+
     }
     function get_project_list(){
         $id = $_SESSION['id'];
@@ -117,6 +119,7 @@ class Project_model extends CI_Model {
         }elseif($position == 3 && $division != 3){
             //projects head projects
             $whereCondition = " (`status`=-1 or `status`>=5) AND `empid` = " . $empid;
+
         }
         if($filters['projectid'] != 0){
             $whereCondition .= " AND `id` = '".$filters['projectid'] ."' ";
@@ -206,12 +209,17 @@ class Project_model extends CI_Model {
             $project['background'] = $row->background;
             $project['locationname'] = $row->locationname;
             $status = "";
+
+
             $percentage = $this->get_project_percentage($projectid);
             $totalbudget = $this->budget_model->get_total_project_budget($projectid);
             $tasks = $this->tasks_model->get_project_tasks($projectid,$row->status, $row->empid);
             $budgets = $this->budget_model->get_project_budgets($projectid);
             $outputs = $this->outputs_model->get_project_outputs($projectid);
             $directorComments = $this->revisions_model->get_director_comments($projectid,$_SESSION['position'],$row->status);
+
+            $percentage = $this->get_project_percentage($projectid);
+
             switch($row->status){
                 case -1: $status = "Waiting for employee approval"; break;
                 case 0: $status = "Pending"; break;
@@ -225,20 +233,31 @@ class Project_model extends CI_Model {
             }
             $project['status'] = $status;
             $project['projectheadname'] = $row->fullname;
+
             $project['budgettotal'] = (($row->status >= 0 && $row->status <= 3)?"Proposed Budget: ":"Project Budget: ").$totalbudget;
             $project['pendingtaskcount'] = $this->tasks_model->get_task_status_count($projectid,'pending');
             $project['completedtaskcount'] = $this->tasks_model->get_task_status_count($projectid,'completed');
+
+            $budget = $this->get_project_budget($projectid);
+            $project['budget'] = (($row->status >= 0 && $row->status <= 3)?"Proposed Budget: ":"Project Budget: ").$budget;
+            $project['pendingtaskcount'] = $this->get_task_status_count($projectid,'pending');
+            $project['completedtaskcount'] = $this->get_task_status_count($projectid,'completed');
+            $tasks = $this->get_project_tasks($projectid,$row->status, $row->empid);
+
             $project['totaltaskcount'] = $tasks != "error"?count($tasks):0;
             $project['percentage'] = $percentage;
             $project['statusnum'] = $row->status;
             $project['tasks'] = $tasks;
+
             $project['budgets'] = $budgets;
             $project['outputs'] = $outputs;
             $project['directorcomments'] = $directorComments;
+
             return json_encode($project);
         }else
             return json_encode("error");
     }
+
     function approve_project(){
         $projectid = $this->input->post('id');
         $budgets = $this->budget_model->get_project_budgets($projectid);
@@ -303,6 +322,79 @@ class Project_model extends CI_Model {
             );
         $this->db->where('id', $pid);
         $this->db->update('project', $data);
+    }   
+    function get_project_budget($id){
+        $this->db->select('sum(amount) AS `total`');
+        $this->db->where('projectid', $id); 
+        $this->db->group_by("projectid"); 
+        $query = $this->db->get('budget');
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+            return $row->total;
+        }
+        return 0;
+    }
+    function get_task_status_count($id,$status){
+        $whereString = "";
+        if($status == 'pending')
+            $whereString = "!";
+        $query = "SELECT 
+                    COUNT(tasktable.name) 'count'
+                FROM
+                    (SELECT 
+                        t1.`name`,
+                            t1.`countemployees` 'c1',
+                            t2.`countemployees` 'c2'
+                    FROM
+                        (SELECT 
+                        T.`name` 'name', COUNT(`ET`.`empid`) 'countemployees'
+                    FROM
+                        task T
+                    LEFT JOIN `employee_has_task` ET ON T.`id` = ET.`taskid`
+                    WHERE
+                        `projectid` = ?
+                    GROUP BY T.`id`) t1
+                    LEFT JOIN (SELECT 
+                        T.`name` 'name', COUNT(`ET`.`empid`) 'countemployees'
+                    FROM
+                        task T
+                    LEFT JOIN `employee_has_task` ET ON T.`id` = ET.`taskid`
+                    WHERE
+                        `projectid` = ? AND ET.`status` = 1
+                    GROUP BY T.`id`) t2 ON t1.`name` = t2.`name`) tasktable
+                WHERE
+                    tasktable.c1 ".$whereString."= tasktable.c2;";
+        $result = $this->db->query($query, array($id,$id));
+        if ($result->num_rows() > 0){
+            $row = $result->row();
+            return $row->count;
+        }else
+            return 0;
+    }
+    function get_project_tasks($id,$projectstatus,$empid){
+        $this->db->select("`id`,`name`,`milestone_indicator`,`datefrom`,`dateto`,`output`,`member_count`,`priority`,DATE_FORMAT(`datefrom`, '%M %d,%Y') 'dformat1',DATE_FORMAT(`dateto`, '%M %d,%Y') 'dformat2'");
+        $this->db->where('projectid', $id); 
+        $query = $this->db->get('task');
+        if($query->num_rows() > 0){
+            $tasks = array();
+            foreach ($query->result() as $row){
+                $task[0] = $row->id;
+                $task[1] = $row->member_count;
+                $task[2] = $row->datefrom;
+                $task[3] = $row->dateto;
+                $task[4] = $row->name;
+                $task[5] = $row->dformat1;
+                $task[6] = $row->dformat2;
+                $task[7] = $row->milestone_indicator;
+                $task[8] = $row->priority;
+                $task[9] = $row->output;
+                if($projectstatus == -1)
+                    $task[10] = $this->check_task($empid,$id,$row->id);
+                array_push($tasks,$task);
+            }
+            return $tasks;
+        }else
+            return "error";
     }
     function check_task($empid,$projectid,$taskid){
         $query = "SELECT 
@@ -900,5 +992,146 @@ class Project_model extends CI_Model {
             return json_encode($projects);
         }else
             return json_encode("error");
+    }
+    function add_project_draft(){
+        $project_name = $this->input->post('project_name');
+        $project_type = $this->input->post('project_type');
+        $date_from = date("Y-m-d", strtotime($this->input->post('date_from')));
+        $date_to = date("Y-m-d", strtotime($this->input->post('date_to')));
+        $project_head = $this->input->post('project_head');
+        $priority = $this->input->post('priority');
+        $description = $this->input->post('description');
+        $background = $this->input->post('background');
+        $latitude = $this->input->post('latitude');
+        $longitude = $this->input->post('longitude');
+        $location_name = $this->input->post('location_name');
+        $significance = $this->input->post('significance');
+        $draft_name = $this->input->post('draft_name');
+        $createdby = $this->input->post('createdby');
+
+        $query = "INSERT INTO `project_draft` 
+        (`draft_name`,  `pname`, `significance`, `background`, `description`, 
+            `datefrom`, `dateto`, `empid`, `priority`, `latitude`, `longitude`, `locationname`, `createdby`) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $result = $this->db->query($query, array($draft_name, $project_name, $significance, $background, $description, 
+            $date_from, $date_to, $project_head, $priority, $latitude, $longitude, $location_name, $createdby));
+
+        //add objectives
+        // var_dump($this->db->last_query());
+        // $query2 = "SELECT `id` FROM `project` WHERE `name`= ?";
+        // $result2 = $this->db->query($query2, array($project_name));
+        // $projectid = "";
+        // if ($result2->num_rows() > 0) {
+        //     foreach ($result->result() as $row){
+        //         $projectid = $row->id;
+        //         // var_dump($a);
+        //     }
+        // }
+        // $objectives = $this->input->post('json_objectives');
+        // $data_objectives = json_decode($objectives);
+        // var_dump($data_objectives);
+        // $this->db->set('name', $data_objectives); 
+        // $this->db->set('projectid', $projectid); 
+        // $this->db->insert('objectives'); 
+
+        // var_dump($this->db->last_query());
+    }
+    function get_project_heads(){
+        $query = 'SELECT CONCAT_WS(", ", `lastname`, `firstname`) AS `emp_name` FROM phivolcs.employee WHERE `division_id` != 0;';
+        $result = $this->db->query($query);
+        if ($result->num_rows() > 0) {
+            $arr = array();
+            foreach ($result->result() as $row){
+                $arr[] = $row->emp_name;  
+            }
+        }
+        return json_encode($arr);
+    }
+    function propose_project(){
+        $project = json_decode($this->input->post('project'), true);
+        $outputs = json_decode($this->input->post('outputs'));
+        $objectives = json_decode($this->input->post('objectives'));
+        $budgetList = json_decode($this->input->post('budgetList'));
+        $tasksList = json_decode($this->input->post('tasksList'));
+
+        $date_from = date("Y-m-d", strtotime($this->input->post('date_from')));
+
+        $query = 'INSERT INTO `project` (`name`, `description`, `background`, `significance`, `datefrom`, `dateto`, `empid`, `status`, `priority`, `latitude`, `longitude`, `locationname`, `createdby`, `id_nature`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+        $result = $this->db->query($query, array($project['project_name'], $project['description'], $project['background'], $project['significance'], date("Y-m-d", strtotime($project['date_from'])), date("Y-m-d", strtotime($project['date_to'])), $project['project_head'], -1, $project['priority'], $project['latitude'], $project['longitude'], $project['location_name'], $project['createdby'], $project['project_type']));
+
+        // var_dump($this->db->last_query());
+
+        $this->db->select('id');
+        $this->db->where('name', $project['project_name']);
+        $this->db->where('datefrom', date("Y-m-d", strtotime($project['date_from'])));
+        $this->db->where('datefrom', date("Y-m-d", strtotime($project['date_to']))); 
+        $temp = $this->db->get('project');
+        if($temp->num_rows() > 0){
+            foreach ($temp->result() as $row){
+                $pid = $row->id;
+            }
+        }
+
+        foreach($objectives as $o) {
+            $objective = $o->objective;
+            $query2 = 'INSERT INTO `objectives` (`name`, `projectid`) VALUES (?, ?)';
+            $result2 = $this->db->query($query2, array($objective, $pid));
+        }
+
+        foreach($outputs as $o) {
+            $expected = $o->expected;
+            $pindicator = $o->pindicator;
+            $query3 = 'INSERT INTO `output` (`expected`, `pindicator`, `projectid`) VALUES (?, ?, ?)';
+            $result3 = $this->db->query($query3, array($expected, $pindicator, $pid));
+        }
+
+        foreach($budgetList as $b) {
+            $amount = $b->amount;
+            $item = $b->item;
+            $qty = $b->qty;
+            $reason = $b->reason;
+            $type = $this->get_expense_type($b->type);
+            $query4 = 'INSERT INTO `budget` (`expense`, `reason`, `expense_type`, `projectid`, `amount`, `qty`) VALUES (?, ?, ?, ?, ?, ?)';
+            $result4 = $this->db->query($query4, array($item, $reason, $type, $pid, $amount, $qty));
+        }
+
+        foreach($tasksList as $t) {
+            $due_date = $t->task_due_date;
+            $milestone = $t->task_milestone;
+            $taskname = $t->task_name;
+            $output = $t->task_output;
+            $priority = $t->task_priority;
+            $query5 = 'INSERT INTO `propose_task` (`name`, `milestone_indicator`, `due_date`, `output`, `pid`, `priority`) VALUES (?, ?, ?, ?, ?, ?)';
+            $result5 = $this->db->query($query5, array($taskname, $milestone, $due_date, $output, $pid, $priority));
+        }
+
+        // foreach($tasksList as $t) {
+        //     $due_date = $t->task_due_date;
+        //     $milestone = $t->task_milestone;
+        //     $taskname = $t->task_name;
+        //     $output = $t->task_output;
+        //     $priority = $t->task_priority;
+        //     $query5 = 'INSERT INTO `propose_task` (`name`, `milestone_indicator`, `due_date`, `output`, `pid`, `priority`) VALUES (?, ?, ?, ?, ?, ?)';
+        //     $result5 = $this->db->query($query5, array($taskname, $milestone, $due_date, $output, $pid, $priority));
+        // }
+
+
+        // print_r($this->db->last_query());
+
+        // print_r($project);
+        // print_r($outputs);
+        // print_r($objectives);
+        // print_r($budgetList);
+        // print_r($tasksList);
+    }
+    function get_expense_type($type){
+        // $query = 
+        if($type === "General Expense") {
+            return 1;
+        } else {
+            return 2;
+        }
     }
 }
