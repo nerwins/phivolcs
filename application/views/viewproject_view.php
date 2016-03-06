@@ -9,7 +9,6 @@ require_once("assets/includes.php");
 require_once("assets/sidebar.php");
 require_once($page_javascript);?>
 ?>
-
 <section id="main-content">
 	<section class="wrapper">
 		<div class="row">
@@ -147,8 +146,11 @@ require_once($page_javascript);?>
                                     </div>
                                     <div class="span12"><hr></div>
                                     <div class="bio-graph-heading3" id="pbudget">
-                                        <button class="btn btn-send"  onclick="reportexpense()" style="display:none; float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='btnreportexpense' data-toggle="collapse"><i class="icon_pencil-edit"></i> Report Expense</button>
                                     	<h4 style="text-align:center;">Project Budget:&nbsp;</h4>    
+                                        <div class="col-lg-12">
+                                            <button class="btn btn-send"  onclick="reportexpense()" style="display:none; float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='btnreportexpense' data-toggle="collapse"><i class="icon_pencil-edit"></i> Report Expense</button>
+                                        <button class="btn btn-send"  onclick="showForecast()" style="display:none; float: right; margin-top: -7px; margin-right: 9px;margin-bottom:-10px;" type="button" id='btnforecast' data-toggle="collapse"><i class="icon_genius"></i> Forecasting</button>
+                                        </div>
                                     	<div class="col-lg-12" id='bsection'>
                                     		<label style='display:none' id='budgetstat'>Proposed</label>
                                     		<div id='pbchoices' style='display:none'>
@@ -1029,6 +1031,26 @@ require_once($page_javascript);?>
                 <!--<form class="form-inline" role="form">-->
                     <div align="right"><button align="right" class="btn btn-submit" id="btnexp_report" onclick="saveexp_report()">Submit</button></div>
                 <!--</form>-->
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="myModalLabel" role="dialog" tabindex="-1" id="forecasting" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">X</button>
+                <h4 class="modal-title">Budget Forecasting</h4>
+            </div>
+            <div class="modal-body">
+                Approved Budget: <label id="forecast_ab"></label><br>
+                Running Expense: <label id="forecast_re"></label><br>
+                Work Completed: <label id="forecast_wc"></label><br>
+                Cost Performance Index: <label id="forecast_cpi"></label><br>
+                <div id="tcpidiv">To-Complete Performance Index: <label id="forecast_tcpi"></label><br><br></div>
+
+                Your CPI is <label id="forecast_cpi_copy"></label>. Your project <label id="forecast_ou"></label><br>
+                <table class="table table-hover personal-task" id="forecasttable"></table>
             </div>
         </div>
     </div>

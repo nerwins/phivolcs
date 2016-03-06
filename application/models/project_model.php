@@ -159,6 +159,7 @@ class Project_model extends CI_Model {
             return "error";
     }
     function get_project_percentage($id){
+        $id = !isset($id)?$this->input->get('projectid'):$id;
         $query = "SELECT 
                         ROUND((SUM((SELECT 
                                         COALESCE(SUM(`percentage`), 0)
@@ -208,10 +209,26 @@ class Project_model extends CI_Model {
             $status = "";
             $percentage = $this->get_project_percentage($projectid);
             $totalbudget = $this->budget_model->get_total_project_budget($projectid);
+            $totalrunningexpense = $this->budget_model->get_project_running_expense($projectid);
             $tasks = $this->tasks_model->get_project_tasks($projectid,$row->status, $row->empid);
             $budgets = $this->budget_model->get_project_budgets($projectid);
             $outputs = $this->outputs_model->get_project_outputs($projectid);
             $directorComments = $this->revisions_model->get_director_comments($projectid,$_SESSION['position'],$row->status);
+
+            $earnedValue = $totalbudget * ($percentage / 100);
+            $costperformanceindex = ($totalrunningexpense == 0)?0:$earnedValue / $totalrunningexpense;
+            $estimatedatcompletion = ($costperformanceindex == 0)?0:$totalbudget / $costperformanceindex;
+            $tcpi = 0;
+            $forecast = "may still have no progress.";
+            if($costperformanceindex > 1.0){
+                $tcpi = ($totalbudget - $earnedValue) / ($estimatedatcompletion - $totalrunningexpense);
+                $forecast = "is over budget.";
+            }elseif($costperformanceindex < 1.0 && $costperformanceindex != 0){
+                $tcpi = ($totalbudget - $earnedValue) / ($totalbudget - $totalrunningexpense);
+                $forecast = "is under budget.";
+            }elseif ($costperformanceindex == 1.0)
+                $forecast = "is currently on budget.";
+
             switch($row->status){
                 case -1: $status = "Waiting for employee approval"; break;
                 case 0: $status = "Pending"; break;
@@ -235,6 +252,10 @@ class Project_model extends CI_Model {
             $project['budgets'] = $budgets;
             $project['outputs'] = $outputs;
             $project['directorcomments'] = $directorComments;
+            $project['totalrunningexpense'] = $totalrunningexpense;
+            $project['costperformanceindex'] = $costperformanceindex;
+            $project['tocompleteperformanceindex'] = $tcpi;
+            $project['forecast'] = $forecast;
             return json_encode($project);
         }else
             return json_encode("error");

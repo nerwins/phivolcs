@@ -355,7 +355,7 @@
  						$("#revCommentDiv").append("<div id='revcomment2'></div>");
  					}
  					if(data['statusnum'] >= 5){
- 						$('#btnreportexpense').css("display","block");
+ 						$('#btnreportexpense,#btnforecast').css("display","block");
  					}
  					if(data['statusnum'] >= 6){
  						var taskString = "<li class=''>"
@@ -395,6 +395,15 @@
  					createTableBodyFrom2DJSON(data['outputs'],'outputtable');
  					getDirectorComments(data['directorcomments']);
  					hidecolumn(4,'tasktable');
+ 					$('#forecast_wc').html("<b>" +data['percentage'] +"%</b>");
+ 					$('#forecast_ab').html("<b>Php " +ReplaceNumberWithCommas(data['budgettotal'].split(": ")[1]) +"</b>");
+ 					$('#forecast_re').html("<b>Php " +ReplaceNumberWithCommas(data['totalrunningexpense']) +"</b>");
+ 					$('#forecast_cpi').html("<b>" +data['costperformanceindex'] +"</b>");
+ 					$('#forecast_cpi_copy').html("<b>" +data['costperformanceindex'] +"</b>");
+ 					$('#forecast_tcpi').html("<b>" +data['tocompleteperformanceindex'] +"</b>");
+ 					if(data['tocompleteperformanceindex'] == 0)
+ 						$('#tcpidiv').hide();
+ 					$('#forecast_ou').html("<b>" +data['forecast'] +"</b>");
  				}
  		});
 	 }
@@ -887,6 +896,10 @@
     	}
     	function reportexpense(){
     		$('#reportExpense').modal('show');
+    	}
+    	function showForecast(){
+    		$('#forecasting').modal('show');
+    		$('#forecasttable').html($('#budgettable').html());
     	}
     	function saveexp_report(){
     		var itemv = $.trim($('#expitem_report').val());

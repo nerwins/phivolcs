@@ -126,4 +126,15 @@ class Budget_model extends CI_Model {
         $total = $this->budget_model->get_total_project_budget($id);
         return $total;
     }
+    function get_project_running_expense($id){
+        $this->db->select('sum(amount) AS `total`');
+        $this->db->where('pid', $id); 
+        $this->db->group_by("pid"); 
+        $query = $this->db->get('project_has_expenses');
+        if ($query->num_rows() > 0) {
+            $row = $query->row();
+            return number_format($row->total,1);
+        }
+        return 0;
+    }
 }
