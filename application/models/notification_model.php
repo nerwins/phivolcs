@@ -37,9 +37,9 @@ class Notification_model extends CI_Model {
         $result = $this->db->query($query);
         $count = $this->notification_model->get_notifications_unread_count();
         $notification = "";
-        if ($count > 0) {
-            $notification .= "<li><a href='#' onclick='markallread();' style='text-align:right; cursor:pointer;'>Mark All as Read</a><li>";
-        }       
+        /*if ($count > 0) {
+            $notification .= "<li><a onclick='markallread();' style='text-align:right; cursor:pointer;'>Mark All as Read</a><li>";
+        }   */    
         $notification .= "<div class='notify-arrow notify-arrow-blue'></div>
                           <li>
                             <p class='blue' id='countstr'>You have ".$count." new notifications.</p>
@@ -49,18 +49,18 @@ class Notification_model extends CI_Model {
             {
                 $sourcestr = "";
                 if ($row->sourcetype == 1) {
-                    $sourcestr .= "viewproject?id=".$row->sourceid;
+                    $sourcestr .= '"viewproject?id='.$row->sourceid.'"';
                 }
                 else if ($row->sourcetype == 2) {
-                    $sourcestr .= "task?id=".$row->sourceid;
+                    $sourcestr .= '"task?id='.$row->sourceid.'"';
                 }
 
                 $color_read = "";
                 if ($row->isread == 0) {
                     $color_read .= "style='background-color:#FFFACD;'";
                 }
-                $notification .= "<li ".$color_read.">
-                                    <a href='".$sourcestr."'>
+                $notification .= "<li id=".$row->id." ".$color_read." onclick='markread(".$row->id.",".$sourcestr.");'>
+                                    <a>
                                         <span class='label label-primary'><i class='icon_info'></i></span>
                                         ".$row->message."
                                         <span class='small italic pull-right'>".$row->datetime."</span>
@@ -81,30 +81,41 @@ class Notification_model extends CI_Model {
 
         $wherestr = "";
         if ($datefrom != "") {
-            $wherestr .= " AND N.`datetime` >= ".$datefrom;
+            $wherestr .= " AND N.`datetime` >= '".$datefrom."' ";
         }
         if ($dateto != "") {
-            $wherestr .= " AND N.`datetime` <= ".$dateto;
+            $wherestr .= " AND N.`datetime` <= '".$dateto."' ";
         }
         
         $query = "SELECT NU.`id`, N.`sourcetype`, N.`sourceid`, N.`datetime`, N.`message`, NU.`isread`
                 FROM notification as N, notification_users as NU
                 WHERE N.`id` = NU.`notificationid` ".$wherestr." AND NU.`receiverid` = ".$id." ORDER BY N.`datetime` DESC";
+        //die(json_encode($query));
         $result = $this->db->query($query);
 
         if ($result->num_rows() > 0) {
-            $notification = array();
-            $i = 0;
+            $notifications = "";
             foreach ($result->result() as $row)
             {
-                $notification[$i]['sourcetype'] = $row->sourcetype;
-                $notification[$i]['sourceid'] = $row->sourceid;
-                $notification[$i]['datetime'] = $row->datetime;
-                $notification[$i]['message'] = $row->message;
-                $notification[$i]['isread'] = $row->isread;
-                $i++;
+                $sourcestr = "";
+                if ($row->sourcetype == 1) {
+                    $sourcestr .= '"viewproject?id='.$row->sourceid.'"';
+                }
+                else if ($row->sourcetype == 2) {
+                    $sourcestr .= '"task?id='.$row->sourceid.'"';
+                }
+
+                $color_read = "";
+                if ($row->isread == 0) {
+                    $color_read .= "style='background-color:#FFFACD;'";
+                }
+
+                $notifications .= "<tr onclick='markread(".$row->id.",".$sourcestr.");'>
+                                        <td ".$color_read.">".$row->datetime."</td>
+                                        <td ".$color_read." href='".$sourcestr."'>".$row->message."</td>
+                                   </tr>";
             }
-            return json_encode($notification);
+            return $notifications;
         }else
             return "error";
     }
@@ -113,9 +124,10 @@ class Notification_model extends CI_Model {
         $id = $_SESSION['id'];
         $data = array(
             'isread' => "1",
-            'datetimeread' => NOW()
+            'datetimeread' => date("Y-m-d h:i:s")
         );
         $this->db->where('receiverid', $id);
+        $this->db->where('isread', 0);
         $this->db->update('notification_users',$data);
         return;
     }
@@ -124,7 +136,7 @@ class Notification_model extends CI_Model {
         $id = $this->input->post('id');
         $data = array(
             'isread' => "1",
-            'datetimeread' => "NOW()"
+            'datetimeread' => date("Y-m-d h:i:s")
         );
         //for ($x = 0; $x < count($id); $x++) {
             $this->db->where('id', $id);
@@ -137,7 +149,7 @@ class Notification_model extends CI_Model {
         $data = array(
             'empid' => $empid,
             'message' => $message,
-            'datetime' => 'NOW()',
+            'datetime' => date("Y-m-d h:i:s"),
             'sourcetype' => $type,
             'sourceid' => $typeid
         );

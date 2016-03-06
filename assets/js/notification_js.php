@@ -47,21 +47,23 @@
 	            getNotifications();
 	        }
 	    });
-    	$("#datefrom").datepicker( "setDate", -365);
+    	$("#datefrom").datepicker( "setDate",new Date());
         $("#dateto").datepicker( "setDate", new Date());
     	getNotifications();
 	});
 	function getNotifications(){
-		$.getJSON("<?=base_url()?>Notification/get_notifications_control",{
+		$.get("<?=base_url()?>Notification/get_notifications_control",{
 			datefrom: $('#datefrom').val(),
 			dateto: $('#dateto').val(),
 		}, function(data){
 			$("#ntable > tbody").html("");
 			if(data != "error"){
-				createTableBodyFrom2DJSON(data,"ntable", false);
+				$("#ntable > tbody").html(data);
 				$("#ntable").show();
+				$("#markall").css("display","block");
 			}else{
 				$("#ntable").hide();
+				$("#markall").css("display","none");
 			}
 		});
 	}

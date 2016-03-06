@@ -70,7 +70,7 @@ function createTableBodyFrom2DJSON(JSON,tableid,align){
 
 $( document ).ajaxStart(function() {
     var controller = document.location.href.match(/[^\/]+$/) != null?document.location.href.match(/[^\/]+$/)[0]:0;
-    var excludes = ["login","records","projectload"];
+    var excludes = ["login","records","projectload","notification"];
     if(jQuery.inArray(controller,excludes) === -1 && controller != 0)
         $('#loading').modal('show');
 });

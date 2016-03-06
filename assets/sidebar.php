@@ -203,15 +203,26 @@
     });
 
     function markallread() {
+        //$("#alert_notificatoin_bar").removeClass('dropdown'); 
         $("#notif_cnt").removeClass('bg-important');
         $("#notif_cnt").addClass('bg-success');
         $("#notif_cnt").html(0);
 
         $("#ulnotif > li").css("background-color", "#ffffff");
         $("#countstr").html("You have 0 new notifications.");
-        //$.post("<?=base_url()?>notification/markallread_notification_control",{},
-        //    function(data) {
-        //});
+        //$("#alert_notificatoin_bar").addClass('dropdown open');
+        $.get("<?=base_url()?>notification/markallread_notification_control");
+        
+        if (document.location.href == '<?=base_url()?>notification') {
+            $("#ntable > tbody > tr > td").css("background-color", "#ffffff");
+        }
+    }
+
+    function markread(id_val,redirect_val) {
+        $.post("<?=base_url()?>notification/markread_notification_control",{ id: id_val},
+            function(data) { 
+                window.location = "<?=base_url()?>" + redirect_val;
+            });
     }
 
     $(function() {

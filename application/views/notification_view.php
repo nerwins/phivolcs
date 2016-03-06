@@ -37,13 +37,11 @@ require_once("assets/sidebar.php");
 									</section>
 								</div>
                                 <br>
+                                <div id="markall" align="right" style="display:none;"><a onclick='markallread();' style='text-align:right; cursor:pointer;'>Mark All as Read</a></div>
                                 <table id="ntable" style="margin-top:10px;display:none" class="table table-bordered table-hover table-striped">
                                     <thead>
-                                        <tr>
-                                            <td colspan="6" ><center><h4 id="rtitle"></h4></center></td>
-                                    	</tr>
 	                                    <tr>
-	                                        <th>Date Time</th>
+	                                        <th width="120px">Date Time</th>
 	                                        <th>Notification</th>
 	                                    </tr>
                                     </thead>

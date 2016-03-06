@@ -9,6 +9,7 @@
 class Files_model extends CI_Model {
 	function __construct() {
         parent::__construct();
+        $this->load->model("notification_model");
     }
 
     function save_file(){
@@ -32,6 +33,7 @@ class Files_model extends CI_Model {
 	    	$this->modify_files_in_folders($file,0);
 	    }
 	    $this->db->trans_complete();
+        //testing: $this->notification_model->new_notification($uploader, "New file uploaded!", 1, $projectid, [1,2]);
     	return;
     }
     function delete_file(){

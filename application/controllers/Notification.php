@@ -23,4 +23,5 @@ class Notification extends CI_Controller {
 	function get_notifications_header_control(){ echo $this->notification_model->get_notifications_header();}
 	function get_notifications_unread_count_control(){ echo $this->notification_model->get_notifications_unread_count();}
 	function markallread_notification_control(){ echo $this->notification_model->markallread_notification();}
+	function markread_notification_control(){ echo $this->notification_model->read_notification();}
 }
