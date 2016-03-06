@@ -1134,4 +1134,17 @@ class Project_model extends CI_Model {
             return 2;
         }
     }
+
+        function get_project_nature_list(){
+        $this->db->select('id,name');
+        $query = $this->db->get('project_nature');
+        if ($query->num_rows() > 0) {
+            $arr = array();
+            foreach ($query->result() as $row){
+                $arr[] = $row;  
+            }
+        }
+        return json_encode($arr);
+    }
+
 }
