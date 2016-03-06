@@ -30,5 +30,6 @@ class ProposeProject extends CI_Controller {
     function search_equipment_price_control(){ echo $this->budget_model->search_equipment_price(); }
     function get_recommendations_control(){ echo $this->employee_model->get_recommendations(); }
     function get_skillsets_control(){ echo $this->skillset_model->get_skillsets(); }
+    function propose_project_control() { echo $this->project_model->propose_project(); }
 
 }

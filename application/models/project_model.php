@@ -556,21 +556,21 @@ class Project_model extends CI_Model {
 
         //add objectives
         // var_dump($this->db->last_query());
-        $query2 = "SELECT `id` FROM `project` WHERE `name`= ?";
-        $result2 = $this->db->query($query2, array($project_name));
-        $projectid = "";
-        if ($result2->num_rows() > 0) {
-            foreach ($result->result() as $row){
-                $projectid = $row->id;
-                // var_dump($a);
-            }
-        }
-        $objectives = $this->input->post('json_objectives');
-        $data_objectives = json_decode($objectives);
-        var_dump($data_objectives);
-        $this->db->set('name', $data_objectives); 
-        $this->db->set('projectid', $projectid); 
-        $this->db->insert('objectives'); 
+        // $query2 = "SELECT `id` FROM `project` WHERE `name`= ?";
+        // $result2 = $this->db->query($query2, array($project_name));
+        // $projectid = "";
+        // if ($result2->num_rows() > 0) {
+        //     foreach ($result->result() as $row){
+        //         $projectid = $row->id;
+        //         // var_dump($a);
+        //     }
+        // }
+        // $objectives = $this->input->post('json_objectives');
+        // $data_objectives = json_decode($objectives);
+        // var_dump($data_objectives);
+        // $this->db->set('name', $data_objectives); 
+        // $this->db->set('projectid', $projectid); 
+        // $this->db->insert('objectives'); 
 
         // var_dump($this->db->last_query());
     }
@@ -584,5 +584,100 @@ class Project_model extends CI_Model {
             }
         }
         return json_encode($arr);
+    }
+    function propose_project(){
+        $project = json_decode($this->input->post('project'), true);
+        $outputs = json_decode($this->input->post('outputs'));
+        $objectives = json_decode($this->input->post('objectives'));
+        $budgetList = json_decode($this->input->post('budgetList'));
+        $tasksList = json_decode($this->input->post('tasksList'));
+
+        $date_from = date("Y-m-d", strtotime($this->input->post('date_from')));
+
+        $query = 'INSERT INTO `project` (`name`, `description`, `background`, `significance`, `datefrom`, `dateto`, `empid`, `status`, `priority`, `latitude`, `longitude`, `locationname`, `createdby`, `id_nature`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+        $result = $this->db->query($query, array($project['project_name'], $project['description'], $project['background'], $project['significance'], date("Y-m-d", strtotime($project['date_from'])), date("Y-m-d", strtotime($project['date_to'])), $project['project_head'], -1, $project['priority'], $project['latitude'], $project['longitude'], $project['location_name'], $project['createdby'], $project['project_type']));
+
+        // var_dump($this->db->last_query());
+
+        $this->db->select('id');
+        $this->db->where('name', $project['project_name']);
+        $this->db->where('datefrom', date("Y-m-d", strtotime($project['date_from'])));
+        $this->db->where('datefrom', date("Y-m-d", strtotime($project['date_to']))); 
+        $temp = $this->db->get('project');
+        if($temp->num_rows() > 0){
+            foreach ($temp->result() as $row){
+                $pid = $row->id;
+            }
+        }
+
+        foreach($objectives as $o) {
+            $objective = $o->objective;
+            $query2 = 'INSERT INTO `objectives` (`name`, `projectid`) VALUES (?, ?)';
+            $result2 = $this->db->query($query2, array($objective, $pid));
+        }
+
+        foreach($outputs as $o) {
+            $expected = $o->expected;
+            $pindicator = $o->pindicator;
+            $query3 = 'INSERT INTO `output` (`expected`, `pindicator`, `projectid`) VALUES (?, ?, ?)';
+            $result3 = $this->db->query($query3, array($expected, $pindicator, $pid));
+        }
+
+        foreach($budgetList as $b) {
+            $amount = $b->amount;
+            $item = $b->item;
+            $qty = $b->qty;
+            $reason = $b->reason;
+            $type = $this->get_expense_type($b->type);
+            $query4 = 'INSERT INTO `budget` (`expense`, `reason`, `expense_type`, `projectid`, `amount`, `qty`) VALUES (?, ?, ?, ?, ?, ?)';
+            $result4 = $this->db->query($query4, array($item, $reason, $type, $pid, $amount, $qty));
+        }
+
+        foreach($tasksList as $t) {
+            $due_date = $t->task_due_date;
+            $milestone = $t->task_milestone;
+            $taskname = $t->task_name;
+            $output = $t->task_output;
+            $priority = $t->task_priority;
+            $query5 = 'INSERT INTO `propose_task` (`name`, `milestone_indicator`, `due_date`, `output`, `pid`, `priority`) VALUES (?, ?, ?, ?, ?, ?)';
+            $result5 = $this->db->query($query5, array($taskname, $milestone, $due_date, $output, $pid, $priority));
+        }
+
+        // foreach($tasksList as $t) {
+        //     $due_date = $t->task_due_date;
+        //     $milestone = $t->task_milestone;
+        //     $taskname = $t->task_name;
+        //     $output = $t->task_output;
+        //     $priority = $t->task_priority;
+        //     $query5 = 'INSERT INTO `propose_task` (`name`, `milestone_indicator`, `due_date`, `output`, `pid`, `priority`) VALUES (?, ?, ?, ?, ?, ?)';
+        //     $result5 = $this->db->query($query5, array($taskname, $milestone, $due_date, $output, $pid, $priority));
+        // }
+
+
+        // print_r($this->db->last_query());
+
+        // print_r($project);
+        // print_r($outputs);
+        // print_r($objectives);
+        // print_r($budgetList);
+        // print_r($tasksList);
+    }
+    function get_expense_type($type){
+        // $query = 
+        if($type === "General Expense") {
+            return 1;
+        } else {
+            return 2;
+        }
+    }
+    function propose_objective($objectives, $pid){
+        // $obj = json_decode(json_encode($objectives), true);
+        // foreach($objectives as $object) {
+        //     $query = 'INSERT INTO `objectives` (`name`, `projectid`) VALUES (?, ?)';
+        //     $result = $this->db->query($query, array($object, $pid));
+        // }
+        // print_r($objectives);
+        // print_r($pid);
     }
 }

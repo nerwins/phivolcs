@@ -548,27 +548,20 @@
         }
         if(hasError == false){
             prepareProjectObject();
+            $.post("<?=base_url()?>proposeproject/propose_project_control",
+            {
+                project: JSON.stringify(project),
+                outputs : JSON.stringify(outputs),
+                objectives: JSON.stringify(objectives),
+                budgetList : JSON.stringify(budgetList),
+                tasksList: JSON.stringify(tasksList)
+            }, function(data){
+                data = data.replace(/\"/g, "");
+                window.location.replace('dashboard');
+            });
         }
-
-        // $.post("<?=base_url()?>records/update_skillset_detail_control",
-        // {
-        //     skillID: skillID,
-        //     skillName : skillName,
-        //     skillDesc : skillDesc
-        // }, function(data){
-        //     data = data.replace(/\"/g, "");
-        //     if(data == 'error')
-        //         toggleAlert(4);
-        //     else{
-        //         toggleAlert(5);
-        //         $('#skillsModal').modal('hide');
-        //         if(id == 0)
-        //             toggleAlert(8);
-        //         else
-        //             toggleAlert(9);
-        //         getSkillSetList();
-        //     }
-        // });
+        //test
+        // prepareProjectObject();
 
     }
     function saveAsDraft(){
@@ -652,6 +645,8 @@
         console.log(project);
         console.log(outputs);
         console.log(objectives);
+        console.log(budgetList);
+        console.log(tasksList);
     }
 
     function addObjectiveTableRow(){
